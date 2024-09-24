@@ -17,8 +17,17 @@ This is the frontend codebase for Terra-coins Market, a sophisticated platform f
 
 Terra-coins Market is a web application that provides users with a comprehensive platform to explore, analyze, and trade various cryptocurrencies. The frontend is built using a combination of HTML, CSS, and JavaScript, with a focus on responsive design and user experience. It's now integrated with a Node.js backend for enhanced functionality.
 
+Visit the live site: [https://terra-coin-markets.vercel.app/](https://terra-coin-markets.vercel.app/)
+
 ## Features
 
+- Responsive design for various screen sizes
+- Interactive UI elements
+- Cryptocurrency market information
+- User authentication (Login/Signup)
+- FAQ section
+- Contact form
+- Multi-language support
 - Real-time cryptocurrency price updates
 - Integration with backend API for user authentication and data management
 
