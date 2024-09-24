@@ -1,0 +1,13 @@
+.accountSummary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #1e2d46;
+    color: white;
+  }
+  
+  .accountInfo p {
+    margin: 5px 0;
+  }
+  
