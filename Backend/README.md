@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cita Trading Group Backend
+
+## Overview
+
+This is the backend service for Cita Trading Group, built with [Node.js](https://nodejs.org/) and [Express](https://expressjs.com/). It provides RESTful API endpoints to support the Cita Trading Group frontend application, handling trading operations, user management, and data processing.
+
+## Technologies
+
+- Node.js
+- Express.js
+- TypeScript
+- PostgreSQL
+- Prisma ORM
+- Jest for testing
+- Docker for containerization
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+- Node.js (version 18.x or higher)
+- npm (version 8.x or higher)
+- Docker (version 20.x or higher)
+- PostgreSQL (version 13 or higher)
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/cita-trading-group/backend.git
+   cd backend
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+   Edit the `.env` file with your specific configuration, including database credentials and API keys.
+
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+The server will start running on `http://localhost:3000` by default.
+
+## API Documentation
+
+API documentation is available at `/api-docs` when running the server locally. For production, refer to our [hosted API documentation](https://api-docs.citatradinggroup.com).
+
+## Scripts
+
+- `npm run dev`: Start the development server with hot-reloading
+- `npm run build`: Build the TypeScript project
+- `npm start`: Start the production server
+- `npm test`: Run the test suite
+- `npm run lint`: Lint the codebase
+- `npm run migrate`: Run database migrations
+
+## Database
+
+Cita Trading Group uses PostgreSQL for data persistence. Our schema is managed using Prisma ORM. Refer to `./docs/database.md` for schema details and migration instructions.
+
+## Testing
+
+We use Jest for unit and integration tests. Run the test suite with:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm test
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deployment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Our backend is deployed using Docker containers on AWS ECS. Detailed deployment instructions can be found in `./docs/deployment.md`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Contributing
 
-## Learn More
+We welcome contributions to the Cita Trading Group backend. Please read `CONTRIBUTING.md` for details on our code of conduct and the process for submitting pull requests.
 
-To learn more about Next.js, take a look at the following resources:
+## License
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This project is proprietary and confidential. Unauthorized copying of this file, via any medium is strictly prohibited.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contact
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+For any queries regarding the backend, please contact the Cita Trading Group development team at dev@citatradinggroup.com.
