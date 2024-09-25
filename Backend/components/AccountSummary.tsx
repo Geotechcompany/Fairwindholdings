@@ -1,40 +1,39 @@
 import React from 'react';
-import { Card, Grid } from '@mui/material';
+import Image from 'next/image';
 
-type AccountSummaryProps = {
-  userData: {
-    balance: number;
-    leverage: string;
-    credit: number;
-  };
-};
+interface AccountPanelProps {
+  balance: number;
+  leverage: string;
+  credit: number;
+  className?: string;
+}
 
-const AccountSummary: React.FC<AccountSummaryProps> = ({ userData }) => {
+const AccountPanel: React.FC<AccountPanelProps> = ({ balance, leverage, credit, className }) => {
   return (
-    <Card className="p-6 bg-gray-800 text-white">
-      <h3 className="text-lg font-semibold mb-4">Account Summary</h3>
-      <Grid container spacing={4}>
-        <Grid item xs={12} sm={4}>
-          <div className="text-center">
-            <h4 className="text-md">Balance</h4>
-            <p className="text-xl font-bold">${userData.balance.toFixed(2)}</p>
-          </div>
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <div className="text-center">
-            <h4 className="text-md">Leverage</h4>
-            <p className="text-xl font-bold">{userData.leverage}</p>
-          </div>
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <div className="text-center">
-            <h4 className="text-md">Credit</h4>
-            <p className="text-xl font-bold">${userData.credit.toFixed(2)}</p>
-          </div>
-        </Grid>
-      </Grid>
-    </Card>
+    <div className={`bg-[#1e2433] rounded-lg p-4 ${className}`}>
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold">Account</h3>
+        <Image src="/us-flag.png" alt="US Flag" width={24} height={16} />
+      </div>
+      <div className="space-y-2">
+        <div className="flex justify-between">
+          <span className="text-gray-400">Balance</span>
+          <span className="text-green-400">${balance.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-gray-400">Leverage</span>
+          <span>{leverage}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-gray-400">Credit</span>
+          <span className="text-green-400">${credit.toFixed(2)}</span>
+        </div>
+      </div>
+      <button className="w-full bg-green-500 text-white font-bold py-2 px-4 rounded mt-4">
+        Trade Now
+      </button>
+    </div>
   );
 };
 
-export default AccountSummary;
+export default AccountPanel;

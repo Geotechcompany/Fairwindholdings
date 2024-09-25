@@ -1,5 +1,4 @@
 import './globals.css';
-import Sidebar from '../components/Sidebar';
 
 export const metadata = {
   title: 'Dashboard',
@@ -13,12 +12,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <div className="flex">
-          <Sidebar />
-          <main className="flex-grow p-6">{children}</main>
-        </div>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

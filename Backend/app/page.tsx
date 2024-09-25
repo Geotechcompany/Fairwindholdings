@@ -17,8 +17,6 @@ const stats = {
 
 export default function Page() {
   return (
-    <div>
-      <Dashboard userData={userData} stats={stats} />
-    </div>
+    <Dashboard userData={userData} stats={stats} />
   );
 }
