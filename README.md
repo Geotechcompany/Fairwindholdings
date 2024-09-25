@@ -1,4 +1,4 @@
-# Cita Trading Groupt Frontend
+# Cita Trading Group Frontend
 
 This is the frontend codebase for Cita Trading Groupt, a sophisticated platform for cryptocurrency trading and market analysis.
 
