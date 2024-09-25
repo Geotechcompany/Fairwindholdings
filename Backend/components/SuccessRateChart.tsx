@@ -25,7 +25,7 @@ const SuccessRateChart: React.FC<SuccessRateChartProps> = ({
 
   return (
     <div
-      className={`bg-[#1e2433] rounded-lg p-4 shadow-lg ${className} h-full flex flex-col w-[500px]`}
+      className={`bg-[#1e2433] rounded-lg p-4 shadow-lg ${className} h-full flex flex-col w-[800px]`}
     >
       <h3 className="text-lg font-semibold mb-4">Success Rate</h3>
       <div className="flex-grow relative">

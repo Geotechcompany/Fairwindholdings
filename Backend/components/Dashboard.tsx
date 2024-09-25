@@ -7,6 +7,13 @@ import TradingResults from "./TradingResults";
 import AccountPanel from "./Accountpanel";
 import SuccessRateChart from "./SuccessRateChart";
 import Verification from "./Verification";
+import PersonalInfo from "./PersonalInfo";
+import Withdrawal from "./withdrawal";
+import Accounts from "./Accounts";
+import LiveChat from "./Livechat";
+import Savings from "./Savings";
+import Settings from "./Settings";
+import Deposit from "./Deposit";
 
 interface DashboardProps {
   userData: UserData;
@@ -20,6 +27,20 @@ const Dashboard: React.FC<DashboardProps> = ({ userData, stats }) => {
     switch (currentView) {
       case "verification":
         return <Verification />;
+      case "personal-info":
+        return <PersonalInfo />;
+      case "withdrawal":
+        return <Withdrawal />;
+      case "accounts":
+        return <Accounts />;
+      case "live-chat":
+        return <LiveChat />;
+      case "savings":
+        return <Savings />;
+      case "settings":
+        return <Settings />;
+      case "deposit":
+        return <Deposit />;
       default:
         return (
           <>

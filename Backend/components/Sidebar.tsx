@@ -15,7 +15,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onNavigate }) => {
           <h3 className="text-lg font-semibold">Arthur Breck</h3>
           <p className="text-sm text-gray-400">#2047597</p>
           <p className="text-sm text-gray-400">arthurbreck417@gmail.com</p>
-          <Button variant="contained" color="primary" className="mt-4 w-3/4 bg-[#4caf50] hover:bg-[#45a049]">
+          <Button   onClick={() => onNavigate('deposit')} 
+           variant="contained" color="primary" className="mt-4 w-3/4 bg-[#4caf50] hover:bg-[#45a049]">
             Deposit
           </Button>
         </div>
