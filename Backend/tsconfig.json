@@ -1,26 +1,35 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
+    "lib": ["dom", "dom.iterable", "esnext"],            // Include ESNext and DOM libraries
+    "allowJs": true,                                     // Allow JavaScript files in TypeScript project
+    "skipLibCheck": true,                                // Skip checking of library declaration files
+    "strict": true,                                      // Enable all strict type-checking options
+    "noEmit": true,                                      // Do not emit output files
+    "esModuleInterop": true,                             // Enable interoperability between ES modules and CommonJS
+    "module": "esnext",                                  // Use ESNext module system
+    "moduleResolution": "bundler",                       // Resolve modules using a bundler's resolution system (for Next.js)
+    "resolveJsonModule": true,                           // Allow importing JSON modules
+    "isolatedModules": true,                             // Ensure that each file can be compiled in isolation
+    "jsx": "preserve",                                   // Keep JSX as it is in the output for Next.js handling
+    "incremental": true,                                 // Enable incremental compilation to improve build performance
     "plugins": [
       {
-        "name": "next"
+        "name": "next"                                   // Next.js specific plugin to improve development experience
       }
     ],
+    "baseUrl": ".",                                      // Base URL for resolving paths
     "paths": {
-      "@/*": ["./*"]
+      "@/components/*": ["components/*"],                // Path alias for components
+      "@/pages/*": ["pages/*"]                           // Path alias for pages
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",                                     // Include Next.js environment types
+    "**/*.ts",                                           // Include all TypeScript files
+    "**/*.tsx",                                          // Include all TypeScript React files
+    ".next/types/**/*.ts"                                // Include auto-generated types by Next.js
+  ],
+  "exclude": [
+    "node_modules"                                       // Exclude node_modules from the TypeScript compilation
+  ]
 }

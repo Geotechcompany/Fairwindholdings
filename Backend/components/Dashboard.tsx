@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import Header from "./Header";
+import { Header } from "./Header";
 import Sidebar from "./Sidebar";
 import StatCard from "./StatCard";
 import TradingResults from "./TradingResults";
@@ -15,6 +15,20 @@ import Savings from "./Savings";
 import Settings from "./Settings";
 import Deposit from "./Deposit";
 
+interface UserData {
+    balance: number;
+    leverage: string;
+    credit: number;
+    totalDeposits: number;
+  }
+  
+  interface Stats {
+    pnl: number;
+    profit: number;
+    loss: number;
+    profitableOrders: string;
+  }
+  
 interface DashboardProps {
   userData: UserData;
   stats: Stats;
