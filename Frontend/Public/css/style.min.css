@@ -1712,7 +1712,7 @@ canvas {
 .menu__link {
   position: relative;
   font-weight: 500;
-  color: ;
+  color: #FFD700;
   font-size: 12px;
 }
 .menu__link._active {
