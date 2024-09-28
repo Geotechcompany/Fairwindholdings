@@ -19,7 +19,7 @@ const AccountPanel: React.FC<AccountPanelProps> = ({ balance, leverage, credit, 
           <h2 className="text-xl font-bold text-white">Account</h2>
           <div className="flex space-x-2 items-center">
             <FaEnvelope className="text-gray-400 hover:text-white cursor-pointer" />
-            <Image src="/us-flag.png" alt="US Flag" width={24} height={16} />
+            <Image src="/images/us-flag.png" alt="US Flag" width={24} height={16} />
           </div>
         </div>
         <div className="space-y-2">
