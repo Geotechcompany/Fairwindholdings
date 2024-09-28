@@ -1194,7 +1194,7 @@ canvas {
   width: 60px;
   height: 60px;
   border-radius: 50px;
-  background-color: #71a2ef;
+  background-color: #FFD700;
   z-index: -1;
   -webkit-transition: all ease-in-out 0.3s;
   -o-transition: all ease-in-out 0.3s;
@@ -2096,13 +2096,15 @@ canvas {
 .markets-eggs__img {
   width: 50%;
 }
+
 .markets-eggs__box-title {
   font-size: 20px;
   text-align: left;
+  color: #39FF14;
 }
 .markets-eggs__box-desc {
   font-size: 16px;
-  color: #b0b0b0;
+  color: black;
 }
 .icons {
   width: 60px;
@@ -2221,7 +2223,7 @@ canvas {
 }
 .features-text-illustrated-plus__box-mark {
   font-size: 26px;
-  color: #777;
+  color: #39FF14;
 }
 .tooltip {
   -webkit-transition: all 0.3s ease-in-out;
@@ -2636,10 +2638,10 @@ textarea {
   position: fixed;
   bottom: 5%;
   right: 5%;
-  background-color: #000;
+  background-color: #052644;
   border: none;
   border-radius: 50%;
-  color: #71a2ef;
+  color: #FFD700;
   cursor: pointer;
   font-size: 24px;
   line-height: 48px;
