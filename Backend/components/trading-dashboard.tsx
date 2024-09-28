@@ -15,6 +15,9 @@ import {
   FaShoppingCart,
 } from "react-icons/fa";
 import ProfitCalculatorModal from "./Trading/ProfitCalculatorModal";
+import MarketWatch from "./MarketWatch";
+import EconomicCalendar from "./EconomicCalendar";
+import MarketNews from "./MarketNews";
 
 declare global {
   interface Window {
@@ -24,9 +27,10 @@ declare global {
 
 const TradingDashboard: React.FC = () => {
   const [selectedMarket, setSelectedMarket] = useState("GOLD");
-  const [timeframe, setTimeframe] = useState("1m");
+  const [timeframe, setTimeframe] = useState("1D");
   const [isProfitCalculatorOpen, setIsProfitCalculatorOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState<string>("");
+  const [activeWidget, setActiveWidget] = useState<string | null>(null);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -36,7 +40,7 @@ const TradingDashboard: React.FC = () => {
       new window.TradingView.widget({
         autosize: true,
         symbol: "OANDA:XAUUSD",
-        interval: "D",
+        interval: timeframe,
         timezone: "Etc/UTC",
         theme: "dark",
         style: "1",
@@ -57,11 +61,14 @@ const TradingDashboard: React.FC = () => {
         },
       });
     };
+
+    document.getElementById("tradingview_chart")!.innerHTML = "";
     document.body.appendChild(script);
+
     return () => {
       document.body.removeChild(script);
     };
-  }, []);
+  }, [timeframe]);
 
   useEffect(() => {
     const updateTime = () => {
@@ -71,6 +78,19 @@ const TradingDashboard: React.FC = () => {
     const timer = setInterval(updateTime, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const timeframesMap: { [key: string]: string } = {
+    "1m": "1",
+    "5m": "5",
+    "15m": "15",
+    "1h": "60",
+    "4h": "240",
+    "1d": "D",
+  };
+
+  const toggleWidget = (widget: string) => {
+    setActiveWidget((prev) => (prev ===widget ? null : widget));
+  };
 
   return (
     <div className="bg-[#1e2329] text-white h-screen flex flex-col">
@@ -122,7 +142,7 @@ const TradingDashboard: React.FC = () => {
               alt="MVP"
               width={50}
               height={50}
-              className="w-10 h-10" // This ensures the image is displayed at 40x40 pixels
+              className="w-10 h-10"
             />
             <button className="bg-gray-700 p-3 rounded-full text-gray-400 hover:text-white">
               <FaUser size={25} />
@@ -132,8 +152,10 @@ const TradingDashboard: React.FC = () => {
       </header>
 
       <div className="flex flex-grow overflow-hidden">
-        <aside className="w-25 bg-[#2c3035] flex-shrink-0 flex flex-col py-4">
-          <button className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white">
+        <aside className="w-20 bg-[#2c3035] flex-shrink-0 flex flex-col py-4">
+          <button className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white"
+            onClick={() => toggleWidget("marketWatch")}
+          >
             <FaChartLine size={20} />
             <span className="mt-1 text-xs">MARKET WATCH</span>
           </button>
@@ -145,27 +167,36 @@ const TradingDashboard: React.FC = () => {
             <FaHistory size={20} />
             <span className="mt-1 text-xs">TRADING HISTORY</span>
           </button>
-          <button className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white">
+          <button
+            className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white"
+            onClick={() => toggleWidget("economicCalendar")}
+          >
             <FaCalendarAlt size={20} />
             <span className="mt-1 text-xs">ECONOMIC CALENDAR</span>
           </button>
-          <button className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white">
+          <button className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white"
+          onClick={() => toggleWidget("marketNews")}>
             <FaNewspaper size={20} />
             <span className="mt-1 text-xs">MARKET NEWS</span>
           </button>
         </aside>
 
+        <section className="bg-[#2c3035] flex-shrink-0 p-4">
+          {activeWidget === "marketWatch" && <MarketWatch />}
+          {activeWidget === "economicCalendar" && <EconomicCalendar showCalendar={true} />} {/* Pass showCalendar prop */}
+          {activeWidget === "marketNews" && <MarketNews />} {/* News Component */}
+        </section>
+
         <main className="flex-grow flex flex-col">
           <div className="flex items-center space-x-4 p-4">
             <h2 className="text-xl font-semibold">{selectedMarket}</h2>
             <div className="flex space-x-2">
-              {["1m", "5m", "15m", "1h", "4h", "1d"].map((tf) => (
+              {(["1m", "5m", "15m", "1h", "4h", "1d"] as const).map((tf) => (
                 <button
                   key={tf}
-                  className={`px-2 py-1 rounded ${
-                    timeframe === tf ? "bg-blue-500" : "bg-[#2c3035]"
-                  }`}
-                  onClick={() => setTimeframe(tf)}
+                  className={`px-2 py-1 rounded ${timeframe === timeframesMap[tf] ? "bg-blue-500" : "bg-[#2c3035]"
+                    }`}
+                  onClick={() => setTimeframe(timeframesMap[tf])}
                 >
                   {tf}
                 </button>
@@ -210,7 +241,6 @@ const TradingDashboard: React.FC = () => {
             </table>
           </div>
         </main>
-
         <aside className="w-64 bg-[#2c3035] p-4 overflow-y-auto">
           <div className="mb-4">
             <h3 className="font-semibold mb-2">Volume</h3>
@@ -256,7 +286,6 @@ const TradingDashboard: React.FC = () => {
           </div>
         </aside>
       </div>
-
       <footer className="bg-[#2c3035] p-4 flex justify-between items-center">
         <div className="flex items-center space-x-4">
           <span>Balance: $0.00</span>
