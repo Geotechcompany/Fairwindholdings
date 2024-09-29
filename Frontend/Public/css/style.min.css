@@ -1636,7 +1636,7 @@ canvas {
   color: #000;
 }
 .header._active .header__logo {
-  background-image: url(../images/logo-cita-white.png);
+  background-image: url(../images/logo-cita-black.PNG);
 }
 .menu__body {
   position: relative;
