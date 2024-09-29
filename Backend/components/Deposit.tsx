@@ -3,7 +3,7 @@ import { FaCloud, FaWallet, FaCreditCard, FaEllipsisH } from 'react-icons/fa';
 
 const Deposit: React.FC = () => {
   const [selectedMethod, setSelectedMethod] = useState('Crypto');
-  const [selectedCrypto, setSelectedCrypto] = useState('Bitcoin');
+  // const [selectedCrypto, setSelectedCrypto] = useState('Bitcoin');
 
   const depositMethods = [
     { name: 'Crypto', icon: <FaCloud />, time: '5-10 minutes' },
@@ -42,7 +42,7 @@ const Deposit: React.FC = () => {
           <h2 className="text-xl font-semibold mb-4">CHOOSE CRYPTOCURRENCY</h2>
           <button
             className="bg-green-500 text-white font-bold py-2 px-4 rounded mb-4"
-            onClick={() => setSelectedCrypto('Bitcoin')}
+            // onClick={() => setSelectedCrypto('Bitcoin')}
           >
             Bitcoin
           </button>

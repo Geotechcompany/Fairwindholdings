@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import {
-  FaSearch,
   FaChartLine,
   FaHistory,
   FaCalendarAlt,
@@ -159,7 +158,8 @@ const TradingDashboard: React.FC = () => {
 
       <div className="flex flex-grow overflow-hidden">
         <aside className="w-20 bg-[#2c3035] flex-shrink-0 flex flex-col py-4">
-          <button className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white"
+          <button
+            className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white"
             onClick={() => toggleWidget("marketWatch")}
           >
             <FaChartLine size={20} />
@@ -182,6 +182,10 @@ const TradingDashboard: React.FC = () => {
           </button>
           <button className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white"
             onClick={() => toggleWidget("marketNews")}>
+          <button
+            className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white"
+            onClick={() => toggleWidget("marketNews")}
+          >
             <FaNewspaper size={20} />
             <span className="mt-1 text-xs">MARKET NEWS</span>
           </button>
@@ -189,8 +193,12 @@ const TradingDashboard: React.FC = () => {
 
         <section className="bg-[#2c3035] flex-shrink-0 p-4">
           {activeWidget === "marketWatch" && <MarketWatch />}
-          {activeWidget === "economicCalendar" && <EconomicCalendar showCalendar={true} />} {/* Pass showCalendar prop */}
-          {activeWidget === "marketNews" && <MarketNews />} {/* News Component */}
+          {activeWidget === "economicCalendar" && (
+            <EconomicCalendar showCalendar={true} />
+          )}{" "}
+          {/* Pass showCalendar prop */}
+          {activeWidget === "marketNews" && <MarketNews />}{" "}
+          {/* News Component */}
         </section>
 
         <div className="flex-grow overflow-hidden">
@@ -272,6 +280,107 @@ const TradingDashboard: React.FC = () => {
   </div>
 </div>
 
+        <main className="flex-grow flex flex-col">
+          <div className="flex items-center space-x-4 p-4">
+            <h2 className="text-xl font-semibold">{selectedMarket}</h2>
+            <div className="flex space-x-2">
+              {(["1m", "5m", "15m", "1h", "4h", "1d"] as const).map((tf) => (
+                <button
+                  key={tf}
+                  className={`px-2 py-1 rounded ${
+                    timeframe === timeframesMap[tf]
+                      ? "bg-blue-500"
+                      : "bg-[#2c3035]"
+                  }`}
+                  onClick={() => setTimeframe(timeframesMap[tf])}
+                >
+                  {tf}
+                </button>
+              ))}
+            </div>
+            <button className="text-gray-400">Indicators</button>
+            <div className="flex space-x-2 ml-auto">
+              <FaCog className="text-gray-400" />
+              <FaExpand className="text-gray-400" />
+              <FaCamera className="text-gray-400" />
+            </div>
+          </div>
+          <div id="tradingview_chart" className="flex-grow" />
+          <div className="p-4">
+            <div className="flex space-x-4 mb-2">
+              <button className="bg-blue-500 text-white px-4 py-2 rounded">
+                Active Orders
+              </button>
+              <button className="bg-[#2c3035] text-white px-4 py-2 rounded">
+                Orders History
+              </button>
+            </div>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-gray-400">
+                  <th className="text-left">Symbol</th>
+                  <th className="text-left">ID</th>
+                  <th className="text-left">Type</th>
+                  <th className="text-left">Volume</th>
+                  <th className="text-left">Open Price</th>
+                  <th className="text-left">Open Time</th>
+                  <th className="text-left">SL</th>
+                  <th className="text-left">TP</th>
+                  <th className="text-left">Price</th>
+                  <th className="text-left">Commission</th>
+                  <th className="text-left">Swap</th>
+                  <th className="text-left">PnL</th>
+                  <th className="text-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>{/* Add table rows here for active orders */}</tbody>
+            </table>
+          </div>
+        </main>
+        <aside className="w-64 bg-[#2c3035] p-4 overflow-y-auto">
+          <div className="mb-4">
+            <h3 className="font-semibold mb-2">Volume</h3>
+            <input
+              type="number"
+              value="0.01"
+              className="w-full bg-[#1e2329] p-2 rounded"
+            />
+            <div className="grid grid-cols-3 gap-2 mt-2">
+              <button className="bg-[#1e2329] px-2 py-1 rounded">lots</button>
+              <button className="bg-[#1e2329] px-2 py-1 rounded">units</button>
+              <button className="bg-[#1e2329] px-2 py-1 rounded">
+                currency
+              </button>
+            </div>
+          </div>
+          <div className="mb-4">
+            <h3 className="font-semibold mb-2">Contract Details</h3>
+            <p>Contract size: 1,000</p>
+            <p>Position: 10</p>
+            <p>
+              Margin: <span className="text-red-500">$531.75</span>
+            </p>
+            <p>
+              Free Margin: <span className="text-green-500">$0.00</span>
+            </p>
+            <p>Spread: 0.28</p>
+            <p>Leverage: 1:50</p>
+          </div>
+          <div className="mb-4">
+            <h3 className="font-semibold mb-2">Take Profit & Stop Loss</h3>
+            <p>Not set</p>
+            <button
+              className="bg-[#1e2329] px-2 py-1 rounded mt-2"
+              onClick={() => setIsProfitCalculatorOpen(true)}
+            >
+              Profit Calculator
+            </button>
+          </div>
+          <div className="mb-4">
+            <h3 className="font-semibold mb-2">Pending</h3>
+            <p>Market</p>
+          </div>
+        </aside>
       </div>
       <footer className="bg-[#2c3035] p-4 flex justify-between items-center">
         <div className="flex items-center space-x-4">

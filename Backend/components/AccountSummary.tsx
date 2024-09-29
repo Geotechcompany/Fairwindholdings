@@ -13,7 +13,7 @@ const AccountPanel: React.FC<AccountPanelProps> = ({ balance, leverage, credit, 
     <div className={`bg-[#1e2433] rounded-lg p-4 ${className}`}>
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold">Account</h3>
-        <Image src="/us-flag.png" alt="US Flag" width={24} height={16} />
+        <Image src="/images/us-flag.png" alt="US Flag" width={24} height={16} />
       </div>
       <div className="space-y-2">
         <div className="flex justify-between">

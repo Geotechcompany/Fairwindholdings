@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Image from 'next/image';
+
 
 const Settings: React.FC = () => {
   const [currentPassword, setCurrentPassword] = useState('');

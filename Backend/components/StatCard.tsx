@@ -4,7 +4,7 @@ import { WalletIcon, CoinsIcon, FlaskIcon, ChartIcon } from '../components/ui/ic
 type StatCardProps = {
   title: string;
   value: string;
-  icon: 'wallet' | 'coins' | 'flask' | 'chart';
+  icon: 'wallet' | 'coins' | 'flask' | 'chart' | 'user';
   note?: string;
 };
 
@@ -13,8 +13,9 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, note }) => {
     wallet: WalletIcon,
     coins: CoinsIcon,
     flask: FlaskIcon,
-    chart: ChartIcon
-  }[icon];
+    chart: ChartIcon,
+    user: WalletIcon // Fallback to WalletIcon for 'user'
+  }[icon] || WalletIcon; // Fallback to WalletIcon if icon is undefined
 
   return (
     <div className="bg-[#1e2433] rounded-lg p-4 shadow-lg flex flex-col justify-between h-full">

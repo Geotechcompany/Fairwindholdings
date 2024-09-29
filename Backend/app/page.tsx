@@ -1,4 +1,4 @@
-import Dashboard from '../components/Dashboard';
+import { DashboardWrapper } from '../components/DashboardWrapper';
 
 // Mock data
 const userData = {
@@ -17,8 +17,6 @@ const stats = {
 
 export default function Page() {
   return (
-    <Dashboard userData={userData} stats={stats} />
+    <DashboardWrapper userData={userData} stats={stats} />
   );
 }
-
-
