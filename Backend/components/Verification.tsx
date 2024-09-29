@@ -1,14 +1,20 @@
 import React from 'react';
+import { IconType } from 'react-icons';
 import { FaIdCard, FaHome, FaCreditCard, FaUser } from 'react-icons/fa';
 
-const UploadArea = ({ icon: Icon, title, description }) => (
+interface UploadAreaProps {
+  icon: IconType;
+  title: string;
+  description: string;
+}
+
+const UploadArea: React.FC<UploadAreaProps> = ({ icon: Icon, title, description }) => (
   <div className="bg-[#1e2433] rounded-lg p-4 flex flex-col items-center justify-center h-40">
     <Icon className="text-3xl text-gray-400 mb-2" />
     <h3 className="text-sm font-semibold mb-1">{title}</h3>
     <p className="text-xs text-gray-400 text-center">{description}</p>
   </div>
 );
-
 const Verification = () => {
   return (
     <div className="p-6">

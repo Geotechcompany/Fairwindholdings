@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import {
-  FaSearch,
   FaChartLine,
   FaHistory,
   FaCalendarAlt,
@@ -89,7 +88,7 @@ const TradingDashboard: React.FC = () => {
   };
 
   const toggleWidget = (widget: string) => {
-    setActiveWidget((prev) => (prev ===widget ? null : widget));
+    setActiveWidget((prev) => (prev === widget ? null : widget));
   };
 
   return (
@@ -153,7 +152,8 @@ const TradingDashboard: React.FC = () => {
 
       <div className="flex flex-grow overflow-hidden">
         <aside className="w-20 bg-[#2c3035] flex-shrink-0 flex flex-col py-4">
-          <button className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white"
+          <button
+            className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white"
             onClick={() => toggleWidget("marketWatch")}
           >
             <FaChartLine size={20} />
@@ -174,8 +174,10 @@ const TradingDashboard: React.FC = () => {
             <FaCalendarAlt size={20} />
             <span className="mt-1 text-xs">ECONOMIC CALENDAR</span>
           </button>
-          <button className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white"
-          onClick={() => toggleWidget("marketNews")}>
+          <button
+            className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white"
+            onClick={() => toggleWidget("marketNews")}
+          >
             <FaNewspaper size={20} />
             <span className="mt-1 text-xs">MARKET NEWS</span>
           </button>
@@ -183,8 +185,12 @@ const TradingDashboard: React.FC = () => {
 
         <section className="bg-[#2c3035] flex-shrink-0 p-4">
           {activeWidget === "marketWatch" && <MarketWatch />}
-          {activeWidget === "economicCalendar" && <EconomicCalendar showCalendar={true} />} {/* Pass showCalendar prop */}
-          {activeWidget === "marketNews" && <MarketNews />} {/* News Component */}
+          {activeWidget === "economicCalendar" && (
+            <EconomicCalendar showCalendar={true} />
+          )}{" "}
+          {/* Pass showCalendar prop */}
+          {activeWidget === "marketNews" && <MarketNews />}{" "}
+          {/* News Component */}
         </section>
 
         <main className="flex-grow flex flex-col">
@@ -194,8 +200,11 @@ const TradingDashboard: React.FC = () => {
               {(["1m", "5m", "15m", "1h", "4h", "1d"] as const).map((tf) => (
                 <button
                   key={tf}
-                  className={`px-2 py-1 rounded ${timeframe === timeframesMap[tf] ? "bg-blue-500" : "bg-[#2c3035]"
-                    }`}
+                  className={`px-2 py-1 rounded ${
+                    timeframe === timeframesMap[tf]
+                      ? "bg-blue-500"
+                      : "bg-[#2c3035]"
+                  }`}
                   onClick={() => setTimeframe(timeframesMap[tf])}
                 >
                   {tf}
