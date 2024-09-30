@@ -1895,8 +1895,8 @@ canvas {
   font-weight: 700;
 }
 .box__text {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 250;
   line-height: 150%;
   padding: 30px 0;
 }
