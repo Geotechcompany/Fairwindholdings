@@ -12,7 +12,8 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1e2329]">
+    <div className="min-h-screen flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: "url('/images/register-bg.jpg')" }}>
+      <div className="absolute inset-0 bg-black opacity-50"></div>
       <RegisterModal
         isOpen={true}
         onClose={() => {}}
