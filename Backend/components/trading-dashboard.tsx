@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import RegisterModal from "@/components/RegisterModal";
 import Image from "next/image";
 import {
   FaChartLine,
@@ -17,6 +18,7 @@ import ProfitCalculatorModal from "./Trading/ProfitCalculatorModal";
 import MarketWatch from "./MarketWatch";
 import EconomicCalendar from "./EconomicCalendar";
 import MarketNews from "./MarketNews";
+import LoginModal from "./LoginModal";
 
 declare global {
   interface Window {
@@ -24,12 +26,35 @@ declare global {
   }
 }
 
-const TradingDashboard: React.FC = () => {
+interface TradingDashboardProps {
+  initialRegisterModalOpen?: boolean;
+  initialLoginModalOpen?: boolean;
+  onLogin?: (user: any) => void;
+}
+
+interface LoginModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onLogin: (user: any) => void;
+}
+
+export function TradingDashboard({
+  initialRegisterModalOpen = false,
+  initialLoginModalOpen = false,
+  onLogin,
+}: TradingDashboardProps & { onLogin?: (user: any) => void }) {
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(
+    initialLoginModalOpen
+  );
+
   const [selectedMarket, setSelectedMarket] = useState("GOLD");
   const [timeframe, setTimeframe] = useState("1D");
   const [isProfitCalculatorOpen, setIsProfitCalculatorOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState<string>("");
   const [activeWidget, setActiveWidget] = useState<string | null>(null);
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(
+    initialRegisterModalOpen
+  );
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -90,7 +115,6 @@ const TradingDashboard: React.FC = () => {
   const toggleWidget = (widget: string) => {
     setActiveWidget((prev) => (prev === widget ? null : widget));
   };
-
   return (
     <div className="bg-[#1e2329] text-white h-screen flex flex-col">
       <header className="bg-[#2c3035] p-4 flex justify-between items-center">
@@ -143,6 +167,18 @@ const TradingDashboard: React.FC = () => {
               height={50}
               className="w-10 h-10"
             />
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-300"
+              onClick={() => setIsRegisterModalOpen(true)}
+            >
+              Register
+            </button>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-300 mr-2"
+              onClick={() => setIsLoginModalOpen(true)}
+            >
+              Login
+            </button>
             <button className="bg-gray-700 p-3 rounded-full text-gray-400 hover:text-white">
               <FaUser size={25} />
             </button>
@@ -310,8 +346,17 @@ const TradingDashboard: React.FC = () => {
         isOpen={isProfitCalculatorOpen}
         onClose={() => setIsProfitCalculatorOpen(false)}
       />
+      <RegisterModal
+        isOpen={isRegisterModalOpen}
+        onClose={() => setIsRegisterModalOpen(false)}
+      />
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        onLogin={onLogin}
+      />
     </div>
   );
-};
+}
 
 export default TradingDashboard;

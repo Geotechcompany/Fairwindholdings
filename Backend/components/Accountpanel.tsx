@@ -3,17 +3,16 @@
 import React from 'react';
 import { FaEnvelope } from 'react-icons/fa';
 import Image from 'next/image';
+import { UserData } from '@/types/user';
 
 type AccountPanelProps = {
-  balance: number;
-  leverage: string;
-  credit: number;
-  className?: string; // Add this line
+ userData: UserData;
 };
 
-const AccountPanel: React.FC<AccountPanelProps> = ({ balance, leverage, credit, className }) => {
+const AccountPanel: React.FC<AccountPanelProps> = ({ userData }) => {
+  const { balance, leverage, credit } = userData;
   return (
-    <div className={`bg-[#2c3035] rounded-lg shadow-lg overflow-hidden animate-pulse-shadow ${className}`}>
+    <div className={`bg-[#2c3035] rounded-lg shadow-lg overflow-hidden animate-pulse-shadow`}>
       <div className="p-4">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-white">Account</h2>

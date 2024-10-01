@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaChartLine, FaUsers, FaExchangeAlt, FaCog, FaChartBar, FaSignOutAlt } from 'react-icons/fa';
+import { FaChartLine, FaUsers, FaExchangeAlt, FaCog, FaChartBar, FaSignOutAlt, FaIdCard, FaMoneyBillWave, FaComments, FaShieldAlt } from 'react-icons/fa';
 
 interface AdminSidebarProps {
   onNavigate: (view: string) => void;
@@ -41,10 +41,50 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ onNavigate }) => {
             </li>
             <li>
               <button 
+                onClick={() => onNavigate('kyc')} 
+                className="flex items-center w-full py-2 px-4 hover:bg-[#3a3f45] transition-colors duration-200"
+              >
+                <FaIdCard className="mr-3" /> Manage KYC
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={() => onNavigate('deposits')} 
+                className="flex items-center w-full py-2 px-4 hover:bg-[#3a3f45] transition-colors duration-200"
+              >
+                <FaMoneyBillWave className="mr-3" /> Deposits
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={() => onNavigate('withdrawals')} 
+                className="flex items-center w-full py-2 px-4 hover:bg-[#3a3f45] transition-colors duration-200"
+              >
+                <FaMoneyBillWave className="mr-3" /> Withdrawals
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={() => onNavigate('support')} 
+                className="flex items-center w-full py-2 px-4 hover:bg-[#3a3f45] transition-colors duration-200"
+              >
+                <FaComments className="mr-3" /> Support
+              </button>
+            </li>
+            <li>
+              <button 
                 onClick={() => onNavigate('settings')} 
                 className="flex items-center w-full py-2 px-4 hover:bg-[#3a3f45] transition-colors duration-200"
               >
                 <FaCog className="mr-3" /> System Settings
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={() => onNavigate('security')} 
+                className="flex items-center w-full py-2 px-4 hover:bg-[#3a3f45] transition-colors duration-200"
+              >
+                <FaShieldAlt className="mr-3" /> Security
               </button>
             </li>
             <li>
@@ -66,6 +106,6 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ onNavigate }) => {
       </button>
     </div>
   );
-};
+}
 
 export default AdminSidebar;
