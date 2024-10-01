@@ -10,6 +10,10 @@ type AccountPanelProps = {
 };
 
 const AccountPanel: React.FC<AccountPanelProps> = ({ userData }) => {
+  if (!userData) {
+    return <div>Loading account data...</div>;
+  }
+
   const { balance, leverage, credit } = userData;
   return (
     <div className={`bg-[#2c3035] rounded-lg shadow-lg overflow-hidden animate-pulse-shadow`}>

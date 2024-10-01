@@ -49,7 +49,7 @@ export interface UserLoginData {
 export interface AccountPanelProps {
   userData: {
     balance: number;
-    leverage: number;
+    leverage: string;
     credit: number;
   } | undefined;
 }
