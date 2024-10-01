@@ -13,12 +13,14 @@ import {
   FaPlus,
   FaUser,
   FaShoppingCart,
+  FaBars,
+  FaChevronRight,
+  FaChevronLeft,
 } from "react-icons/fa";
-import ProfitCalculatorModal from "./Trading/ProfitCalculatorModal";
 import MarketWatch from "./MarketWatch";
 import EconomicCalendar from "./EconomicCalendar";
 import MarketNews from "./MarketNews";
-import LoginModal from "./LoginModal";
+import TradingWidget from "./TradingWidget";
 
 declare global {
   interface Window {
@@ -49,12 +51,10 @@ export function TradingDashboard({
 
   const [selectedMarket, setSelectedMarket] = useState("GOLD");
   const [timeframe, setTimeframe] = useState("1D");
-  const [isProfitCalculatorOpen, setIsProfitCalculatorOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState<string>("");
   const [activeWidget, setActiveWidget] = useState<string | null>(null);
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(
-    initialRegisterModalOpen
-  );
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isProfitCalculatorOpen, setIsProfitCalculatorOpen] = useState(false);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -69,10 +69,13 @@ export function TradingDashboard({
         theme: "dark",
         style: "1",
         locale: "en",
+        allow_symbol_change: false,
+        calendar: false,
+        hide_volume: true,
         toolbar_bg: "#f1f3f6",
         enable_publishing: false,
-        allow_symbol_change: true,
         container_id: "tradingview_chart",
+        support_host: "https://www.tradingview.com",
         studies: ["Volume@tv-basicstudies"],
         disabled_features: ["use_localstorage_for_settings"],
         enabled_features: ["study_templates"],
@@ -229,107 +232,100 @@ export function TradingDashboard({
           {/* News Component */}
         </section>
 
-        <main className="flex-grow flex flex-col">
-          <div className="flex items-center space-x-4 p-4">
-            <h2 className="text-xl font-semibold">{selectedMarket}</h2>
-            <div className="flex space-x-2">
-              {(["1m", "5m", "15m", "1h", "4h", "1d"] as const).map((tf) => (
-                <button
-                  key={tf}
-                  className={`px-2 py-1 rounded ${
-                    timeframe === timeframesMap[tf]
-                      ? "bg-blue-500"
-                      : "bg-[#2c3035]"
-                  }`}
-                  onClick={() => setTimeframe(timeframesMap[tf])}
-                >
-                  {tf}
-                </button>
-              ))}
-            </div>
-            <button className="text-gray-400">Indicators</button>
-            <div className="flex space-x-2 ml-auto">
-              <FaCog className="text-gray-400" />
-              <FaExpand className="text-gray-400" />
-              <FaCamera className="text-gray-400" />
-            </div>
-          </div>
-          <div id="tradingview_chart" className="flex-grow" />
-          <div className="p-4">
-            <div className="flex space-x-4 mb-2">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded">
-                Active Orders
-              </button>
-              <button className="bg-[#2c3035] text-white px-4 py-2 rounded">
-                Orders History
-              </button>
-            </div>
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-gray-400">
-                  <th className="text-left">Symbol</th>
-                  <th className="text-left">ID</th>
-                  <th className="text-left">Type</th>
-                  <th className="text-left">Volume</th>
-                  <th className="text-left">Open Price</th>
-                  <th className="text-left">Open Time</th>
-                  <th className="text-left">SL</th>
-                  <th className="text-left">TP</th>
-                  <th className="text-left">Price</th>
-                  <th className="text-left">Commission</th>
-                  <th className="text-left">Swap</th>
-                  <th className="text-left">PnL</th>
-                  <th className="text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody>{/* Add table rows here for active orders */}</tbody>
-            </table>
-          </div>
-        </main>
-        <aside className="w-64 bg-[#2c3035] p-4 overflow-y-auto">
-          <div className="mb-4">
-            <h3 className="font-semibold mb-2">Volume</h3>
-            <input
-              type="number"
-              value="0.01"
-              className="w-full bg-[#1e2329] p-2 rounded"
-            />
-            <div className="grid grid-cols-3 gap-2 mt-2">
-              <button className="bg-[#1e2329] px-2 py-1 rounded">lots</button>
-              <button className="bg-[#1e2329] px-2 py-1 rounded">units</button>
-              <button className="bg-[#1e2329] px-2 py-1 rounded">
-                currency
-              </button>
-            </div>
-          </div>
-          <div className="mb-4">
-            <h3 className="font-semibold mb-2">Contract Details</h3>
-            <p>Contract size: 1,000</p>
-            <p>Position: 10</p>
-            <p>
-              Margin: <span className="text-red-500">$531.75</span>
-            </p>
-            <p>
-              Free Margin: <span className="text-green-500">$0.00</span>
-            </p>
-            <p>Spread: 0.28</p>
-            <p>Leverage: 1:50</p>
-          </div>
-          <div className="mb-4">
-            <h3 className="font-semibold mb-2">Take Profit & Stop Loss</h3>
-            <p>Not set</p>
-            <button
-              className="bg-[#1e2329] px-2 py-1 rounded mt-2"
-              onClick={() => setIsProfitCalculatorOpen(true)}
+        <div className="flex-grow overflow-hidden">
+          <div className="flex flex-col lg:flex-row h-full relative">
+            <main
+              className={`flex-grow flex flex-col lg:w-2/3 transition-all duration-300 ${
+                isSidebarOpen ? "ml-1/3" : ""
+              }`}
             >
-              Profit Calculator
-            </button>
+              <div className="flex items-center space-x-4 p-4">
+                <h2 className="text-xl font-semibold">{selectedMarket}</h2>
+                <div className="flex space-x-2">
+                  {(["1m", "5m", "15m", "1h", "4h", "1d"] as const).map(
+                    (tf) => (
+                      <button
+                        key={tf}
+                        className={`px-2 py-1 rounded ${
+                          timeframe === timeframesMap[tf]
+                            ? "bg-blue-500"
+                            : "bg-[#2c3035]"
+                        } `}
+                        onClick={() => setTimeframe(timeframesMap[tf])}
+                      >
+                        {tf}
+                      </button>
+                    )
+                  )}
+                </div>
+                <button className="text-gray-400">Indicators</button>
+                <div className="flex space-x-2 ml-auto">
+                  <FaCog className="text-gray-400" />
+                  <FaExpand className="text-gray-400" />
+                  <FaCamera className="text-gray-400" />
+                </div>
+              </div>
+              <div id="tradingview_chart" className="flex-grow" />
+              <div className="p-4">
+                <div className="flex space-x-4 mb-2">
+                  <button className="bg-blue-500 text-white px-4 py-2 rounded">
+                    Active Orders
+                  </button>
+                  <button className="bg-[#2c3035] text-white px-4 py-2 rounded">
+                    Orders History
+                  </button>
+                </div>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-gray-400">
+                      <th className="text-left">Symbol</th>
+                      <th className="text-left">ID</th>
+                      <th className="text-left">Type</th>
+                      <th className="text-left">Volume</th>
+                      <th className="text-left">Open Price</th>
+                      <th className="text-left">Open Time</th>
+                      <th className="text-left">SL</th>
+                      <th className="text-left">TP</th>
+                      <th className="text-left">Price</th>
+                      <th className="text-left">Commission</th>
+                      <th className="text-left">Swap</th>
+                      <th className="text-left">PnL</th>
+                      <th className="text-left">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>{/* Add table rows here for active orders */}</tbody>
+                </table>
+              </div>
+            </main>
+
+            <aside
+              className={`absolute top-0 right-0 h-full flex-shrink-0 bg-gray-800 transition-transform duration-300 ${
+                isSidebarOpen ? "translate-x-0" : "translate-x-full"
+              } lg:translate-x-0`}
+            >
+              <div className="h-full flex flex-col justify-between relative">
+                {/* Chevron Button, hidden on large screens */}
+                <button
+                  className={`absolute top-1/2 transform -translate-y-1/2 -left-10 p-2 rounded-full bg-gray-700 transition-transform duration-300 lg:hidden ${
+                    isSidebarOpen ? "rotate-180" : ""
+                  }`}
+                  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                >
+                  {isSidebarOpen ? (
+                    <FaChevronRight className="text-white" />
+                  ) : (
+                    <FaChevronLeft className="text-white" />
+                  )}
+                </button>
+                <div className="flex-grow">
+                  <TradingWidget /> {/* Your widget beside the chart */}
+                </div>
+              </div>
+              <div className="border-t border-gray-600 mt-2" />{" "}
+              {/* Thin line between widget and bottom */}
+            </aside>
           </div>
-          <div className="mb-4">
-            <h3 className="font-semibold mb-2">Pending</h3>
-            <p>Market</p>
-          </div>
-        </aside>
+        </div>
       </div>
       <footer className="bg-[#2c3035] p-4 flex justify-between items-center">
         <div className="flex items-center space-x-4">
@@ -341,20 +337,6 @@ export function TradingDashboard({
           <span>CURRENT TIME: {currentTime}</span>
         </div>
       </footer>
-
-      <ProfitCalculatorModal
-        isOpen={isProfitCalculatorOpen}
-        onClose={() => setIsProfitCalculatorOpen(false)}
-      />
-      <RegisterModal
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-      />
-      <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-        onLogin={onLogin}
-      />
     </div>
   );
 }
