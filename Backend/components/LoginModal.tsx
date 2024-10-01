@@ -6,9 +6,10 @@ import { useRouter } from 'next/navigation';
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onLogin: (user: any) => void;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -37,6 +38,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen }) => {
       toast.success("Login successful");
       // Close modal or redirect user
       router.push('/trading-dashboard');
+      onLogin(data); // Call onLogin with the user data
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "An error occurred";
