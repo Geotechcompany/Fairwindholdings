@@ -16,19 +16,19 @@ import Settings from "./Settings";
 import Deposit from "./Deposit";
 
 interface UserData {
-    balance: number;
-    leverage: string;
-    credit: number;
-    totalDeposits: number;
-  }
-  
-  interface Stats {
-    pnl: number;
-    profit: number;
-    loss: number;
-    profitableOrders: string;
-  }
-  
+  balance: number;
+  leverage: string;
+  credit: number;
+  totalDeposits: number;
+}
+
+interface Stats {
+  pnl: number;
+  profit: number;
+  loss: number;
+  profitableOrders: string;
+}
+
 interface DashboardProps {
   userData: UserData;
   stats: Stats;
@@ -58,8 +58,8 @@ const Dashboard: React.FC<DashboardProps> = ({ userData, stats }) => {
       default:
         return (
           <>
-            <div className="flex gap-6 mb-6">
-              <div className="grid grid-cols-2 gap-4 w-[600px]">
+            <div className="flex flex-col lg:flex-row gap-6 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:w-[600px] lg:grid-cols-2">
                 <StatCard
                   title="Total Balance"
                   value={`$${userData.balance.toFixed(2)}`}
@@ -89,13 +89,13 @@ const Dashboard: React.FC<DashboardProps> = ({ userData, stats }) => {
               </div>
             </div>
             <div className="mb-6">
-              <TradingResults className="h-64 w-full" />
+              <TradingResults className="h-64 w-full overflow-x-auto" />
             </div>
             <AccountPanel
               balance={userData.balance}
               leverage={userData.leverage}
               credit={userData.credit}
-              className="w-[300px]"
+              className="lg:w-[300px] w-full"
             />
           </>
         );
@@ -103,11 +103,13 @@ const Dashboard: React.FC<DashboardProps> = ({ userData, stats }) => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#111827] text-white">
+    <div className="flex flex-col min-h-screen bg-[#111827] text-white overflow-hidden">
       <Header />
-      <div className="flex flex-1">
+      <div className="flex flex-1 overflow-hidden">
         <Sidebar onNavigate={setCurrentView} />
-        <main className="flex-grow p-6 mx-20">{renderView()}</main>
+        <main className="flex-grow p-4 md:p-6 mx-4 lg:mx-20 overflow-y-auto">
+          {renderView()}
+        </main>
       </div>
     </div>
   );
