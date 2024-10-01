@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
-import RegisterModal from "@/components/RegisterModal";
+import React, { useState, useEffect, useRef } from "react";
+import Modal from "./Modal";
+import LoginModal from "./LoginModal";
+import RegisterModal from "./RegisterModal";
 import Image from "next/image";
 import {
   FaChartLine,
@@ -44,7 +46,10 @@ export function TradingDashboard({
   initialRegisterModalOpen = false,
   initialLoginModalOpen = false,
   onLogin,
-}: TradingDashboardProps & { onLogin?: (user: any) => void }) {
+}: TradingDashboardProps) {
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(
+    initialRegisterModalOpen
+  );
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(
     initialLoginModalOpen
   );
@@ -337,6 +342,22 @@ export function TradingDashboard({
           <span>CURRENT TIME: {currentTime}</span>
         </div>
       </footer>
+      <Modal
+        isOpen={isRegisterModalOpen}
+        onClose={() => setIsRegisterModalOpen(false)}
+      >
+        <RegisterModal onClose={() => setIsRegisterModalOpen(false)} />
+      </Modal>
+      <Modal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      >
+        <LoginModal
+          isOpen={isLoginModalOpen}
+          onClose={() => setIsLoginModalOpen(false)}
+          onLogin={onLogin}
+        />
+      </Modal>
     </div>
   );
 }
