@@ -15,7 +15,7 @@ This is the frontend codebase for Cita Trading Groupt, a sophisticated platform 
 
 ## Overview
 
-Cita Trading Groupt is a web application that provides users with a comprehensive platform to explore, analyze, and trade various cryptocurrencies. The frontend is built using a combination of HTML, CSS, and JavaScript, with a focus on responsive design and user experience. It's now integrated with a Node.js backend for enhanced functionality.
+Cita Trading Group is a web application that provides users with a comprehensive platform to explore, analyze, and trade various cryptocurrencies. The frontend is built using a combination of HTML, CSS, and JavaScript, with a focus on responsive design and user experience. It's now integrated with a Node.js backend for enhanced functionality.
 
 Visit the live site: [https://terra-coin-markets.vercel.app/](https://terra-coin-markets.vercel.app/)
 
