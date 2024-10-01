@@ -6,15 +6,15 @@ import { UserRegistrationData } from "@/types/user";
 export async function registerUser(userData: UserRegistrationData) {
   try {
     const response = await axios.post("/api/auth/register", userData);
-    return response.data;
+    if (response.status === 201) {
+      return { success: true, data: response.data };
+    } else {
+      throw new Error(response.data.error || 'Registration failed');
+    }
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      throw error.message;
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.error || 'An error occurred during registration');
     }
-    if (typeof error === 'object' && error !== null && 'response' in error) {
-      const apiError = error as { response?: { data?: unknown } };
-      throw apiError.response?.data || 'Unknown error';
-    }
-    throw 'Unknown error';
+    throw new Error('An unexpected error occurred');
   }
 }

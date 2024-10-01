@@ -31,9 +31,8 @@ declare global {
 }
 
 interface TradingDashboardProps {
-  initialRegisterModalOpen?: boolean;
-  initialLoginModalOpen?: boolean;
-  onLogin?: (user: any) => void;
+  userData: any;
+  stats: any;
 }
 
 interface LoginModalProps {
@@ -43,16 +42,14 @@ interface LoginModalProps {
 }
 
 export function TradingDashboard({
-  initialRegisterModalOpen = false,
-  initialLoginModalOpen = false,
-  onLogin,
-}: TradingDashboardProps) {
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(
-    initialRegisterModalOpen
-  );
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(
-    initialLoginModalOpen
-  );
+  userData,
+  stats,
+}: {
+  userData: any;
+  stats: any;
+}) {
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   const [selectedMarket, setSelectedMarket] = useState("GOLD");
   const [timeframe, setTimeframe] = useState("1D");
@@ -123,6 +120,7 @@ export function TradingDashboard({
   const toggleWidget = (widget: string) => {
     setActiveWidget((prev) => (prev === widget ? null : widget));
   };
+
   return (
     <div className="bg-[#1e2329] text-white h-screen flex flex-col">
       <header className="bg-[#2c3035] p-4 flex justify-between items-center">
@@ -355,7 +353,7 @@ export function TradingDashboard({
         <LoginModal
           isOpen={isLoginModalOpen}
           onClose={() => setIsLoginModalOpen(false)}
-          onLogin={onLogin}
+          onLogin={() => {}}
         />
       </Modal>
     </div>

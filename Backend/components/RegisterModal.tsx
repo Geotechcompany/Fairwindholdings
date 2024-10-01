@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { registerUser } from "@/lib/api/auth";
+import { useRouter } from "next/navigation";
 
 interface RegisterModalProps {
   isOpen?: boolean;
   onClose?: () => void;
   isStandalone?: boolean;
+  onSuccessfulRegistration?: () => void;
 }
 
 const RegisterModal: React.FC<RegisterModalProps> = ({
@@ -16,15 +18,16 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPromoCode, setShowPromoCode] = useState(false);
+  const router = useRouter();
   const [formData, setFormData] = useState({
-    email: '',
-    phone: '',
-    firstName: '',
-    lastName: '',
-    password: '',
-    country: '',
-    promoCode: '',
-    currency: 'AUD', // Defaulting to AUD, can be changed by user
+    email: "",
+    phone: "",
+    firstName: "",
+    lastName: "",
+    password: "",
+    country: "",
+    promoCode: "",
+    currency: "AUD", // Defaulting to AUD, can be changed by user
   });
 
   if (!isOpen && !isStandalone) return null; // Close modal if not open
@@ -38,9 +41,13 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await registerUser(formData);
-      toast.success("Registration successful!");
-      handleClose(); // Close modal after successful registration
+      const response = await registerUser(formData);
+      if (response.success) {
+        toast.success("Registration successful!");
+        router.push('/login');
+      } else {
+        throw new Error("Registration failed");
+      }
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
@@ -49,12 +56,14 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
       }
     }
   };
-
   const modalContent = (
     <div className="bg-[#1e2329] p-8 rounded-lg shadow-lg w-[500px] max-w-full">
       <h2 className="text-2xl font-bold text-white mb-6 flex items-center justify-between">
         CREATE A NEW ACCOUNT
-        <button onClick={handleClose} className="text-gray-400 hover:text-white">
+        <button
+          onClick={handleClose}
+          className="text-gray-400 hover:text-white"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6"
@@ -85,7 +94,9 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
               type="email"
               id="email"
               value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               className="w-full bg-[#2c3035] text-white rounded p-2"
               required
             />
@@ -101,7 +112,9 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
               type="tel"
               id="phone"
               value={formData.phone}
-              onChange={(e) => setFormData({...formData, phone: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, phone: e.target.value })
+              }
               className="w-full bg-[#2c3035] text-white rounded p-2"
               required
             />
@@ -121,7 +134,9 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
               type="text"
               id="firstName"
               value={formData.firstName}
-              onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, firstName: e.target.value })
+              }
               className="w-full bg-[#2c3035] text-white rounded p-2"
               required
             />
@@ -137,7 +152,9 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
               type="text"
               id="lastName"
               value={formData.lastName}
-              onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, lastName: e.target.value })
+              }
               className="w-full bg-[#2c3035] text-white rounded p-2"
               required
             />
@@ -157,7 +174,9 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
               type="text"
               id="country"
               value={formData.country}
-              onChange={(e) => setFormData({...formData, country: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, country: e.target.value })
+              }
               className="w-full bg-[#2c3035] text-white rounded p-2"
               required
             />
@@ -174,7 +193,9 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                 type={showPassword ? "text" : "password"}
                 id="password"
                 value={formData.password}
-                onChange={(e) => setFormData({...formData, password: e.target.value})}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
                 className="w-full bg-[#2c3035] text-white rounded p-2 pr-10"
                 required
               />
@@ -188,8 +209,6 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
             </div>
           </div>
         </div>
-
-        {/* Promo Code and Currency */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label
@@ -203,7 +222,9 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
                 type={showPromoCode ? "text" : "password"}
                 id="promoCode"
                 value={formData.promoCode}
-                onChange={(e) => setFormData({...formData, promoCode: e.target.value})}
+                onChange={(e) =>
+                  setFormData({ ...formData, promoCode: e.target.value })
+                }
                 className="w-full bg-[#2c3035] text-white rounded p-2 pr-10"
               />
               <button
@@ -225,7 +246,9 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
             <select
               id="currency"
               value={formData.currency}
-              onChange={(e) => setFormData({...formData, currency: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, currency: e.target.value })
+              }
               className="w-full bg-[#2c3035] text-white rounded p-2"
               required
             >
