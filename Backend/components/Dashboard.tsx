@@ -14,12 +14,16 @@ import LiveChat from "./Livechat";
 import Savings from "./Savings";
 import Settings from "./Settings";
 import Deposit from "./Deposit";
+import ProtectedDashboard from "@/components/ProtectedDashboard";
 
 interface UserData {
   balance: number;
   leverage: string;
   credit: number;
   totalDeposits: number;
+  fullName: string;
+  email: string;
+  profileImage: string;
 }
 
 interface Stats {
@@ -34,7 +38,7 @@ interface DashboardProps {
   stats: Stats;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ userData, stats }) => {
+export const Dashboard: React.FC<DashboardProps> = ({ userData, stats }) => {
   const [currentView, setCurrentView] = useState("dashboard");
 
   const renderView = () => {
@@ -105,14 +109,13 @@ const Dashboard: React.FC<DashboardProps> = ({ userData, stats }) => {
   return (
     <div className="flex flex-col min-h-screen bg-[#111827] text-white overflow-hidden">
       <Header />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1">
         <Sidebar onNavigate={setCurrentView} />
-        <main className="flex-grow p-4 md:p-6 mx-4 lg:mx-20 overflow-y-auto">
-          {renderView()}
-        </main>
+        <main className="flex-grow p-6 mx-20">{renderView()}</main>
       </div>
     </div>
   );
 };
-
-export default Dashboard;
+export default function DashboardPage() {
+  return <ProtectedDashboard />;
+}

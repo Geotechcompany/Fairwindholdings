@@ -7,6 +7,11 @@ import UserManagement from "./AdminComponents/UserManagement";
 import TradeManagement from "./AdminComponents/TradeManagement";
 import SystemSettings from "./AdminComponents/SystemSettings";
 import Analytics from "./AdminComponents/Analytics";
+import KYCManagement from "./AdminComponents/KYCManagement";
+import DepositManagement from "./AdminComponents/DepositManagement";
+import WithdrawalManagement from "./AdminComponents/WithdrawalManagement";
+import Support from "./AdminComponents/Support";
+import Security from "./AdminComponents/Security";
 import { AdminData } from "@/types/admin";
 
 interface AdminPanelProps {
@@ -22,8 +27,18 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ adminData }) => {
         return <UserManagement />;
       case "trades":
         return <TradeManagement />;
+      case "kyc":
+        return <KYCManagement />;
+      case "deposits":
+        return <DepositManagement />;
+      case "withdrawals":
+        return <WithdrawalManagement />;
+      case "support":
+        return <Support />;
       case "settings":
         return <SystemSettings />;
+      case "security":
+        return <Security />;
       case "analytics":
         return <Analytics />;
       default:
