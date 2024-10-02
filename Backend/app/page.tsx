@@ -9,7 +9,7 @@ const userData: UserData = {
   totalDeposits: 0.00,
   fullName: 'John Doe',
   email: 'john@example.com',
-  profileImage: '/placeholder-avatar.png',
+  profileImage: '/images/placeholder-avatar.png',
 };
 
 const stats: Stats = {

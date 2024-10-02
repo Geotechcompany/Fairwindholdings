@@ -30,7 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onNavigate, userData }) => {
         <div className="text-center py-6 border-b border-gray-700">
           <div className="mb-8 text-center">
             <Image
-              src={userData.profileImage || "/placeholder-avatar.png"}
+              src={userData.profileImage || "/images/placeholder-avatar.png"}
               alt="Profile"
               width={80}
               height={80}
