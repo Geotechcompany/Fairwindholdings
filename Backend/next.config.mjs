@@ -7,7 +7,6 @@ const nextConfig = {
     config.resolve.symlinks = false;
     return config;
   },
-
   images: {
     domains: ["localhost"],
   },

@@ -38,7 +38,7 @@ const PersonalInfo: React.FC = () => {
       <div className="grid grid-cols-2 gap-6">
         <div className="bg-[#2c3035] p-4 rounded">
           <div className="w-32 h-32 mx-auto bg-[#1e2329] rounded-full flex items-center justify-center">
-            <Image src="/placeholder-avatar.png" alt="Profile" width={100} height={100} className="rounded-full" />
+            <Image src="/images/placeholder-avatar.png" alt="Profile" width={100} height={100} className="rounded-full" />
           </div>
           <p className="text-center text-sm text-gray-400 mt-4">Drop a file on the circle above to upload</p>
         </div>

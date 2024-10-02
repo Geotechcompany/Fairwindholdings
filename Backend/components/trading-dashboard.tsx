@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import Modal from "./Modal";
+import LoginModal from "./LoginModal";
+import RegisterModal from "./RegisterModal";
 import Image from "next/image";
 import {
   FaChartLine,
@@ -27,7 +30,27 @@ declare global {
   }
 }
 
-const TradingDashboard: React.FC = () => {
+interface TradingDashboardProps {
+  userData: any;
+  stats: any;
+}
+
+interface LoginModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onLogin: (user: any) => void;
+}
+
+export function TradingDashboard({
+  userData,
+  stats,
+}: {
+  userData: any;
+  stats: any;
+}) {
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
   const [selectedMarket, setSelectedMarket] = useState("GOLD");
   const [timeframe, setTimeframe] = useState("1D");
   const [currentTime, setCurrentTime] = useState<string>("");
@@ -150,6 +173,18 @@ const TradingDashboard: React.FC = () => {
               height={50}
               className="w-10 h-10"
             />
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-300"
+              onClick={() => setIsRegisterModalOpen(true)}
+            >
+              Register
+            </button>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-300 mr-2"
+              onClick={() => setIsLoginModalOpen(true)}
+            >
+              Login
+            </button>
             <button className="bg-gray-700 p-3 rounded-full text-gray-400 hover:text-white">
               <FaUser size={25} />
             </button>
@@ -201,85 +236,99 @@ const TradingDashboard: React.FC = () => {
         </section>
 
         <div className="flex-grow overflow-hidden">
-  <div className="flex flex-col lg:flex-row h-full relative">
-    <main className={`flex-grow flex flex-col lg:w-2/3 transition-all duration-300 ${isSidebarOpen ? 'ml-1/3' : ''}`}>
-      <div className="flex items-center space-x-4 p-4">
-        <h2 className="text-xl font-semibold">{selectedMarket}</h2>
-        <div className="flex space-x-2">
-          {(["1m", "5m", "15m", "1h", "4h", "1d"] as const).map((tf) => (
-            <button
-              key={tf}
-              className={`px-2 py-1 rounded ${timeframe === timeframesMap[tf] ? "bg-blue-500" : "bg-[#2c3035]"} `}
-              onClick={() => setTimeframe(timeframesMap[tf])}
+          <div className="flex flex-col lg:flex-row h-full relative">
+            <main
+              className={`flex-grow flex flex-col lg:w-2/3 transition-all duration-300 ${
+                isSidebarOpen ? "ml-1/3" : ""
+              }`}
             >
-              {tf}
-            </button>
-          ))}
-        </div>
-        <button className="text-gray-400">Indicators</button>
-        <div className="flex space-x-2 ml-auto">
-          <FaCog className="text-gray-400" />
-          <FaExpand className="text-gray-400" />
-          <FaCamera className="text-gray-400" />
-        </div>
-      </div>
-      <div id="tradingview_chart" className="flex-grow" />
-      <div className="p-4">
-        <div className="flex space-x-4 mb-2">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded">
-            Active Orders
-          </button>
-          <button className="bg-[#2c3035] text-white px-4 py-2 rounded">
-            Orders History
-          </button>
-        </div>
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-gray-400">
-              <th className="text-left">Symbol</th>
-              <th className="text-left">ID</th>
-              <th className="text-left">Type</th>
-              <th className="text-left">Volume</th>
-              <th className="text-left">Open Price</th>
-              <th className="text-left">Open Time</th>
-              <th className="text-left">SL</th>
-              <th className="text-left">TP</th>
-              <th className="text-left">Price</th>
-              <th className="text-left">Commission</th>
-              <th className="text-left">Swap</th>
-              <th className="text-left">PnL</th>
-              <th className="text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody>{/* Add table rows here for active orders */}</tbody>
-        </table>
-      </div>
-    </main>
+              <div className="flex items-center space-x-4 p-4">
+                <h2 className="text-xl font-semibold">{selectedMarket}</h2>
+                <div className="flex space-x-2">
+                  {(["1m", "5m", "15m", "1h", "4h", "1d"] as const).map(
+                    (tf) => (
+                      <button
+                        key={tf}
+                        className={`px-2 py-1 rounded ${
+                          timeframe === timeframesMap[tf]
+                            ? "bg-blue-500"
+                            : "bg-[#2c3035]"
+                        } `}
+                        onClick={() => setTimeframe(timeframesMap[tf])}
+                      >
+                        {tf}
+                      </button>
+                    )
+                  )}
+                </div>
+                <button className="text-gray-400">Indicators</button>
+                <div className="flex space-x-2 ml-auto">
+                  <FaCog className="text-gray-400" />
+                  <FaExpand className="text-gray-400" />
+                  <FaCamera className="text-gray-400" />
+                </div>
+              </div>
+              <div id="tradingview_chart" className="flex-grow" />
+              <div className="p-4">
+                <div className="flex space-x-4 mb-2">
+                  <button className="bg-blue-500 text-white px-4 py-2 rounded">
+                    Active Orders
+                  </button>
+                  <button className="bg-[#2c3035] text-white px-4 py-2 rounded">
+                    Orders History
+                  </button>
+                </div>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-gray-400">
+                      <th className="text-left">Symbol</th>
+                      <th className="text-left">ID</th>
+                      <th className="text-left">Type</th>
+                      <th className="text-left">Volume</th>
+                      <th className="text-left">Open Price</th>
+                      <th className="text-left">Open Time</th>
+                      <th className="text-left">SL</th>
+                      <th className="text-left">TP</th>
+                      <th className="text-left">Price</th>
+                      <th className="text-left">Commission</th>
+                      <th className="text-left">Swap</th>
+                      <th className="text-left">PnL</th>
+                      <th className="text-left">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>{/* Add table rows here for active orders */}</tbody>
+                </table>
+              </div>
+            </main>
 
-    <aside
-      className={`absolute top-0 right-0 h-full flex-shrink-0 bg-gray-800 transition-transform duration-300 ${
-        isSidebarOpen ? "translate-x-0" : "translate-x-full"
-      } lg:translate-x-0`}
-    >
-      <div className="h-full flex flex-col justify-between relative">
-        {/* Chevron Button, hidden on large screens */}
-        <button
-          className={`absolute top-1/2 transform -translate-y-1/2 -left-10 p-2 rounded-full bg-gray-700 transition-transform duration-300 lg:hidden ${
-            isSidebarOpen ? 'rotate-180' : ''
-          }`}
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        >
-          {isSidebarOpen ? <FaChevronRight className="text-white" /> : <FaChevronLeft className="text-white" />}
-        </button>
-        <div className="flex-grow">
-          <TradingWidget /> {/* Your widget beside the chart */}
+            <aside
+              className={`absolute top-0 right-0 h-full flex-shrink-0 bg-gray-800 transition-transform duration-300 ${
+                isSidebarOpen ? "translate-x-0" : "translate-x-full"
+              } lg:translate-x-0`}
+            >
+              <div className="h-full flex flex-col justify-between relative">
+                {/* Chevron Button, hidden on large screens */}
+                <button
+                  className={`absolute top-1/2 transform -translate-y-1/2 -left-10 p-2 rounded-full bg-gray-700 transition-transform duration-300 lg:hidden ${
+                    isSidebarOpen ? "rotate-180" : ""
+                  }`}
+                  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                >
+                  {isSidebarOpen ? (
+                    <FaChevronRight className="text-white" />
+                  ) : (
+                    <FaChevronLeft className="text-white" />
+                  )}
+                </button>
+                <div className="flex-grow">
+                  <TradingWidget /> {/* Your widget beside the chart */}
+                </div>
+              </div>
+              <div className="border-t border-gray-600 mt-2" />{" "}
+              {/* Thin line between widget and bottom */}
+            </aside>
+          </div>
         </div>
-      </div>
-      <div className="border-t border-gray-600 mt-2" /> {/* Thin line between widget and bottom */}
-    </aside>
-  </div>
-</div>
-
       </div>
       <footer className="bg-[#2c3035] p-4 flex justify-between items-center">
         <div className="flex items-center space-x-4">
@@ -291,8 +340,24 @@ const TradingDashboard: React.FC = () => {
           <span>CURRENT TIME: {currentTime}</span>
         </div>
       </footer>
+      <Modal
+        isOpen={isRegisterModalOpen}
+        onClose={() => setIsRegisterModalOpen(false)}
+      >
+        <RegisterModal onClose={() => setIsRegisterModalOpen(false)} />
+      </Modal>
+      <Modal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      >
+        <LoginModal
+          isOpen={isLoginModalOpen}
+          onClose={() => setIsLoginModalOpen(false)}
+          onLogin={() => {}}
+        />
+      </Modal>
     </div>
   );
-};
+}
 
 export default TradingDashboard;

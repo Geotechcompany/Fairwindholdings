@@ -1,14 +1,18 @@
-import { DashboardWrapper } from '../components/DashboardWrapper';
+import { DashboardWrapper } from "../components/DashboardWrapper";
+import { UserData, Stats } from "../types/user"; // Make sure to create and import these types
 
 // Mock data
-const userData = {
+const userData: UserData = {
   balance: 0.00,
   leverage: '1:100',
   credit: 0.00,
   totalDeposits: 0.00,
+  fullName: 'John Doe',
+  email: 'john@example.com',
+  profileImage: '/images/placeholder-avatar.png',
 };
 
-const stats = {
+const stats: Stats = {
   pnl: 0.00,
   profit: 0,
   loss: 100,
