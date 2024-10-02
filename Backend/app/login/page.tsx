@@ -12,7 +12,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1e2329]">
+    <div className="min-h-screen flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: "url('/images/login-bg.jpg')" }}>
+      <div className="absolute inset-0 bg-black opacity-50"></div>
       <LoginModal
         isOpen={true}
         onClose={() => {}}
