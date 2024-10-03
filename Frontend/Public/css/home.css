@@ -14685,7 +14685,7 @@ header .dropdown-toggle.nav-link {
   header .dropdown-toggle.nav-link:focus,
   header .dropdown-toggle:focus {
     border-bottom-color: #11afff;
-    color: #11afff;
+    color: #c38407;
   }
 }
 @media (max-width: 1023.98px) {
