@@ -1,46 +1,39 @@
-import { NextResponse } from "next/server";
-import { compare } from "bcryptjs";
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import { sign } from "jsonwebtoken";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const { email, password } = await req.json();
+    const userId = auth().userId;
 
-    console.log(`Attempting to log in user: ${email}`);
-
-    const user = await prisma.user.findUnique({
-      where: { email },
-      select: {
-        id: true,
-        email: true,
-        password: true,
-        role: true,
-      },
-    });
-
-    if (!user || !(await compare(password, user.password))) {
-      console.log(`Login failed for user: ${email}`);
+    if (!userId) {
       return NextResponse.json(
-        { error: "Invalid credentials" },
+        { error: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    const token = sign(
-      { userId: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET!,
-      { expiresIn: "1h" }
-    );
+    const user = await prisma.user.findUnique({
+      where: { clerkId: userId },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+      },
+    });
 
-    console.log(`User logged in successfully: ${user.id}`);
+    if (!user) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
+    }
 
-    const { password: _, ...userWithoutPassword } = user;
+    const redirectUrl = user.role === "ADMIN" ? "/admin/dashboard" : "/trading-dashboard";
 
     return NextResponse.json({
-      user: userWithoutPassword,
-      token,
-      redirectUrl: user.role === "ADMIN" ? "/admin/dashboard" : "/trading-dashboard"
+      user,
+      redirectUrl,
     });
   } catch (error) {
     console.error("Login error:", error);

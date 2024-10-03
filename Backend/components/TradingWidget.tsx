@@ -8,7 +8,9 @@ const TradingWidget = () => {
   const [tradeType, setTradeType] = useState<"buy" | "sell" | null>(null);
   const [tradeSL, setTradeSL] = useState<number | null>(marketPrice - 5); // Initialize around market price
   const [tradeTP, setTradeTP] = useState<number | null>(marketPrice + 5); // Initialize around market price
-  const [tradePendingOrder, setTradePendingOrder] = useState<number | null>(null); // Pending order price
+  const [tradePendingOrder, setTradePendingOrder] = useState<number | null>(
+    null
+  ); // Pending order price
   const [isProfitCalculatorOpen, setIsProfitCalculatorOpen] = useState(false);
   const [isTPSLModalOpen, setIsTPSLModalOpen] = useState(false); // Combined TP/SL Modal State
   const [isPendingOrderModalOpen, setIsPendingOrderModalOpen] = useState(false); // Pending Order Modal State
@@ -50,7 +52,9 @@ const TradingWidget = () => {
 
     if (type === "buy") {
       if (tradeTP !== null && tradeTP <= marketPrice) {
-        alert("Take Profit must be greater than the market price for Buy orders.");
+        alert(
+          "Take Profit must be greater than the market price for Buy orders."
+        );
         return;
       }
       if (tradeSL !== null && tradeSL >= marketPrice) {
@@ -59,11 +63,15 @@ const TradingWidget = () => {
       }
     } else if (type === "sell") {
       if (tradeTP !== null && tradeTP >= marketPrice) {
-        alert("Take Profit must be less than the market price for Sell orders.");
+        alert(
+          "Take Profit must be less than the market price for Sell orders."
+        );
         return;
       }
       if (tradeSL !== null && tradeSL <= marketPrice) {
-        alert("Stop Loss must be greater than the market price for Sell orders.");
+        alert(
+          "Stop Loss must be greater than the market price for Sell orders."
+        );
         return;
       }
     }
@@ -130,10 +138,27 @@ const TradingWidget = () => {
 
         {/* Contract Size, Position, Margin, Free Margin, Spread, Leverage */}
         <div className="flex flex-col space-y-1">
-          {["Contract size", "Position", "Margin", "Free Margin", "Spread", "Leverage"].map((item, index) => (
+          {[
+            "Contract size",
+            "Position",
+            "Margin",
+            "Free Margin",
+            "Spread",
+            "Leverage",
+          ].map((item, index) => (
             <div className="text-sm flex justify-between" key={index}>
               <span className=" text-left">{item}:</span>
-              <span className="text-green-500 text-right">{index === 2 ? "$531.63" : index === 3 ? "$0.00" : index === 4 ? "0.48" : index === 5 ? "1:50" : "1,000"}</span>
+              <span className="text-green-500 text-right">
+                {index === 2
+                  ? "$531.63"
+                  : index === 3
+                  ? "$0.00"
+                  : index === 4
+                  ? "0.48"
+                  : index === 5
+                  ? "1:50"
+                  : "1,000"}
+              </span>
             </div>
           ))}
         </div>
@@ -160,29 +185,43 @@ const TradingWidget = () => {
           {/* TP/SL Modal */}
           {isTPSLModalOpen && (
             <div className="absolute left-[-220px] top-auto z-10 flex items-start justify-start">
-              <div ref={modalRef} className="bg-gray-800 p-4  shadow-lg w-60 mt-2">
+              <div
+                ref={modalRef}
+                className="bg-gray-800 p-4  shadow-lg w-60 mt-2"
+              >
                 <div className="flex flex-col space-y-4">
                   {/* Take Profit - Distinct area */}
-                  <div className="flex items-center bg-gray-700 p-2  w-full relative">
+                  <div className="flex items-center bg-gray-700 p-2 w-full relative">
                     <div className="flex flex-col">
-                      <label className="text-xs  text-gray-400">Take Profit</label>
+                      <label
+                        htmlFor="takeProfit"
+                        className="text-xs text-gray-400"
+                      >
+                        Take Profit
+                      </label>
                       <input
+                        id="takeProfit"
                         type="text"
                         className="bg-transparent text-2xl text-white border-none focus:outline-none w-16 mt-1"
                         value={tradeTP || ""}
-                        onChange={(e) => setTradeTP(parseFloat(e.target.value) || null)}
+                        onChange={(e) =>
+                          setTradeTP(parseFloat(e.target.value) || null)
+                        }
+                        aria-label="Take Profit"
                       />
                     </div>
                     <div className="absolute right-2 flex flex-col items-center justify-center border-l border-gray-600">
                       <button
                         className="bg-gray-600 p-2 h-8 w-8 flex items-center justify-center text-lg text-white border-b border-gray-600"
                         onClick={() => setTradeTP((tradeTP || 0) + 0.1)}
+                        aria-label="Increase Take Profit"
                       >
                         +
                       </button>
                       <button
                         className="bg-gray-600 p-2 h-8 w-8 flex items-center justify-center text-lg text-white"
                         onClick={() => setTradeTP((tradeTP || 0) - 0.1)}
+                        aria-label="Decrease Take Profit"
                       >
                         -
                       </button>
@@ -192,12 +231,16 @@ const TradingWidget = () => {
                   {/* Stop Loss - Distinct area */}
                   <div className="flex items-center bg-gray-600 p-2  w-full relative">
                     <div className="flex flex-col">
-                      <label className="text-xs  text-gray-300">Stop Loss</label>
+                      <label className="text-xs  text-gray-300">
+                        Stop Loss
+                      </label>
                       <input
                         type="text"
                         className="bg-transparent text-2xl text-white border-none focus:outline-none w-16 mt-1"
                         value={tradeSL || ""}
-                        onChange={(e) => setTradeSL(parseFloat(e.target.value) || null)}
+                        onChange={(e) =>
+                          setTradeSL(parseFloat(e.target.value) || null)
+                        }
                       />
                     </div>
                     <div className="absolute right-2 flex flex-col items-center justify-center border-l border-gray-500">
@@ -231,16 +274,23 @@ const TradingWidget = () => {
           {/* Pending Order Modal */}
           {isPendingOrderModalOpen && (
             <div className="absolute left-[-220px] top-auto z-10 flex items-start justify-start">
-              <div ref={modalRef} className="bg-gray-800 p-4  shadow-lg w-60 mt-2">
+              <div
+                ref={modalRef}
+                className="bg-gray-800 p-4  shadow-lg w-60 mt-2"
+              >
                 <div className="flex flex-col space-y-4">
                   {/* Pending Order Price Input */}
                   <div className="flex items-center bg-gray-700 p-2  w-full relative">
                     <div className="flex flex-col">
-                      <label className="text-xs  text-gray-400">Pending Order Price</label>
+                      <label className="text-xs  text-gray-400">
+                        Pending Order Price
+                      </label>
                       <input
                         type="text"
                         className="bg-transparent text-2xl text-white border-none focus:outline-none w-16 mt-1"
-                        value={tradePendingOrder !== null ? tradePendingOrder : ""}
+                        value={
+                          tradePendingOrder !== null ? tradePendingOrder : ""
+                        }
                         readOnly // Keep it read-only initially
                       />
                     </div>
@@ -270,7 +320,8 @@ const TradingWidget = () => {
 
                   {/* Info Message */}
                   <p className="text-xs text-gray-400">
-                    The order will be executed automatically once the price reaches this level.
+                    The order will be executed automatically once the price
+                    reaches this level.
                   </p>
                 </div>
               </div>
@@ -283,13 +334,17 @@ const TradingWidget = () => {
               className="bg-green-600 py-2  text-sm "
               onClick={() => handlePlaceTrade("buy")}
             >
-              BUY<br />{marketPrice.toFixed(2)}
+              BUY
+              <br />
+              {marketPrice.toFixed(2)}
             </button>
             <button
               className="bg-red-600 py-2  text-sm "
               onClick={() => handlePlaceTrade("sell")}
             >
-              SELL<br />{marketPrice.toFixed(2)}
+              SELL
+              <br />
+              {marketPrice.toFixed(2)}
             </button>
           </div>
         </div>
