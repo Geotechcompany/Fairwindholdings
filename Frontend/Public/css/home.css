@@ -4075,7 +4075,7 @@ fieldset:disabled .btn {
 .navbar {
   --bs-navbar-padding-x: 0;
   --bs-navbar-padding-y: 0.5rem;
-  --bs-navbar-color: #0c2780;
+  --bs-navbar-color: #c38407;
   --bs-navbar-hover-color: #11afff;
   --bs-navbar-disabled-color: rgba(var(--bs-emphasis-color-rgb), 0.3);
   --bs-navbar-active-color: #11afff;
@@ -14785,7 +14785,7 @@ header .dropdown-menu[data-bs-popper] {
   header .nav-item.dropdown:hover > .dropdown-toggle {
     --bs-nav-link-color: #fff;
     --bs-nav-link-hover-color: #fff;
-    background-color: #0c2780;
+    background-color: #ff9000;
   }
   header .nav-item.dropdown:hover > .dropdown-toggle-languages {
     border-radius: 0.5rem;
@@ -14799,7 +14799,7 @@ header .dropdown-menu[data-bs-popper] {
   header .nav-item.dropdown > .dropdown-toggle:active {
     --bs-nav-link-hover-color: #fff;
     --bs-nav-link-color: #fff;
-    background-color: #0c2780;
+    background-color: black;
     pointer-events: none;
   }
   header .nav-item.dropdown > .dropdown-toggle:focus {
