@@ -1,39 +1,27 @@
 import { NextResponse } from 'next/server';
+import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import * as bcrypt from "bcryptjs";
-import { sign } from "jsonwebtoken";
 
 export async function POST(request: Request) {
-  const { email, password } = await request.json();
+	const { userId } = auth();
 
-  try {
-    const user = await prisma.user.findUnique({
-      where: { email },
-      select: {
-        id: true,
-        email: true,
-        password: true,
-        role: true,
-      },
-    });
+	if (!userId) {
+		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	}
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
-    }
+	try {
+		const user = await prisma.user.findUnique({
+			where: { clerkId: userId },
+			select: { role: true },
+		});
 
-    if (user.role !== "ADMIN") {
-      return NextResponse.json({ error: "Unauthorized access" }, { status: 403 });
-    }
+		if (!user || user.role !== "ADMIN") {
+			return NextResponse.json({ error: "Unauthorized access" }, { status: 403 });
+		}
 
-    const token = sign(
-      { userId: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET!,
-      { expiresIn: "1h" }
-    );
-
-    return NextResponse.json({ success: true, token });
-  } catch (error) {
-    console.error('Sign-in error:', error);
-    return NextResponse.json({ error: 'An error occurred during sign-in' }, { status: 500 });
-  }
+		return NextResponse.json({ success: true });
+	} catch (error) {
+		console.error('Admin login error:', error);
+		return NextResponse.json({ error: 'An error occurred during admin login' }, { status: 500 });
+	}
 }

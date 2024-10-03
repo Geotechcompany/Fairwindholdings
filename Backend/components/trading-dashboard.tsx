@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import Modal from "./Modal";
-import LoginModal from "./LoginModal";
-import RegisterModal from "./RegisterModal";
 import Image from "next/image";
+import Link from 'next/link';
 import {
   FaChartLine,
   FaHistory,
@@ -48,9 +46,6 @@ export function TradingDashboard({
   userData: any;
   stats: any;
 }) {
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-
   const [selectedMarket, setSelectedMarket] = useState("GOLD");
   const [timeframe, setTimeframe] = useState("1D");
   const [currentTime, setCurrentTime] = useState<string>("");
@@ -173,21 +168,11 @@ export function TradingDashboard({
               height={50}
               className="w-10 h-10"
             />
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-300"
-              onClick={() => setIsRegisterModalOpen(true)}
-            >
-              Register
-            </button>
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-300 mr-2"
-              onClick={() => setIsLoginModalOpen(true)}
-            >
-              Login
-            </button>
-            <button className="bg-gray-700 p-3 rounded-full text-gray-400 hover:text-white">
-              <FaUser size={25} />
-            </button>
+            <Link href="/">
+              <button className="bg-gray-700 p-3 rounded-full text-gray-400 hover:text-white transition-colors duration-300">
+                <FaUser size={25} />
+              </button>
+            </Link>
           </div>
         </div>
       </header>
@@ -340,22 +325,6 @@ export function TradingDashboard({
           <span>CURRENT TIME: {currentTime}</span>
         </div>
       </footer>
-      <Modal
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-      >
-        <RegisterModal onClose={() => setIsRegisterModalOpen(false)} />
-      </Modal>
-      <Modal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-      >
-        <LoginModal
-          isOpen={isLoginModalOpen}
-          onClose={() => setIsLoginModalOpen(false)}
-          onLogin={() => {}}
-        />
-      </Modal>
     </div>
   );
 }

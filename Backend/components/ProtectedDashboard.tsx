@@ -1,4 +1,4 @@
-import { useSession } from 'next-auth/react';
+import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Sidebar from './Sidebar';
@@ -6,17 +6,17 @@ import Accountpanel from './Accountpanel';
 import { UserData } from '../types/user';
 
 const ProtectedDashboard: React.FC = () => {
-  const { data: session, status } = useSession();
+  const { isLoaded, isSignedIn, user } = useUser();
   const router = useRouter();
   const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (isLoaded && !isSignedIn) {
       router.push('/login');
-    } else if (status === 'authenticated' && session?.user?.email) {
-      fetchUserData(session.user.email);
+    } else if (isLoaded && isSignedIn && user) {
+      fetchUserData(user.primaryEmailAddress?.emailAddress || '');
     }
-  }, [status, session, router]);
+  }, [isLoaded, isSignedIn, user, router]);
 
   const fetchUserData = async (email: string) => {
     try {
@@ -34,7 +34,7 @@ const ProtectedDashboard: React.FC = () => {
     router.push(route);
   }
 
-  if (status === 'loading' || !userData) {
+  if (!isLoaded || !userData) {
     return <div>Loading...</div>;
   }
 

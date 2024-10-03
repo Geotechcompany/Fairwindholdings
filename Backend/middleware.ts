@@ -1,41 +1,25 @@
-import { withAuth } from "next-auth/middleware";
-import { NextResponse } from "next/server";
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
-export default withAuth(
-  function middleware(req) {
-    const token = req.nextauth.token;
-    const isAuth = !!token;
-    const isAuthPage = req.nextUrl.pathname === "/admin/login";
-    const isAdminPage = req.nextUrl.pathname.startsWith("/admin");
+const isPublicRoute = createRouteMatcher([
+  '/sign-in(.*)',
+  '/sign-up(.*)',
+  '/admin/login(.*)'
+])
 
-    if (isAuthPage) {
-      if (isAuth) {
-        return NextResponse.redirect(new URL("/admin/dashboard", req.url));
-      }
-      return null;
-    }
+export default clerkMiddleware((auth, request) => {
+  const { userId } = auth()
+  const isAuthRoute = request.nextUrl.pathname === '/trading-dashboard'
+  const isTradingDashboardRoute = request.nextUrl.pathname === '/trading-dashboard'
 
-    if (!isAuth && isAdminPage) {
-      let from = req.nextUrl.pathname;
-      if (req.nextUrl.search) {
-        from += req.nextUrl.search;
-      }
-      return NextResponse.redirect(
-        new URL(`/admin/login?from=${encodeURIComponent(from)}`, req.url)
-      );
-    }
-
-    if (isAdminPage && token?.role !== "ADMIN") {
-      return NextResponse.rewrite(new URL("/unauthorized", req.url));
-    }
-  },
-  {
-    callbacks: {
-      authorized: ({ token }) => !!token,
-    },
+  if (!isPublicRoute(request) && !isAuthRoute && !isTradingDashboardRoute) {
+    auth().protect()
   }
-);
+
+  if (isAuthRoute && !userId) {
+    return Response.redirect(new URL('/sign-in', request.url))
+  }
+})
 
 export const config = {
-  matcher: ["/admin/:path*"],
-};
+  matcher: '/:path*',
+}

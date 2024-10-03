@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { useForm } from "react-hook-form";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -15,27 +15,32 @@ const LoginModal: React.FC<LoginModalProps> = ({
   onClose,
   onLogin,
 }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: { email: string; password: string }) => {
     try {
-      const result = await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
       });
 
-      if (result?.error) {
-        toast.error(result.error);
-      } else {
+      if (response.ok) {
         toast.success("Login successful");
         router.push("/trading-dashboard");
+        onLogin(await response.json());
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.error || "Login failed");
       }
     } catch (error) {
       toast.error("An error occurred during login");
@@ -56,7 +61,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
         <h2 className="text-xl font-semibold mb-6 text-white text-center">
           LOGIN TO TRADEROOM
         </h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
             <label
               htmlFor="email"
@@ -67,12 +72,15 @@ const LoginModal: React.FC<LoginModalProps> = ({
             <input
               type="email"
               id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-[#2c3035] p-2 rounded text-white"
               placeholder="Enter your email"
-              required
+              {...register("email", { required: "Email is required" })}
             />
+            {errors.email && (
+              <span className="text-red-500 text-sm">
+                {errors.email.message}
+              </span>
+            )}
           </div>
           <div className="mb-4">
             <label
@@ -85,12 +93,15 @@ const LoginModal: React.FC<LoginModalProps> = ({
               <input
                 type={showPassword ? "text" : "password"}
                 id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-[#2c3035] p-2 rounded text-white pr-10"
                 placeholder="Your password"
-                required
+                {...register("password", { required: "Password is required" })}
               />
+              {errors.password && (
+                <span className="text-red-500 text-sm">
+                  {errors.password.message}
+                </span>
+              )}
               <button
                 type="button"
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400"

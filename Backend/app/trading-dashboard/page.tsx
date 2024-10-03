@@ -1,38 +1,29 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
-import { DashboardWrapper } from "@/components/DashboardWrapper"
+import { useUser } from "@clerk/nextjs"
+import { redirect } from "next/navigation"
+import { TradingDashboard } from "@/components/trading-dashboard"
 import { UserData, Stats } from "@/types/user"
 
 export default function TradingDashboardPage() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
+  const { isLoaded, isSignedIn, user } = useUser()
 
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/register')
-    }
-  }, [status, router])
-
-  if (status === 'loading') {
+  if (!isLoaded) {
     return <div>Loading...</div>
   }
 
-  if (!session) {
-    return null // This will prevent any flash of content before redirect
+  if (!isSignedIn) {
+    redirect("/sign-in")
   }
 
-  // Mock data (replace with actual data fetching logic)
   const userData: UserData = {
     balance: 0.00,
     leverage: '1:100',
     credit: 0.00,
     totalDeposits: 0.00,
-    fullName: session.user?.name || 'User',
-    email: session.user?.email || '',
-    profileImage: '/placeholder-avatar.png',
+    fullName: user?.fullName || 'User',
+    email: user?.primaryEmailAddress?.emailAddress || '',
+    profileImage: user?.imageUrl || '/placeholder-avatar.png',
   }
 
   const stats: Stats = {
@@ -42,5 +33,5 @@ export default function TradingDashboardPage() {
     profitableOrders: '0/0',
   }
 
-  return <DashboardWrapper userData={userData} stats={stats} />
+  return <TradingDashboard userData={userData} stats={stats} />
 }
