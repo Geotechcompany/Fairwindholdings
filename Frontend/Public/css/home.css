@@ -13778,25 +13778,25 @@ p + .button {
   color: gold;
 }
 .button.white-bg {
-  background-color: gold;
+  background-color: beige;
 }
 .button.white-bg.dark {
   color: black;
 }
 .button.white-bg:focus,
 .button.white-bg:hover {
-  background: #2e86fe;
-  color: #fff;
+  background: linear-gradient(320deg, #FFD700, #FFA500);
+  color: black;
 }
 .button.blue-gradient {
-  background: linear-gradient(270deg, #2e86fe, #11afff);
-  color: #fff;
+  background: linear-gradient(320deg, #FFD700, #FFA500);
+  color: black;
   transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 .button.blue-gradient:focus,
 .button.blue-gradient:hover {
-  background: linear-gradient(320deg, #11afff, #63f0eb);
-  color: #0c2780;
+  background: linear-gradient(320deg, #F5F5DC, #E6D8B0);;
+  color: #023681;
 }
 .button.hollow {
   border: 2px solid #2e86fe;
@@ -13931,7 +13931,7 @@ p + .button {
 }
 .btn-plus:active,
 .btn-plus:hover {
-  background-image: linear-gradient(320deg, #11afff, #63f0eb);
+   background: linear-gradient(320deg, #FF6347, #FF4500);
 }
 .items-icon-group {
   justify-content: space-around;
