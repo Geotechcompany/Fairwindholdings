@@ -15634,8 +15634,8 @@ header a.nav-link:first-letter {
   color: #11afff;
 }
 .main-banner-slogan {
-  color: #11afff;
-  font-weight: 600;
+  color: #ff9000;
+  font-weight: 500;
 }
 .main-banner-desc {
   color: #fff;
@@ -15667,7 +15667,7 @@ header a.nav-link:first-letter {
 }
 .main-banner-anim {
   align-items: center;
-  color: #fff;
+  color: #c38407;
   display: flex;
   font-size: 1.25rem;
   font-weight: 300;
@@ -16079,7 +16079,7 @@ header a.nav-link:first-letter {
   background-image: linear-gradient(
     180deg,
     rgba(12, 39, 128, 0) 15%,
-    #0c2780 85%
+    #fcc931 85%
   );
   background-position: 60% 0;
   background-size: cover;
