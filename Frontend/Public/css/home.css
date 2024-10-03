@@ -3783,8 +3783,8 @@ fieldset:disabled .btn {
 }
 .dropdown-item:focus,
 .dropdown-item:hover {
-  background-color: var(--bs-dropdown-link-hover-bg);
-  color: var(--bs-dropdown-link-hover-color);
+  background-color: #c38407;
+  color: #fff;
 }
 .dropdown-item.active,
 .dropdown-item:active {
@@ -3802,7 +3802,7 @@ fieldset:disabled .btn {
   display: block;
 }
 .dropdown-header {
-  color: var(--bs-dropdown-header-color);
+  color: black;
   display: block;
   font-size: 0.875rem;
   margin-bottom: 0;
@@ -13296,7 +13296,7 @@ body {
     margin: 0.25rem 0;
   }
   body::-webkit-scrollbar-thumb {
-    background: #0c2780;
+    background: gold;
     border: 2px solid #fff;
     border-radius: 1.5rem;
   }
@@ -13431,7 +13431,7 @@ p + .button {
 }
 .title-section span,
 .title-section strong {
-  color: #11afff;
+  color: gold;
   display: block;
   font-size: 2rem;
   font-weight: 600;
@@ -13774,14 +13774,14 @@ p + .button {
   height: 3.25rem;
 }
 .button.blue-bg {
-  background-color: #2e86fe;
-  color: #fff;
+  background-color: gold;
+  color: gold;
 }
 .button.white-bg {
-  background-color: #fff;
+  background-color: gold;
 }
 .button.white-bg.dark {
-  color: #0c2780;
+  color: black;
 }
 .button.white-bg:focus,
 .button.white-bg:hover {
@@ -14646,7 +14646,7 @@ header .header-trade {
   }
 }
 header .dropdown-header {
-  --bs-dropdown-header-color: #a4afd5;
+  --bs-dropdown-header-color: #ff9000;
   font-weight: 500;
 }
 @media (max-width: 1023.98px) {
@@ -15414,8 +15414,8 @@ header a.nav-link:first-letter {
 .main-banner.marketing-banner.extended-hours
   .extended-hours-strip
   .banner-link-button {
-  background-color: #0c2780;
-  color: #fff;
+  background-color: gold;
+  color: black;
 }
 .main-banner.extended-hours .extended-hours-content {
   font-family: Poppins, Roboto, Rubik, system-ui, -apple-system, Segoe UI,
