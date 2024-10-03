@@ -1,7 +1,14 @@
-"use client";
-import React from 'react';
-import TradingDashboard from '../../components/trading-dashboard';
+'use client'
 
-export default function LoginPage() {
-  return <TradingDashboard initialLoginModalOpen={true} />;
+import { SignIn } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+
+export default function Page() {
+  const router = useRouter();
+
+  return (
+    <SignIn
+      fallbackRedirectUrl="/trading-dashboard"
+    />
+  );
 }

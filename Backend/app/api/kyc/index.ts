@@ -1,23 +1,26 @@
-// app/api/kyc/index.ts
+import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@clerk/nextjs/server"
+import { prisma } from "@/lib/prisma"
 
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]";
-import { prisma } from "@/lib/prisma";
-
-export default async function handler(req: any, res: any) {
-  const session = await getServerSession(req, res, authOptions);
-  if (!session || !session.user.isAdmin) {
-    return res.status(401).json({ error: "Unauthorized" });
+export async function GET(req: NextRequest) {
+  const { userId } = auth()
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  if (req.method === "GET") {
-    const kycRequests = await prisma.kYCDocument.findMany({
-      include: { user: true },
-    });
-    return res.status(200).json(kycRequests);
+  const user = await prisma.user.findUnique({
+    where: { clerkId: userId },
+    select: { isAdmin: true }
+  })
+
+  if (!user?.isAdmin) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  res.status(405).json({ error: "Method not allowed" });
+  const kycRequests = await prisma.kYCDocument.findMany({
+    include: { user: true },
+  })
+  return NextResponse.json(kycRequests)
 }
 
 // Similar structure for deposits and withdrawals API routes

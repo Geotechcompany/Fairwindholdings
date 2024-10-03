@@ -1,7 +1,5 @@
-'use client'
+import { SignUp } from "@clerk/nextjs";
 
-import TradingDashboard from "@/components/trading-dashboard";
-
-export default function RegisterPage() {
-  return <TradingDashboard initialRegisterModalOpen={true} />;
+export default function Page() {
+  return <SignUp />;
 }

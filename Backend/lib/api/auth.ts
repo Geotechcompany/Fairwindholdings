@@ -21,6 +21,7 @@ export const registerUser = async (userData: any) => {
       throw new Error(error.response.data.message || 'An error occurred during registration');
     }
     throw new Error('An unexpected error occurred');
+    throw new Error('An unexpected error occurred');
   }
 };
 

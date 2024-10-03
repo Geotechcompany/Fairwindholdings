@@ -1,41 +1,56 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { toast } from "react-hot-toast";
-import { signIn } from "next-auth/react";
+import toast from "react-hot-toast";
 import { useRouter } from 'next/navigation';
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin?: (user: any) => void;  // Make onLogin optional
+  onLogin: (user: any) => void;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const LoginModal: React.FC<LoginModalProps> = ({
+  isOpen,
+  onClose,
+  onLogin,
+}) => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = await signIn('credentials', {
-      redirect: false,
-      email,
-      password,
-    });
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (result?.error) {
-      toast.error(result.error);
-    } else {
-      toast.success("Login successful");
-      if (onLogin) {  // Check if onLogin is provided before calling it
-        onLogin(result.user);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Login failed");
       }
-      onClose();
-      router.push('/dashboard');
+
+      // Handle successful login (e.g., store token, update UI)
+      console.log("Login successful", data);
+      toast.success("Login successful");
+      // Close modal or redirect user
+      router.push('/trading-dashboard');
+      onLogin(data); // Call onLogin with the user data
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "An error occurred";
+      toast.error(errorMessage);
     }
   };
 
@@ -53,7 +68,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => 
         <h2 className="text-xl font-semibold mb-6 text-white text-center">
           LOGIN TO TRADEROOM
         </h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
             <label
               htmlFor="email"
@@ -64,12 +79,15 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => 
             <input
               type="email"
               id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-[#2c3035] p-2 rounded text-white"
               placeholder="Enter your email"
-              required
+              {...register("email", { required: "Email is required" })}
             />
+            {errors.email && (
+              <span className="text-red-500 text-sm">
+                {errors.email.message}
+              </span>
+            )}
           </div>
           <div className="mb-4">
             <label
@@ -82,12 +100,15 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => 
               <input
                 type={showPassword ? "text" : "password"}
                 id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-[#2c3035] p-2 rounded text-white pr-10"
                 placeholder="Your password"
-                required
+                {...register("password", { required: "Password is required" })}
               />
+              {errors.password && (
+                <span className="text-red-500 text-sm">
+                  {errors.password.message}
+                </span>
+              )}
               <button
                 type="button"
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400"

@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import Modal from "./Modal";
-import LoginModal from "./LoginModal";
-import RegisterModal from "./RegisterModal";
 import Image from "next/image";
+import Link from 'next/link';
 import {
   FaChartLine,
   FaHistory,
@@ -31,9 +29,8 @@ declare global {
 }
 
 interface TradingDashboardProps {
-  initialRegisterModalOpen?: boolean;
-  initialLoginModalOpen?: boolean;
-  onLogin?: (user: any) => void;
+  userData: any;
+  stats: any;
 }
 
 interface LoginModalProps {
@@ -183,21 +180,11 @@ export function TradingDashboard({
               height={50}
               className="w-10 h-10"
             />
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-300"
-              onClick={() => setIsRegisterModalOpen(true)}
-            >
-              Register
-            </button>
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-300 mr-2"
-              onClick={() => setIsLoginModalOpen(true)}
-            >
-              Login
-            </button>
-            <button className="bg-gray-700 p-3 rounded-full text-gray-400 hover:text-white">
-              <FaUser size={25} />
-            </button>
+            <Link href="/">
+              <button className="bg-gray-700 p-3 rounded-full text-gray-400 hover:text-white transition-colors duration-300">
+                <FaUser size={25} />
+              </button>
+            </Link>
           </div>
         </div>
       </header>
