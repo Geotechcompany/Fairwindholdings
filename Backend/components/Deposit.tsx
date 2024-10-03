@@ -1,9 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaCloud, FaWallet, FaCreditCard, FaEllipsisH } from 'react-icons/fa';
+import { fetchDeposits } from '@/lib/api/deposits';
+
+interface Deposit {
+  id: string;
+  time: string;
+  amount: number;
+  currency: string;
+  status: string;
+}
 
 const Deposit: React.FC = () => {
   const [selectedMethod, setSelectedMethod] = useState('Crypto');
-  // const [selectedCrypto, setSelectedCrypto] = useState('Bitcoin');
+  const [deposits, setDeposits] = useState<Deposit[]>([]);
+
+  useEffect(() => {
+    const loadDeposits = async () => {
+      try {
+        const fetchedDeposits = await fetchDeposits();
+        setDeposits(fetchedDeposits);
+      } catch (error) {
+        console.error('Error fetching deposits:', error);
+      }
+    };
+    loadDeposits();
+  }, []);
 
   const depositMethods = [
     { name: 'Crypto', icon: <FaCloud />, time: '5-10 minutes' },
@@ -53,7 +74,7 @@ const Deposit: React.FC = () => {
       </div>
 
       <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">LAST 0 DEPOSITS</h2>
+        <h2 className="text-xl font-semibold mb-4">LAST {deposits.length} DEPOSITS</h2>
         <table className="w-full">
           <thead>
             <tr className="text-left text-gray-400">
@@ -64,7 +85,14 @@ const Deposit: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {/* Add table rows here when deposits are made */}
+            {deposits.map((deposit) => (
+              <tr key={deposit.id}>
+                <td>{deposit.time}</td>
+                <td>{deposit.amount}</td>
+                <td>{deposit.currency}</td>
+                <td>{deposit.status}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

@@ -40,12 +40,17 @@ interface LoginModalProps {
 }
 
 export function TradingDashboard({
-  userData,
-  stats,
-}: {
-  userData: any;
-  stats: any;
-}) {
+  initialRegisterModalOpen = false,
+  initialLoginModalOpen = false,
+  onLogin = () => {}, // Provide a default empty function
+}: TradingDashboardProps) {
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(
+    initialRegisterModalOpen
+  );
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(
+    initialLoginModalOpen
+  );
+
   const [selectedMarket, setSelectedMarket] = useState("GOLD");
   const [timeframe, setTimeframe] = useState("1D");
   const [currentTime, setCurrentTime] = useState<string>("");
@@ -114,6 +119,13 @@ export function TradingDashboard({
 
   const toggleWidget = (widget: string) => {
     setActiveWidget((prev) => (prev === widget ? null : widget));
+  };
+
+  const handleLogin = (user: any) => {
+    if (onLogin) {
+      onLogin(user);
+    }
+    // Additional login logic if needed
   };
 
   return (
@@ -325,6 +337,15 @@ export function TradingDashboard({
           <span>CURRENT TIME: {currentTime}</span>
         </div>
       </footer>
+      <RegisterModal
+        isOpen={isRegisterModalOpen}
+        onClose={() => setIsRegisterModalOpen(false)}
+      />
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        onLogin={handleLogin}
+      />
     </div>
   );
 }

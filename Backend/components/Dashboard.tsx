@@ -1,14 +1,10 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
-import { useAction } from "@/lib/safe-action/hook";
-import { getUserData } from "@/app/actions/getuserData";
-import { useUser } from "@clerk/nextjs";
 import { Header } from "./Header";
 import Sidebar from "./Sidebar";
 import StatCard from "./StatCard";
 import TradingResults from "./TradingResults";
-import AccountPanel from "./Accountpanel";
+import AccountPanel from "./AccountPanel";
 import SuccessRateChart from "./SuccessRateChart";
 import Verification from "./Verification";
 import PersonalInfo from "./PersonalInfo";
@@ -18,15 +14,21 @@ import LiveChat from "./Livechat";
 import Savings from "./Savings";
 import Settings from "./Settings";
 import Deposit from "./Deposit";
+import { fetchUserData } from "@/lib/api/auth";
 
 interface UserData {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  country: string;
+  currency: string;
   balance: number;
   leverage: string;
   credit: number;
   totalDeposits: number;
   fullName: string;
-  firstName: string; // Add this line
-  email: string;
   profileImage: string;
 }
 
@@ -37,38 +39,56 @@ interface Stats {
   profitableOrders: string;
 }
 
-export function Dashboard() {
+export const Dashboard: React.FC = () => {
   const [currentView, setCurrentView] = useState("dashboard");
-  const { execute, result, status } = useAction(getUserData);
-  const { user } = useUser();
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    execute();
-  }, [execute]);
+    const loadUserData = async () => {
+      try {
+        setIsLoading(true);
+        console.log('Fetching user data...');
+        const data = await fetchUserData();
+        console.log('Fetched user data:', data);
+        if (data.status === 'success' && data.data) {
+          setUserData(data.data.userData);
+          setStats(data.data.stats);
+          setError(null);
+        } else {
+          throw new Error('Invalid data structure received');
+        }
+      } catch (error) {
+        console.error('Failed to load user data', error);
+        setError('Failed to load user data. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  if (status === "executing" || !user) {
+    loadUserData();
+  }, []);
+
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (result.error) {
-    return <div>Error: {result.error}</div>;
+  if (error) {
+    return <div>Error: {error}</div>;
   }
 
-  const { data } = result;
-
-  const userDataForSidebar: UserData = {
-    firstName: user.firstName || "",
-    fullName: user.fullName || "",
-    email: user.primaryEmailAddress?.emailAddress || "",
-    profileImage: user.imageUrl || "/images/placeholder-avatar.png",
-  };
+  if (!userData || !stats) {
+    return <div>No user data available. Please try logging in again.</div>;
+  }
 
   const renderView = () => {
     switch (currentView) {
       case "verification":
         return <Verification />;
       case "personal-info":
-        return <PersonalInfo />;
+        return <PersonalInfo userData={userData} />;
       case "withdrawal":
         return <Withdrawal />;
       case "accounts":
@@ -83,47 +103,54 @@ export function Dashboard() {
         return <Deposit />;
       default:
         return (
-          <>
-            <div className="flex flex-col lg:flex-row gap-6 mb-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:w-[600px] lg:grid-cols-2">
-                <StatCard
-                  title="Total Balance"
-                  value={`$${data.balance.toFixed(2)}`}
-                  icon="wallet"
-                  note="* using current exchange rate"
-                />
-                <StatCard
-                  title="Total PNL"
-                  value={`$${data.pnl.toFixed(2)}`}
-                  icon="coins"
-                  note="* using current exchange rate"
-                />
-                <StatCard
-                  title="Profitable Orders"
-                  value={data.profitableOrders}
-                  icon="flask"
-                />
-                <StatCard
-                  title="Total Deposits"
-                  value={`$${data.totalDeposits.toFixed(2)}`}
-                  icon="chart"
-                  note="* using current exchange rate"
-                />
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <StatCard
+                title="Total Balance"
+                value={`$${userData.balance.toFixed(2)}`}
+                icon="wallet"
+                note="* using current exchange rate"
+              />
+              <StatCard
+                title="Total PNL"
+                value={`$${stats.pnl.toFixed(2)}`}
+                icon="coins"
+                note="* using current exchange rate"
+              />
+              <StatCard
+                title="Profitable Orders"
+                value={stats.profitableOrders}
+                icon="flask"
+              />
+              <StatCard
+                title="Total Deposits"
+                value={`$${userData.totalDeposits.toFixed(2)}`}
+                icon="chart"
+                note="* using current exchange rate"
+              />
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <TradingResults className="h-64 w-full overflow-x-auto" />
               </div>
-              <div className="flex-grow flex justify-end">
-                <SuccessRateChart profit={data.profit} loss={data.loss} />
+              <div>
+                <SuccessRateChart profit={stats.profit} loss={stats.loss} />
               </div>
             </div>
-            <div className="mb-6">
-              <TradingResults className="h-64 w-full overflow-x-auto" />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <AccountPanel
+                  balance={userData.balance}
+                  leverage={userData.leverage}
+                  credit={userData.credit}
+                  className="w-full"
+                />
+              </div>
+              <div>
+                {/* You can add another component or information here */}
+              </div>
             </div>
-            <AccountPanel
-              balance={data.balance}
-              leverage={data.leverage}
-              credit={data.credit}
-              className="lg:w-[300px] w-full"
-            />
-          </>
+          </div>
         );
     }
   };
@@ -132,11 +159,13 @@ export function Dashboard() {
     <div className="flex flex-col min-h-screen bg-[#111827] text-white overflow-hidden">
       <Header />
       <div className="flex flex-1">
-        <Sidebar onNavigate={setCurrentView} userData={userDataForSidebar} />
-        <main className="flex-grow p-6 mx-20">{renderView()}</main>
+        <Sidebar onNavigate={setCurrentView} userData={userData} />
+        <main className="flex-grow p-4 sm:p-6 lg:p-8 overflow-y-auto">
+          {renderView()}
+        </main>
       </div>
     </div>
   );
-}
+};
 
 export default Dashboard;

@@ -1,39 +1,86 @@
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
-import { prisma } from "@/lib/prisma";
+import { NextResponse } from 'next/server';
+import { getServerSession } from "next-auth/next";
+import prisma from '@/lib/prisma';
+import { authOptions } from '../auth/[...nextauth]/authOptions';
 
-export async function GET(request: NextRequest) {
-  const { userId } = auth();
-
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const email = request.nextUrl.searchParams.get("email");
-
-  if (!email) {
-    return NextResponse.json({ error: "Invalid email" }, { status: 400 });
-  }
-
+export async function GET(req: Request) {
   try {
-    const user = await prisma.user.findUnique({
-      where: { email },
-      select: {
-        fullName: true,
-        email: true,
-        profileImage: true,
-      },
-    });
+    console.log('GET /api/user called');
+    const session = await getServerSession(authOptions);
 
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    console.log("Session:", JSON.stringify(session, null, 2));
+
+    if (!session) {
+      console.log('No session found');
+      return new NextResponse(
+        JSON.stringify({ status: "fail", message: "You are not logged in" }),
+        { status: 401 }
+      );
     }
 
-    return NextResponse.json(user);
+    console.log("User ID:", session.user?.id);
+
+    if (!session.user?.id) {
+      console.log('No user ID found in session');
+      return new NextResponse(
+        JSON.stringify({ status: "fail", message: "User ID not found in session" }),
+        { status: 400 }
+      );
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        phoneNumber: true,
+        country: true,
+        currency: true,
+        role: true,
+      }
+    });
+
+    console.log("User from database:", JSON.stringify(user, null, 2));
+
+    if (!user) {
+      console.log('User not found in database');
+      return new NextResponse(
+        JSON.stringify({ status: "fail", message: "User not found in database" }),
+        { status: 404 }
+      );
+    }
+
+    // Mock stats data (replace with actual data fetching logic)
+    const stats = {
+      pnl: 1000,
+      profit: 1500,
+      loss: 500,
+      profitableOrders: "75%"
+    };
+
+    const responseData = {
+      status: "success",
+      data: { 
+        userData: {
+          ...user,
+          balance: 10000, // Mock balance
+          leverage: "1:100", // Mock leverage
+          credit: 0, // Mock credit
+          totalDeposits: 15000, // Mock total deposits
+        },
+        stats 
+      }
+    };
+
+    console.log("Response data:", JSON.stringify(responseData, null, 2));
+
+    return NextResponse.json(responseData);
   } catch (error) {
-    console.error("Error fetching user data:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
+    console.error('Error in /api/user route:', error);
+    return new NextResponse(
+      JSON.stringify({ status: "error", message: "Internal server error" }),
       { status: 500 }
     );
   }

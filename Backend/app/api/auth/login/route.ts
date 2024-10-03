@@ -1,45 +1,32 @@
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
-import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import bcrypt from "bcryptjs";
 
-export async function POST(req: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const userId = auth().userId;
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+    const body = await request.json();
+    const { email, password } = body;
 
     const user = await prisma.user.findUnique({
-      where: { clerkId: userId },
-      select: {
-        id: true,
-        email: true,
-        role: true,
-      },
+      where: { email },
     });
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const redirectUrl = user.role === "ADMIN" ? "/admin/dashboard" : "/trading-dashboard";
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    return NextResponse.json({
-      user,
-      redirectUrl,
-    });
+    if (!isPasswordValid) {
+      return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
+    }
+
+    // Remove sensitive information before sending the user object
+    const { password: _, ...userWithoutPassword } = user;
+
+    return NextResponse.json({ user: userWithoutPassword });
   } catch (error) {
-    console.error("Login error:", error);
-    return NextResponse.json(
-      { error: "An error occurred during login" },
-      { status: 500 }
-    );
+    console.error('Login error:', error);
+    return NextResponse.json({ error: 'An error occurred during login' }, { status: 500 });
   }
 }

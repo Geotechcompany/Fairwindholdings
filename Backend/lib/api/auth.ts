@@ -1,20 +1,28 @@
-// /Backend/lib/api/auth.ts
+import axios from 'axios';
 
-import axios from "axios";
-import { UserRegistrationData } from "@/types/user";
-
-export async function registerUser(userData: UserRegistrationData) {
+export const fetchUserData = async () => {
   try {
-    const response = await axios.post("/api/auth/register", userData);
-    if (response.status === 201) {
-      return { success: true, data: response.data };
-    } else {
-      throw new Error(response.data.error || 'Registration failed');
-    }
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      throw new Error(error.response?.data?.error || 'An error occurred during registration');
+    console.log('Fetching user data...');
+    const response = await axios.get('/api/user');
+    console.log('User data response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    throw error;
+  }
+};
+
+export const registerUser = async (userData: any) => {
+  try {
+    const response = await axios.post('/api/auth/register', userData);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message || 'An error occurred during registration');
     }
     throw new Error('An unexpected error occurred');
+    throw new Error('An unexpected error occurred');
   }
-}
+};
+
+// Add other auth-related functions here
