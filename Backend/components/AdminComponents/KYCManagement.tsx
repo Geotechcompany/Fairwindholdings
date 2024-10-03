@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { KYCRequest } from "@/types/kyc";
+import { fetchKYCRequests, updateKYCStatus } from "@/lib/api/admin"; // Implement these functions
 
 interface KYCRequest {
   id: string;
@@ -12,19 +12,21 @@ interface KYCRequest {
 }
 
 const KYCManagement: React.FC = () => {
-  const [kycRequests, setKycRequests] = useState<KYCRequest[]>([]);
+  const [kycRequests, setKYCRequests] = useState<KYCRequest[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<KYCRequest | null>(
     null
   );
 
   useEffect(() => {
-    const fetchKYCRequests = async () => {
-      const response = await fetch("/api/kyc");
-      const data = await response.json();
-      setKycRequests(data);
+    const loadKYCRequests = async () => {
+      try {
+        const fetchedRequests = await fetchKYCRequests();
+        setKYCRequests(fetchedRequests);
+      } catch (error) {
+        console.error('Error fetching KYC requests:', error);
+      }
     };
-
-    fetchKYCRequests();
+    loadKYCRequests();
   }, []);
 
   const handleReview = (request: KYCRequest) => {
@@ -41,6 +43,17 @@ const KYCManagement: React.FC = () => {
     // Implement rejection logic
     // await fetch(`/api/kyc-requests/${id}/reject`, { method: 'POST' });
     // Refresh KYC requests after rejection
+  };
+
+  const handleStatusChange = async (id: string, newStatus: "Approved" | "Rejected") => {
+    try {
+      await updateKYCStatus(id, newStatus);
+      setKYCRequests(kycRequests.map(request => 
+        request.id === id ? { ...request, status: newStatus } : request
+      ));
+    } catch (error) {
+      console.error('Error updating KYC status:', error);
+    }
   };
 
   return (

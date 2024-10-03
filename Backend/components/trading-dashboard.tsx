@@ -45,7 +45,7 @@ interface LoginModalProps {
 export function TradingDashboard({
   initialRegisterModalOpen = false,
   initialLoginModalOpen = false,
-  onLogin,
+  onLogin = () => {}, // Provide a default empty function
 }: TradingDashboardProps) {
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(
     initialRegisterModalOpen
@@ -123,6 +123,14 @@ export function TradingDashboard({
   const toggleWidget = (widget: string) => {
     setActiveWidget((prev) => (prev === widget ? null : widget));
   };
+
+  const handleLogin = (user: any) => {
+    if (onLogin) {
+      onLogin(user);
+    }
+    // Additional login logic if needed
+  };
+
   return (
     <div className="bg-[#1e2329] text-white h-screen flex flex-col">
       <header className="bg-[#2c3035] p-4 flex justify-between items-center">
@@ -342,22 +350,15 @@ export function TradingDashboard({
           <span>CURRENT TIME: {currentTime}</span>
         </div>
       </footer>
-      <Modal
+      <RegisterModal
         isOpen={isRegisterModalOpen}
         onClose={() => setIsRegisterModalOpen(false)}
-      >
-        <RegisterModal onClose={() => setIsRegisterModalOpen(false)} />
-      </Modal>
-      <Modal
+      />
+      <LoginModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
-      >
-        <LoginModal
-          isOpen={isLoginModalOpen}
-          onClose={() => setIsLoginModalOpen(false)}
-          onLogin={onLogin}
-        />
-      </Modal>
+        onLogin={handleLogin}
+      />
     </div>
   );
 }

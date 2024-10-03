@@ -1,52 +1,32 @@
 import { NextResponse } from "next/server";
-import { compare } from "bcryptjs";
-import { prisma } from "@/lib/prisma";
-import { sign } from "jsonwebtoken";
+import prisma from "@/lib/prisma";
+import bcrypt from "bcryptjs";
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const { email, password } = await req.json();
-
-    console.log(`Attempting to log in user: ${email}`);
+    const body = await request.json();
+    const { email, password } = body;
 
     const user = await prisma.user.findUnique({
       where: { email },
-      select: {
-        id: true,
-        email: true,
-        password: true,
-        role: true,
-      },
     });
 
-    if (!user || !(await compare(password, user.password))) {
-      console.log(`Login failed for user: ${email}`);
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 }
-      );
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const token = sign(
-      { userId: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET!,
-      { expiresIn: "1h" }
-    );
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    console.log(`User logged in successfully: ${user.id}`);
+    if (!isPasswordValid) {
+      return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
+    }
 
+    // Remove sensitive information before sending the user object
     const { password: _, ...userWithoutPassword } = user;
 
-    return NextResponse.json({
-      user: userWithoutPassword,
-      token,
-      redirectUrl: user.role === "ADMIN" ? "/admin/dashboard" : "/trading-dashboard"
-    });
+    return NextResponse.json({ user: userWithoutPassword });
   } catch (error) {
-    console.error("Login error:", error);
-    return NextResponse.json(
-      { error: "An error occurred during login" },
-      { status: 500 }
-    );
+    console.error('Login error:', error);
+    return NextResponse.json({ error: 'An error occurred during login' }, { status: 500 });
   }
 }
