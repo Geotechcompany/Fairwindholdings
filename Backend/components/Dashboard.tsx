@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { getUserData } from "@/app/actions/getuserData";
-import { useUser } from "@clerk/nextjs";
+import { useUser, UserProfile } from "@clerk/nextjs";
 import { Header } from "./Header";
 import Sidebar from "./Sidebar";
 import StatCard from "./StatCard";
@@ -15,7 +15,6 @@ import Withdrawal from "./withdrawal";
 import Accounts from "./Accounts";
 import LiveChat from "./Livechat";
 import Savings from "./Savings";
-import Settings from "./Settings";
 import Deposit from "./Deposit";
 import type { UserData, Stats } from "@/types/user";
 
@@ -108,7 +107,11 @@ export function Dashboard() {
       case "savings":
         return <Savings />;
       case "settings":
-        return <Settings />;
+        return (
+          <div className="w-full max-w-4xl mx-auto">
+            <UserProfile routing="hash" />
+          </div>
+        );
       case "deposit":
         return <Deposit />;
       default:

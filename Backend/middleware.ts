@@ -5,7 +5,8 @@ const isPublicRoute = createRouteMatcher([
   '/sign-in(.*)',
   '/sign-up(.*)',
   '/register(.*)',
-  '/admin/login(.*)'
+  '/admin/login(.*)',
+  '/user(.*)'  // Add this line to allow access to UserProfile routes
 ])
 
 export default clerkMiddleware((auth, request) => {
