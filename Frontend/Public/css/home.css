@@ -13296,8 +13296,8 @@ body {
     margin: 0.25rem 0;
   }
   body::-webkit-scrollbar-thumb {
-    background: gold;
-    border: 2px solid #fff;
+    background: black;
+    border: 2px solid beige;
     border-radius: 1.5rem;
   }
 }
@@ -15436,7 +15436,7 @@ header a.nav-link:first-letter {
   .extended-hours-content
   .marketing-banner-title
   strong {
-  color: #11afff;
+  color: gold;
   display: block;
   font-size: 1.5rem;
   line-height: 1;
@@ -15492,8 +15492,8 @@ header a.nav-link:first-letter {
   background: #2e86fe;
 }
 .main-banner.extended-hours .extended-hours-strip .banner-link-button {
-  background-color: #11afff;
-  color: #0c2780;
+  background-color: gold;
+  color: black;
   flex-direction: column;
   font-family: Poppins, Roboto, Rubik, system-ui, -apple-system, Segoe UI,
     Helvetica Neue, Arial, Noto Sans, Liberation Sans, sans-serif,
