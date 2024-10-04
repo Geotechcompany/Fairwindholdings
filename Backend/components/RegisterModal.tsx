@@ -1,38 +1,53 @@
 import React, { useState } from "react";
-import Image from "next/image";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { registerUser } from "@/lib/api/auth";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 interface RegisterModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
+  isStandalone?: boolean;
+  onSuccessfulRegistration?: () => void;
 }
 
-const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
+const RegisterModal: React.FC<RegisterModalProps> = ({
+  isOpen,
+  onClose,
+  isStandalone = false,
+}) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: '',
-    phone: '',
-    firstName: '',
-    lastName: '',
-    password: '',
-    country: '',
-    promoCode: '',
-    currency: 'AUD',
-  });
+  const [showPromoCode, setShowPromoCode] = useState(false);
   const router = useRouter();
+  const [formData, setFormData] = useState({
+    email: "",
+    phone: "",
+    firstName: "",
+    lastName: "",
+    password: "",
+    country: "",
+    promoCode: "",
+    currency: "AUD", // Defaulting to AUD, can be changed by user
+  });
 
-  if (!isOpen) return null;
+  if (!isOpen && !isStandalone) return null; // Close modal if not open
+
+  const handleClose = () => {
+    if (onClose && !isStandalone) {
+      onClose();
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await registerUser(formData);
-      toast.success("Registration successful!");
-      onClose();
-      router.push('/dashboard');
+      const response = await registerUser(formData);
+      if (response.success) {
+        toast.success("Registration successful!");
+        router.push('/login');
+      } else {
+        throw new Error("Registration failed");
+      }
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
@@ -41,82 +56,136 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
       }
     }
   };
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-[#1e2433] p-8 rounded-lg w-[500px] max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-center mb-6">
-          <Image
-            src="/images/logo-cita-white.png"
-            alt="CITA TRADING GROUP"
-            width={150}
-            height={45}
-          />
-        </div>
-        <h2 className="text-xl font-semibold mb-6 text-white text-center">
-          CREATE A NEW ACCOUNT
-        </h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-1">
+  const modalContent = (
+    <div className="bg-[#1e2329] p-8 rounded-lg shadow-lg w-[500px] max-w-full">
+      <h2 className="text-2xl font-bold text-white mb-6 flex items-center justify-between">
+        CREATE A NEW ACCOUNT
+        <button
+          onClick={handleClose}
+          className="text-gray-400 hover:text-white"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Email and Phone */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-400 mb-1"
+            >
               Email address
             </label>
             <input
               type="email"
               id="email"
               value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
-              className="w-full bg-[#2c3035] p-2 rounded text-white"
-              placeholder="Enter your email"
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
+              className="w-full bg-[#2c3035] text-white rounded p-2"
               required
             />
           </div>
-          <div className="mb-4">
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-400 mb-1">
+          <div>
+            <label
+              htmlFor="phone"
+              className="block text-sm font-medium text-gray-400 mb-1"
+            >
               Phone
             </label>
             <input
               type="tel"
               id="phone"
               value={formData.phone}
-              onChange={(e) => setFormData({...formData, phone: e.target.value})}
-              className="w-full bg-[#2c3035] p-2 rounded text-white"
-              placeholder="Enter your phone number"
+              onChange={(e) =>
+                setFormData({ ...formData, phone: e.target.value })
+              }
+              className="w-full bg-[#2c3035] text-white rounded p-2"
               required
             />
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label htmlFor="firstName" className="block text-sm font-medium text-gray-400 mb-1">
-                First Name
-              </label>
-              <input
-                type="text"
-                id="firstName"
-                value={formData.firstName}
-                onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                className="w-full bg-[#2c3035] p-2 rounded text-white"
-                placeholder="First name"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="lastName" className="block text-sm font-medium text-gray-400 mb-1">
-                Last Name
-              </label>
-              <input
-                type="text"
-                id="lastName"
-                value={formData.lastName}
-                onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                className="w-full bg-[#2c3035] p-2 rounded text-white"
-                placeholder="Last name"
-                required
-              />
-            </div>
+        </div>
+
+        {/* First Name and Last Name */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label
+              htmlFor="firstName"
+              className="block text-sm font-medium text-gray-400 mb-1"
+            >
+              First Name
+            </label>
+            <input
+              type="text"
+              id="firstName"
+              value={formData.firstName}
+              onChange={(e) =>
+                setFormData({ ...formData, firstName: e.target.value })
+              }
+              className="w-full bg-[#2c3035] text-white rounded p-2"
+              required
+            />
           </div>
-          <div className="mb-4">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-400 mb-1">
+          <div>
+            <label
+              htmlFor="lastName"
+              className="block text-sm font-medium text-gray-400 mb-1"
+            >
+              Last Name
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              value={formData.lastName}
+              onChange={(e) =>
+                setFormData({ ...formData, lastName: e.target.value })
+              }
+              className="w-full bg-[#2c3035] text-white rounded p-2"
+              required
+            />
+          </div>
+        </div>
+
+        {/* Country and Password */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label
+              htmlFor="country"
+              className="block text-sm font-medium text-gray-400 mb-1"
+            >
+              Country
+            </label>
+            <input
+              type="text"
+              id="country"
+              value={formData.country}
+              onChange={(e) =>
+                setFormData({ ...formData, country: e.target.value })
+              }
+              className="w-full bg-[#2c3035] text-white rounded p-2"
+              required
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-400 mb-1"
+            >
               Password
             </label>
             <div className="relative">
@@ -124,9 +193,10 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
                 type={showPassword ? "text" : "password"}
                 id="password"
                 value={formData.password}
-                onChange={(e) => setFormData({...formData, password: e.target.value})}
-                className="w-full bg-[#2c3035] p-2 rounded text-white pr-10"
-                placeholder="Your password"
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+                className="w-full bg-[#2c3035] text-white rounded p-2 pr-10"
                 required
               />
               <button
@@ -138,42 +208,48 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
               </button>
             </div>
           </div>
-          <div className="mb-4">
-            <label htmlFor="country" className="block text-sm font-medium text-gray-400 mb-1">
-              Country
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label
+              htmlFor="promoCode"
+              className="block text-sm font-medium text-gray-400 mb-1"
+            >
+              Promo code
             </label>
-            <input
-              type="text"
-              id="country"
-              value={formData.country}
-              onChange={(e) => setFormData({...formData, country: e.target.value})}
-              className="w-full bg-[#2c3035] p-2 rounded text-white"
-              placeholder="Your country"
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPromoCode ? "text" : "password"}
+                id="promoCode"
+                value={formData.promoCode}
+                onChange={(e) =>
+                  setFormData({ ...formData, promoCode: e.target.value })
+                }
+                className="w-full bg-[#2c3035] text-white rounded p-2 pr-10"
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400"
+                onClick={() => setShowPromoCode(!showPromoCode)}
+              >
+                {showPromoCode ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
           </div>
-          <div className="mb-4">
-            <label htmlFor="promoCode" className="block text-sm font-medium text-gray-400 mb-1">
-              Promo Code (Optional)
-            </label>
-            <input
-              type="text"
-              id="promoCode"
-              value={formData.promoCode}
-              onChange={(e) => setFormData({...formData, promoCode: e.target.value})}
-              className="w-full bg-[#2c3035] p-2 rounded text-white"
-              placeholder="Enter promo code"
-            />
-          </div>
-          <div className="mb-6">
-            <label htmlFor="currency" className="block text-sm font-medium text-gray-400 mb-1">
+          <div>
+            <label
+              htmlFor="currency"
+              className="block text-sm font-medium text-gray-400 mb-1"
+            >
               Currency
             </label>
             <select
               id="currency"
               value={formData.currency}
-              onChange={(e) => setFormData({...formData, currency: e.target.value})}
-              className="w-full bg-[#2c3035] p-2 rounded text-white"
+              onChange={(e) =>
+                setFormData({ ...formData, currency: e.target.value })
+              }
+              className="w-full bg-[#2c3035] text-white rounded p-2"
               required
             >
               <option value="AUD">AUD</option>
@@ -182,14 +258,21 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
               <option value="GBP">GBP</option>
             </select>
           </div>
-          <button
-            type="submit"
-            className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600 transition-colors"
-          >
-            CREATE ACCOUNT
-          </button>
-        </form>
-      </div>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300"
+        >
+          CREATE ACCOUNT
+        </button>
+      </form>
+    </div>
+  );
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-md flex items-center justify-center z-50">
+      {modalContent}
     </div>
   );
 };

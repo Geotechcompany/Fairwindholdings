@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { fetchAdminDeposits } from '@/lib/api/admin'; // Implement this function
 
 interface Deposit {
   id: string;
@@ -14,15 +13,8 @@ const DepositManagement: React.FC = () => {
   const [deposits, setDeposits] = useState<Deposit[]>([]);
 
   useEffect(() => {
-    const loadDeposits = async () => {
-      try {
-        const fetchedDeposits = await fetchAdminDeposits();
-        setDeposits(fetchedDeposits);
-      } catch (error) {
-        console.error('Error fetching deposits:', error);
-      }
-    };
-    loadDeposits();
+    // Fetch deposits from API
+    // setDeposits(fetchedDeposits);
   }, []);
 
   return (
