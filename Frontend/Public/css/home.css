@@ -19358,7 +19358,7 @@ header a.nav-link:first-letter {
   width: 100%;
 }
 .regulatory-list-data {
-  color: #0c2780;
+  color: black;
   font-size: 1.25rem;
   font-weight: 300;
   line-height: 1.3;
@@ -19384,14 +19384,14 @@ header a.nav-link:first-letter {
 .regulatory-list-data li:before {
   background-image: url(../images/plus-blue-fill.svg);
   background-repeat: no-repeat;
-  background-size: 100% auto;
+  background-size: 130% auto;
   content: "";
-  height: 1.375rem;
+  height: 4rem;
   left: 0;
   margin-top: -0.6875rem;
   position: absolute;
   top: 50%;
-  width: 1.375rem;
+  width:4rem;
 }
 @media (min-width: 768px) {
   .regulatory-list-data li:before {
@@ -19405,6 +19405,7 @@ header a.nav-link:first-letter {
 }
 .regulatory-list-data li a {
   text-decoration: underline;
+  color: darkgoldenrod;
 }
 .regulatory-list-data li a:focus,
 .regulatory-list-data li a:hover {
