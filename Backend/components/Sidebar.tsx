@@ -72,14 +72,14 @@ const Sidebar: React.FC<SidebarProps> = ({ onNavigate, userData }) => {
               <FaIdCard className="mr-3" /> Verification
             </button>
           </li>
-          <li>
+          {/* <li>
             <button
               onClick={() => onNavigate("personal-info")}
               className="flex items-center w-full py-2 px-4 hover:bg-[#3a3f45] transition-colors duration-200"
             >
               <FaUser className="mr-3" /> Personal Info
             </button>
-          </li>
+          </li> */}
           <li>
             <button
               onClick={() => onNavigate("withdrawal")}

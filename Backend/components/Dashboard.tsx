@@ -96,8 +96,8 @@ export function Dashboard() {
     switch (currentView) {
       case "verification":
         return <Verification />;
-      case "personal-info":
-        return <PersonalInfo />;
+      // case "personal-info":
+      //   return <PersonalInfo />;
       case "withdrawal":
         return <Withdrawal />;
       case "accounts":
