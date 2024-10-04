@@ -19797,6 +19797,7 @@ header a.nav-link:first-letter {
 }
 .trade-title strong {
   font-weight: 600;
+  color: gold;
 }
 @media (min-width: 768px) {
   .trade-title {
@@ -19852,11 +19853,11 @@ header a.nav-link:first-letter {
   }
 }
 .trade-sub-title {
-  background-color: #184ab5;
+  background-color: gold;
   border-radius: 3rem;
   bottom: -1rem;
   box-shadow: none;
-  color: #fff;
+  color: black;
   font-size: 1rem;
   left: 2rem;
   padding: 0.625rem 1rem;
@@ -19868,7 +19869,7 @@ header a.nav-link:first-letter {
 @media (min-width: 1024px) {
   .trade-sub-title {
     bottom: auto;
-    box-shadow: 0 44.6489px 57.923px rgba(24, 74, 181, 0.34);
+    box-shadow: 0 44.6489px 57.923px rgba(218, 165, 32, 1);
     font-size: 1.125rem;
     left: auto;
     padding: 0.85rem 1.5rem;
@@ -19878,6 +19879,7 @@ header a.nav-link:first-letter {
 }
 .trade-sub-title strong {
   font-weight: 400;
+  /* color: gold; */
 }
 .trade-items {
   padding-bottom: 2rem;
@@ -19893,7 +19895,7 @@ header a.nav-link:first-letter {
   }
 }
 .trade-item {
-  color: #0c2780;
+  color: black;
   font-size: 1.375rem;
   font-weight: 300;
   line-height: 1.1;
@@ -19901,6 +19903,7 @@ header a.nav-link:first-letter {
 }
 .trade-item strong {
   font-weight: 400;
+  color: goldenrod;
 }
 .trade-item span {
   display: block;
