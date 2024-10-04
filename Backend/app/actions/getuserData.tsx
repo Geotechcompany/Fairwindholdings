@@ -17,7 +17,7 @@ export async function getUserData(): Promise<ActionResponse<UserData & Stats>> {
       where: { clerkId: userId },
       include: {
         stats: true,
-        account: true,
+        mainAccount: true,
       },
     });
 
@@ -26,18 +26,18 @@ export async function getUserData(): Promise<ActionResponse<UserData & Stats>> {
     }
 
     const userData: UserData & Stats = {
-      balance: user.account.balance,
-      leverage: user.account.leverage,
-      credit: user.account.credit,
-      totalDeposits: user.account.totalDeposits,
+      balance: user.mainAccount?.balance ?? 0,
+      leverage: user.mainAccount?.leverage ?? "1:100",
+      credit: user.mainAccount?.credit ?? 0,
+      totalDeposits: user.mainAccount?.totalDeposits ?? 0,
       firstName: user.firstName || "",
-      fullName: user.fullName || "",
+      fullName: `${user.firstName} ${user.lastName}`,
       email: user.email,
       profileImage: user.profileImage || "/images/placeholder-avatar.png",
-      pnl: user.stats.pnl,
-      profit: user.stats.profit,
-      loss: user.stats.loss,
-      profitableOrders: user.stats.profitableOrders,
+      pnl: user.stats?.pnl ?? 0,
+      profit: user.stats?.profit ?? 0,
+      loss: user.stats?.loss ?? 0,
+      profitableOrders: user.stats?.profitableOrders ?? "0/0",
     };
 
     return { data: userData };
