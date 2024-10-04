@@ -17,6 +17,7 @@ import LiveChat from "./Livechat";
 import Savings from "./Savings";
 import Settings from "./Settings";
 import Deposit from "./Deposit";
+import type { UserData, Stats } from "@/types/user";
 
 interface UserData {
   balance: number;
@@ -41,26 +42,30 @@ export function Dashboard() {
   const [userData, setUserData] = useState<(UserData & Stats) | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { user } = useUser();
+  const { user, isLoaded, isSignedIn } = useUser();
 
   useEffect(() => {
     async function fetchUserData() {
-      try {
-        const result = await getUserData();
-        if ("error" in result) {
-          setError(result.error);
-        } else {
-          setUserData(result.data);
+      if (isLoaded && isSignedIn && user?.primaryEmailAddress?.emailAddress) {
+        try {
+          const result = await getUserData(
+            user.primaryEmailAddress.emailAddress
+          );
+          if ("error" in result) {
+            setError(result.error);
+          } else {
+            setUserData(result.data);
+          }
+        } catch (err) {
+          setError("Failed to fetch user data");
+        } finally {
+          setLoading(false);
         }
-      } catch (err) {
-        setError("Failed to fetch user data");
-      } finally {
-        setLoading(false);
       }
     }
 
     fetchUserData();
-  }, []);
+  }, [isLoaded, isSignedIn, user]);
 
   if (loading) {
     return <div>Loading...</div>;

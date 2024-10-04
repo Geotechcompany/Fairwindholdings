@@ -1,20 +1,20 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type { UserData } from "@/types/user";
 import type { Stats } from "@/types/stats";
 import type { ActionResponse } from "@/types/actions";
 
-export async function getUserData(): Promise<ActionResponse<UserData & Stats>> {
-  const { userId } = auth();
-  if (!userId) {
-    return { error: "Unauthorized" };
+export async function getUserData(
+  email: string
+): Promise<ActionResponse<UserData & Stats>> {
+  if (!email) {
+    return { error: "Email is required" };
   }
 
   try {
     const user = await prisma.user.findUnique({
-      where: { clerkId: userId },
+      where: { email },
       include: {
         stats: true,
         mainAccount: true,

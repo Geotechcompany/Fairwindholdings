@@ -1,21 +1,27 @@
-import React from 'react';
-import { WalletIcon, CoinsIcon, FlaskIcon, ChartIcon } from '../components/ui/icons';
+import React from "react";
+import {
+  WalletIcon,
+  CoinsIcon,
+  FlaskIcon,
+  ChartIcon,
+} from "../components/ui/icons";
 
 type StatCardProps = {
   title: string;
   value: string;
-  icon: 'wallet' | 'coins' | 'flask' | 'chart' | 'user';
+  icon: "wallet" | "coins" | "flask" | "chart" | "user";
   note?: string;
 };
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, icon, note }) => {
-  const IconComponent = {
-    wallet: WalletIcon,
-    coins: CoinsIcon,
-    flask: FlaskIcon,
-    chart: ChartIcon,
-    user: WalletIcon // Fallback to WalletIcon for 'user'
-  }[icon] || WalletIcon; // Fallback to WalletIcon if icon is undefined
+  const IconComponent =
+    {
+      wallet: WalletIcon,
+      coins: CoinsIcon,
+      flask: FlaskIcon,
+      chart: ChartIcon,
+      user: WalletIcon, // Fallback to WalletIcon for 'user'
+    }[icon] || WalletIcon; // Fallback to WalletIcon if icon is undefined
 
   return (
     <div className="bg-[#1e2433] rounded-lg p-4 shadow-lg flex flex-col justify-between h-full">
