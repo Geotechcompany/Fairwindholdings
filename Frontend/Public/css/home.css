@@ -13779,6 +13779,7 @@ p + .button {
 }
 .button.white-bg {
   background-color: beige;
+  color: #023681;
 }
 .button.white-bg.dark {
   color: black;
@@ -13795,8 +13796,8 @@ p + .button {
 }
 .button.blue-gradient:focus,
 .button.blue-gradient:hover {
-  background: linear-gradient(320deg, #F5F5DC, #E6D8B0);;
-  color: #023681;
+  background: linear-gradient(320deg, #F5F5DC, #E6D8B0);
+  color: #0c2780;
 }
 .button.hollow {
   border: 2px solid #2e86fe;
@@ -13811,8 +13812,8 @@ p + .button {
 }
 .button.turquoise-background-overlay:focus,
 .button.turquoise-background-overlay:hover {
-  background: linear-gradient(320deg, #0c2780, #12235c);
-  color: #fff;
+  background: linear-gradient(320deg, #FFD700, #FFA500);
+  color: black;
 }
 .button.transparent {
   background-color: hsla(0, 0%, 100%, 0.1);
@@ -13925,14 +13926,11 @@ p + .button {
   --bs-btn-disabled-color: #000;
   --bs-btn-disabled-bg: #11afff;
   --bs-btn-disabled-border-color: #11afff;
-  background-image: linear-gradient(270deg, #2e86fe, #11afff);
+  background: linear-gradient(320deg, #FFD700, #FFA500);
   color: #fff;
   transition: color 0.3s ease-in-out;
 }
 .btn-plus:active,
-.btn-plus:hover {
-   background: linear-gradient(320deg, #FF6347, #FF4500);
-}
 .items-icon-group {
   justify-content: space-around;
 }
@@ -15634,7 +15632,7 @@ header a.nav-link:first-letter {
   color: #11afff;
 }
 .main-banner-slogan {
-  color: #ff9000;
+  color: gold;
   font-weight: 500;
 }
 .main-banner-desc {
@@ -15667,7 +15665,7 @@ header a.nav-link:first-letter {
 }
 .main-banner-anim {
   align-items: center;
-  color: #c38407;
+  color: gold;
   display: flex;
   font-size: 1.25rem;
   font-weight: 300;
