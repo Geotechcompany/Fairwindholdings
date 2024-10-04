@@ -15,6 +15,7 @@ model User {
   firstName   String
   lastName    String
   email       String   @unique
+  clerkId     String?  @unique
   password    String
   phoneNumber String
   country     String
