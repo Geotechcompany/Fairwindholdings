@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (user: any) => void;
+  onLogin: (result: any) => void;
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({
@@ -25,32 +26,24 @@ const LoginModal: React.FC<LoginModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const onSubmit = async (data: { email: string; password: string }) => {
     try {
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(data),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Login failed");
+      if (response.ok) {
+        toast.success("Login successful");
+        router.push("/trading-dashboard");
+        onLogin(await response.json());
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.error || "Login failed");
       }
-
-      // Handle successful login (e.g., store token, update UI)
-      console.log("Login successful", data);
-      toast.success("Login successful");
-      // Close modal or redirect user
-      router.push('/trading-dashboard');
-      onLogin(data); // Call onLogin with the user data
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "An error occurred";
-      toast.error(errorMessage);
+    } catch (error) {
+      toast.error("An error occurred during login");
     }
   };
 
