@@ -15,7 +15,6 @@ export default function AdminLoginPage() {
           routing="path"
           path="/admin/login"
           fallbackRedirectUrl="/admin/dashboard"
-          signUpUrl="/admin/register"
         />
       </div>
     </div>

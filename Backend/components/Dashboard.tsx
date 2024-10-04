@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useAction } from "@/lib/safe-action/hook";
 import { getUserData } from "@/app/actions/getuserData";
 import { useUser } from "@clerk/nextjs";
 import { Header } from "./Header";
@@ -25,7 +24,7 @@ interface UserData {
   credit: number;
   totalDeposits: number;
   fullName: string;
-  firstName: string; // Add this line
+  firstName: string;
   email: string;
   profileImage: string;
 }
@@ -39,28 +38,54 @@ interface Stats {
 
 export function Dashboard() {
   const [currentView, setCurrentView] = useState("dashboard");
-  const { execute, result, status } = useAction(getUserData);
+  const [userData, setUserData] = useState<(UserData & Stats) | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { user } = useUser();
 
   useEffect(() => {
-    execute();
-  }, [execute]);
+    async function fetchUserData() {
+      try {
+        const result = await getUserData();
+        if ("error" in result) {
+          setError(result.error ?? null);
+        } else {
+          setUserData(result.data);
+        }
+      } catch (err) {
+        setError("Failed to fetch user data");
+      } finally {
+        setLoading(false);
+      }
+    }
 
-  if (status === "executing" || !user) {
+    fetchUserData();
+  }, []);
+
+  if (loading) {
     return <div>Loading...</div>;
   }
 
-  if (result.error) {
-    return <div>Error: {result.error}</div>;
+  if (error) {
+    return <div>Error: {error}</div>;
   }
 
-  const { data } = result;
+  if (!userData) {
+    return <div>No user data available</div>;
+  }
 
   const userDataForSidebar: UserData = {
-    firstName: user.firstName || "",
-    fullName: user.fullName || "",
-    email: user.primaryEmailAddress?.emailAddress || "",
-    profileImage: user.imageUrl || "/images/placeholder-avatar.png",
+    firstName: user?.firstName || userData.firstName || "",
+    fullName: user?.fullName || userData.fullName || "",
+    email: user?.primaryEmailAddress?.emailAddress || userData.email || "",
+    profileImage:
+      user?.imageUrl ||
+      userData.profileImage ||
+      "/images/placeholder-avatar.png",
+    balance: userData.balance,
+    leverage: userData.leverage,
+    credit: userData.credit,
+    totalDeposits: userData.totalDeposits,
   };
 
   const renderView = () => {
@@ -88,39 +113,42 @@ export function Dashboard() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:w-[600px] lg:grid-cols-2">
                 <StatCard
                   title="Total Balance"
-                  value={`$${data.balance.toFixed(2)}`}
+                  value={`$${userData.balance.toFixed(2)}`}
                   icon="wallet"
                   note="* using current exchange rate"
                 />
                 <StatCard
                   title="Total PNL"
-                  value={`$${data.pnl.toFixed(2)}`}
+                  value={`$${userData.pnl.toFixed(2)}`}
                   icon="coins"
                   note="* using current exchange rate"
                 />
                 <StatCard
                   title="Profitable Orders"
-                  value={data.profitableOrders}
+                  value={userData.profitableOrders}
                   icon="flask"
                 />
                 <StatCard
                   title="Total Deposits"
-                  value={`$${data.totalDeposits.toFixed(2)}`}
+                  value={`$${userData.totalDeposits.toFixed(2)}`}
                   icon="chart"
                   note="* using current exchange rate"
                 />
               </div>
               <div className="flex-grow flex justify-end">
-                <SuccessRateChart profit={data.profit} loss={data.loss} />
+                <SuccessRateChart
+                  profit={userData.profit}
+                  loss={userData.loss}
+                />
               </div>
             </div>
             <div className="mb-6">
               <TradingResults className="h-64 w-full overflow-x-auto" />
             </div>
             <AccountPanel
-              balance={data.balance}
-              leverage={data.leverage}
-              credit={data.credit}
+              balance={userData.balance}
+              leverage={userData.leverage}
+              credit={userData.credit}
               className="lg:w-[300px] w-full"
             />
           </>

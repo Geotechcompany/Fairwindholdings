@@ -19,13 +19,14 @@ export async function authenticate(
 
     if (!userId) {
       try {
-        const signInAttempt = await clerkClient.signIn.create({
+        await clerkClient.signIns.create({
           identifier: email,
           password,
         });
-        // Handle successful sign-in
+        return { data: undefined };
       } catch (error) {
-        // Handle sign-in error
+        console.error("Sign-in error:", error);
+        return { error: "Invalid credentials" };
       }
     }
 
