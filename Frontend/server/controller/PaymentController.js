@@ -54,48 +54,64 @@ export const createPayment = async (req, res) => {
 
 export const checkSubs = async (req, res) => {
   try {
-    const user = await User.findOne({ _id: data.user_id });
-    if(user.requests > 0){
-      res.json({message: true}).status(200)
-    }else{
-      res.json({message: false}).status(400)
+    const user = await User.findOne({ _id: req.user.id });
+    if (user.requests > 0) {
+      res.status(200).json({ message: true });
+    } else {
+      res.status(400).json({ message: false });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
+};
 
+export const initializePayment = async (req, res) => {
+  try {
+    payingUser = {
+      user_id: req.user.id,
+      plan: req.body.plan,
+      site: req.body.site,
+    };
+    // Implement payment initialization logic here
+    res.status(200).json({ message: "Payment initialized" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 export const success = async (req, res) => {
   try {
+    if (!payingUser) {
+      return res.status(400).json({ message: "Payment not initialized" });
+    }
+
     const data = {
       user_id: payingUser.user_id,
       amount: req.query.amount_total,
       plan: payingUser.plan,
     };
+
     const user = await User.findOne({ _id: data.user_id });
     if (!user) {
-      res.json({ message: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    //update the user details in the db
     user.plan = data.plan;
     await user.save();
 
-    //insert the payment info in the
     const payment = await Payment.create(data);
 
-    //redirecting the user to the dashboard
-    setTimeout(() => {
-      res.redirect(303, `${payingUser.site}`);
-    }, 3000);
+    res.redirect(303, `${payingUser.site}`);
   } catch (error) {
     console.error(error);
-    res.json({ error: error }).status(500);
+    res.status(500).json({ error: error.message });
   }
 };
 
 export const cancel = async (req, res) => {
-  //redirect to the dashboard
-  res.redirect(303, `${payingUser.site}`);
+  if (payingUser && payingUser.site) {
+    res.redirect(303, `${payingUser.site}`);
+  } else {
+    res.status(400).json({ message: "Payment not initialized or site not specified" });
+  }
 };
