@@ -20,11 +20,9 @@ export async function POST(req: Request) {
       currency,
     } = await req.json();
 
-    console.log(`Attempting to create additional data for user: ${userId}`);
-
-    const userData = await prisma.userProfile.create({
+    const user = await prisma.user.update({
+      where: { clerkId: userId },
       data: {
-        userId,
         phoneNumber: phone,
         country,
         promocode,
@@ -32,16 +30,16 @@ export async function POST(req: Request) {
       },
     });
 
-    console.log(`User data created successfully: ${userData.id}`);
+    console.log(`User data updated successfully: ${user.id}`);
 
     return NextResponse.json(
-      { message: "User data created successfully", userDataId: userData.id },
-      { status: 201 }
+      { message: "User data updated successfully", userId: user.id },
+      { status: 200 }
     );
   } catch (error) {
-    console.error("User data creation error:", error);
+    console.error("User data update error:", error);
     return NextResponse.json(
-      { error: "An error occurred during user data creation" },
+      { error: "An error occurred during user data update" },
       { status: 500 }
     );
   }

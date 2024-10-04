@@ -10,6 +10,11 @@ const nextConfig = {
   images: {
     domains: ["localhost"],
   },
+  experimental: {
+    serverActions: {
+      allowedOrigins: ["localhost:3000", "nmx3wm8j-3000.euw.devtunnels.ms"],
+    },
+  },
 };
 
 export default nextConfig;
