@@ -48,7 +48,7 @@ export function Dashboard() {
       try {
         const result = await getUserData();
         if ("error" in result) {
-          setError(result.error ?? null);
+          setError(result.error);
         } else {
           setUserData(result.data);
         }
