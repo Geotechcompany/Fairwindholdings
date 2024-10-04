@@ -6,7 +6,8 @@ const isPublicRoute = createRouteMatcher([
   '/sign-up(.*)',
   '/register(.*)',
   '/admin/login(.*)',
-  '/user(.*)'  // Add this line to allow access to UserProfile routes
+  '/user(.*)',
+  '/api/webhooks/clerk'  // Add this line
 ])
 
 export default clerkMiddleware((auth, request) => {
