@@ -16,6 +16,8 @@ model User {
   lastName    String
   email       String   @unique
   clerkId     String?  @unique
+  stats       Stats?
+  mainAccount Account? @relation("UserMainAccount")
   password    String
   phoneNumber String
   country     String
@@ -25,7 +27,6 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // Add these lines to create the opposite relations
   accounts    Account[]
   sessions    Session[]
   kycDocument KYCDocument?
@@ -34,21 +35,15 @@ model User {
 }
 
 model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
+  id            String  @id @default(cuid())
+  user          User    @relation(fields: [userId], references: [id])
+  userId        String
+  mainUser      User?   @relation("UserMainAccount", fields: [mainUserId], references: [id])
+  mainUserId    String? @unique
+  balance       Float
+  leverage      String
+  credit        Float
+  totalDeposits Float
 }
 
 model Session {
@@ -88,4 +83,14 @@ model Withdrawal {
   currency  String
   status    String
   createdAt DateTime @default(now())
+}
+
+model Stats {
+  id               String @id @default(cuid())
+  user             User   @relation(fields: [userId], references: [id])
+  userId           String @unique
+  pnl              Float
+  profit           Float
+  loss             Float
+  profitableOrders String
 }
