@@ -113,12 +113,12 @@ export function Dashboard() {
                 <StatCard
                   title="Profitable Orders"
                   value={userData.profitableOrders}
-                  icon="flask"
+                  icon="money-bag"
                 />
                 <StatCard
                   title="Total Deposits"
                   value={`$${userData.totalDeposits.toFixed(2)}`}
-                  icon="chart"
+                  icon="bank"
                   note="* using current exchange rate"
                 />
               </div>
@@ -145,7 +145,7 @@ export function Dashboard() {
 
   return (
     <div className="flex flex-col h-screen bg-[#111827] text-white">
-      <Header className="fixed top-0 left-0 right-0 z-10" />
+      <Header className="fixed top-0 left-0 right-0 z-10 border-b border-white-700" />
       <div className="flex flex-1 pt-16">
         {" "}
         {/* Adjust pt-16 based on your header height */}
