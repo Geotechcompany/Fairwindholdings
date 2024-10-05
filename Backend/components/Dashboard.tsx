@@ -5,6 +5,7 @@ import { getUserData } from "@/app/actions/getuserData";
 import { useUser, UserProfile } from "@clerk/nextjs";
 import { Header } from "./Header";
 import Sidebar from "./Sidebar";
+import MobileSidebar from "./MobileSidebar";
 import StatCard from "./StatCard";
 import TradingResults from "./TradingResults";
 import AccountPanel from "./Accountpanel";
@@ -16,10 +17,11 @@ import LiveChat from "./Livechat";
 import Savings from "./Savings";
 import Deposit from "./Deposit";
 import { UserData as UserDataType, Stats } from "@/types/user";
+import { FaBars } from "react-icons/fa";
 
 export function Dashboard() {
   const [currentView, setCurrentView] = useState("dashboard");
-
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [userData, setUserData] = useState<(UserDataType & Stats) | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -144,17 +146,27 @@ export function Dashboard() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#111827] text-white">
-      <Header className="fixed top-0 left-0 right-0 z-10 border-b border-white-700" />
+    <div className="flex flex-col min-h-screen bg-[#111827] text-white">
+      <Header
+        onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
+        className="fixed top-0 left-0 right-0 z-10 border-b border-gray-700"
+      />
       <div className="flex flex-1 pt-16">
-        {" "}
-        {/* Adjust pt-16 based on your header height */}
         <Sidebar
           onNavigate={setCurrentView}
           userData={userDataForSidebar}
-          className="fixed left-0 top-0 bottom-0 w-72 overflow-y-auto z-10"
+          className="hidden lg:block fixed left-0 top-0 bottom-0 w-72 overflow-y-auto z-10 border-r border-gray-700"
         />
-        <main className="flex-grow ml-72 p-6 overflow-y-auto pt-16">
+        <MobileSidebar
+          isOpen={isMobileSidebarOpen}
+          onClose={() => setIsMobileSidebarOpen(false)}
+          onNavigate={(view) => {
+            setCurrentView(view);
+            setIsMobileSidebarOpen(false);
+          }}
+          userData={userDataForSidebar}
+        />
+        <main className="flex-grow lg:ml-72 p-6 overflow-y-auto">
           {renderView()}
         </main>
       </div>

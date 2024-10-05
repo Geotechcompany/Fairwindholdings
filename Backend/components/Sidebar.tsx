@@ -39,53 +39,45 @@ const Sidebar: React.FC<SidebarProps> = ({
     router.push("/");
   };
 
+  const navigationItems = [
+    { name: "Dashboard", icon: FaChartLine, view: "dashboard" },
+    { name: "Withdrawal", icon: FaMoneyBillWave, view: "withdrawal" },
+    { name: "Verification", icon: FaIdCard, view: "verification" },
+    { name: "Accounts", icon: FaUserCircle, view: "accounts" },
+    { name: "Live Chat", icon: FaComments, view: "live-chat" },
+    { name: "Savings", icon: FaPiggyBank, view: "savings" },
+    { name: "Settings", icon: FaCog, view: "settings" },
+  ];
+
   return (
     <div
-      className={`bg-[#1e2433] text-white flex flex-col w-72 pt-16 ${className}`}
+      className={`bg-[#1e2433] text-white flex flex-col w-full pt-20 ${className}`}
     >
-      {" "}
-      <div className="p-6 flex flex-col items-center">
-        {userData.profileImage ? (
-          <Image
-            src={userData.profileImage}
-            alt="Profile"
-            width={100}
-            height={100}
-            className="rounded-full mb-4"
-          />
-        ) : (
-          <div className="w-24 h-24 bg-gray-600 rounded-full mb-4 flex items-center justify-center">
-            <span className="text-3xl">
-              {userData.firstName?.charAt(0) || "U"}
-            </span>
-          </div>
-        )}
-        <span className="text-lg font-semibold">
-          {userData.fullName || "User"}
-        </span>
-        <span className="text-sm text-gray-400">
-          {userData.email || "No email"}
-        </span>
+      {/* Profile section */}
+      <div className="flex flex-col items-center mb-6 mt-4">
+        <Image
+          src={userData.profileImage}
+          alt="Profile"
+          width={80}
+          height={80}
+          className="rounded-full mb-2"
+        />
+        <h2 className="text-lg font-semibold">{userData.fullName}</h2>
+        <p className="text-sm text-gray-400">{userData.email}</p>
       </div>
+      {/* Deposit button */}
       <div className="flex justify-center mb-4">
-        <Button
+        <button
           onClick={() => onNavigate("deposit")}
           className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-3/4 text-lg"
         >
           Deposit
-        </Button>
+        </button>
       </div>
-      <nav className="flex-grow flex flex-col justify-between">
+      {/* Navigation links */}
+      <nav className="flex-grow">
         <ul className="space-y-2">
-          {[
-            { name: "Dashboard", icon: FaChartLine, view: "dashboard" },
-            { name: "Withdrawal", icon: FaMoneyBillWave, view: "withdrawal" },
-            { name: "Verification", icon: FaIdCard, view: "verification" },
-            { name: "Accounts", icon: FaUserCircle, view: "accounts" },
-            { name: "Live Chat", icon: FaComments, view: "live-chat" },
-            { name: "Savings", icon: FaPiggyBank, view: "savings" },
-            { name: "Settings", icon: FaCog, view: "settings" },
-          ].map((item) => (
+          {navigationItems.map((item) => (
             <li key={item.view} className="flex justify-center">
               <button
                 onClick={() => onNavigate(item.view)}
@@ -96,15 +88,17 @@ const Sidebar: React.FC<SidebarProps> = ({
             </li>
           ))}
         </ul>
-        <div className="flex justify-center py-4">
-          <button
-            onClick={handleLogout}
-            className="flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#3a3f45] transition-colors duration-200 text-xl w-3/4 py-3 px-4 rounded"
-          >
-            <FaSignOutAlt className="mr-4 text-2xl" /> Log Out
-          </button>
-        </div>
       </nav>
+
+      {/* Logout button */}
+      <div className="pb-4 pt-4 md:pt-24 flex justify-center">
+        <button
+          onClick={handleLogout}
+          className="flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#3a3f45] transition-colors duration-200 text-xl w-3/4 py-3 px-4 rounded"
+        >
+          <FaSignOutAlt className="mr-4 text-2xl" /> Log Out
+        </button>
+      </div>
     </div>
   );
 };
