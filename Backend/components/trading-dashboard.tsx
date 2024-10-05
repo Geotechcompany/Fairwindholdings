@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from 'next/link';
+import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
 import {
   FaChartLine,
   FaHistory,
@@ -43,6 +44,7 @@ export function TradingDashboard({
   userData: any;
   stats: any;
 }) {
+  const { user } = useUser();
   const [selectedMarket, setSelectedMarket] = useState("GOLD");
   const [timeframe, setTimeframe] = useState("1D");
   const [currentTime, setCurrentTime] = useState<string>("");
@@ -105,8 +107,8 @@ export function TradingDashboard({
           "paneProperties.horzGridProperties.color": "#363c4e",
           "symbolWatermarkProperties.transparency": 90,
           "scalesProperties.textColor": "#AAA",
-          "mainSeriesProperties.candleStyle.wickUpColor": '#336854',
-          "mainSeriesProperties.candleStyle.wickDownColor": '#7f323f',
+          "mainSeriesProperties.candleStyle.wickUpColor": "#336854",
+          "mainSeriesProperties.candleStyle.wickDownColor": "#7f323f",
         },
         studies_overrides: {
           "volume.volume.color.0": "#3a3e5e",
@@ -143,7 +145,7 @@ export function TradingDashboard({
   };
 
   const toggleWidget = (widget: string) => {
-    setActiveWidget(prev => prev === widget ? null : widget);
+    setActiveWidget((prev) => (prev === widget ? null : widget));
   };
 
   const renderActiveWidget = () => {
@@ -164,29 +166,70 @@ export function TradingDashboard({
       <header className="bg-[#2c3035] p-2 sm:p-4">
         <div className="flex flex-wrap justify-between items-center">
           <div className="flex items-center space-x-2 sm:space-x-4 mb-2 sm:mb-0">
-            <Image src="/images/logo-cita-white.png" alt="CITA TRADING GROUP" width={150} height={45} className="w-24 sm:w-auto" />
+            <Image
+              src="/images/logo-cita-white.png"
+              alt="CITA TRADING GROUP"
+              width={150}
+              height={45}
+              className="w-24 sm:w-auto"
+            />
             <button className="hidden sm:flex bg-blue-600 text-white px-3 py-1 rounded items-center text-sm">
-              <Image src="/images/gold-icon.png" alt="Gold" width={40} height={40} className="w-8 h-8" />
+              <Image
+                src="/images/gold-icon.png"
+                alt="Gold"
+                width={40}
+                height={40}
+                className="w-8 h-8"
+              />
               <span className="ml-2">Gold metals</span>
               <FaChevronDown className="ml-2" />
             </button>
           </div>
           <div className="flex items-center space-x-2 sm:space-x-4 flex-wrap">
             <button className="border-2 border-green-500 text-green-500 px-2 py-1 sm:px-4 sm:py-2 rounded flex items-center text-xs sm:text-sm hover:bg-green-500 hover:text-white transition-colors duration-300 mb-2 sm:mb-0">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2H4zm3 2a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1zm0 4a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z" clipRule="evenodd" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2H4zm3 2a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1zm0 4a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z"
+                  clipRule="evenodd"
+                />
               </svg>
               Deposit
             </button>
             <div className="flex flex-col items-end mb-2 sm:mb-0">
-              <span className="text-green-500 text-xs sm:text-sm">STANDARD ACCOUNT</span>
-              <span className="text-green-500 text-sm sm:text-xl font-bold">$0.00</span>
+              <span className="text-green-500 text-xs sm:text-sm">
+                STANDARD ACCOUNT
+              </span>
+              <span className="text-green-500 text-sm sm:text-xl font-bold">
+                $0.00
+              </span>
             </div>
             <div className="flex items-center space-x-1 sm:space-x-2">
-              <Image src="/images/mvp-badge.png" alt="MVP" width={50} height={50} className="w-6 h-6 sm:w-10 sm:h-10" />
+              <Image
+                src="/images/mvp-badge.png"
+                alt="MVP"
+                width={50}
+                height={50}
+                className="w-6 h-6 sm:w-10 sm:h-10"
+              />
               <Link href="/">
-                <button className="bg-gray-700 p-1 sm:p-3 rounded-full text-gray-400 hover:text-white transition-colors duration-300">
-                  <FaUser size={16} className="sm:w-6 sm:h-6" />
+                <button className="bg-gray-750 p-1 sm:p-3 rounded-full text-gray-400 hover:text-white transition-colors duration-300">
+                  {user?.imageUrl ? (
+                    <Image
+                      src={user.imageUrl}
+                      alt="User Profile"
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                    />
+                  ) : (
+                    <FaUser className="text-white" size={40} />
+                  )}
                 </button>
               </Link>
             </div>
@@ -201,29 +244,39 @@ export function TradingDashboard({
             onClick={() => toggleWidget("marketWatch")}
           >
             <FaChartLine size={16} className="sm:text-xl md:text-2xl" />
-            <span className="mt-1 text-[8px] sm:text-xs md:text-sm">MARKET WATCH</span>
+            <span className="mt-1 text-[8px] sm:text-xs md:text-sm">
+              MARKET WATCH
+            </span>
           </button>
           <button className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white">
             <FaShoppingCart size={16} className="sm:text-xl md:text-2xl" />
-            <span className="mt-1 text-[8px] sm:text-xs md:text-sm">ACTIVE ORDERS</span>
+            <span className="mt-1 text-[8px] sm:text-xs md:text-sm">
+              ACTIVE ORDERS
+            </span>
           </button>
           <button className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white">
             <FaHistory size={16} className="sm:text-xl md:text-2xl" />
-            <span className="mt-1 text-[8px] sm:text-xs md:text-sm">TRADING HISTORY</span>
+            <span className="mt-1 text-[8px] sm:text-xs md:text-sm">
+              TRADING HISTORY
+            </span>
           </button>
           <button
             className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white"
             onClick={() => toggleWidget("economicCalendar")}
           >
             <FaCalendarAlt size={16} className="sm:text-xl md:text-2xl" />
-            <span className="mt-1 text-[8px] sm:text-xs md:text-sm">ECONOMIC CALENDAR</span>
+            <span className="mt-1 text-[8px] sm:text-xs md:text-sm">
+              ECONOMIC CALENDAR
+            </span>
           </button>
           <button
             className="flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white"
             onClick={() => toggleWidget("marketNews")}
           >
             <FaNewspaper size={16} className="sm:text-xl md:text-2xl" />
-            <span className="mt-1 text-[8px] sm:text-xs md:text-sm">MARKET NEWS</span>
+            <span className="mt-1 text-[8px] sm:text-xs md:text-sm">
+              MARKET NEWS
+            </span>
           </button>
         </aside>
 
@@ -233,7 +286,10 @@ export function TradingDashboard({
             <div className="hidden lg:block lg:w-1/4 bg-gray-800 overflow-y-auto">
               <div className="flex justify-between items-center p-2 bg-gray-700">
                 <h2 className="text-base font-semibold">{activeWidget}</h2>
-                <button onClick={() => setActiveWidget(null)} className="text-gray-400 hover:text-white">
+                <button
+                  onClick={() => setActiveWidget(null)}
+                  className="text-gray-400 hover:text-white"
+                >
                   <FaTimes size={20} />
                 </button>
               </div>
@@ -243,35 +299,53 @@ export function TradingDashboard({
             </div>
           )}
 
-          <main className={`flex-grow flex flex-col overflow-hidden ${activeWidget ? 'lg:w-1/2' : 'lg:w-3/4'}`}>
+          <main
+            className={`flex-grow flex flex-col overflow-hidden ${
+              activeWidget ? "lg:w-1/2" : "lg:w-3/4"
+            }`}
+          >
             <div className="flex flex-wrap items-center space-x-1 sm:space-x-2 p-2">
-              <h2 className="text-base sm:text-lg font-semibold whitespace-nowrap mb-1 sm:mb-0">{selectedMarket}</h2>
+              <h2 className="text-base sm:text-lg font-semibold whitespace-nowrap mb-1 sm:mb-0">
+                {selectedMarket}
+              </h2>
               <div className="flex flex-wrap space-x-1 mb-1 sm:mb-0">
                 {(["1m", "5m", "15m", "1h", "4h", "1d"] as const).map((tf) => (
                   <button
                     key={tf}
-                    className={`px-1 py-0.5 rounded text-xs ${timeframe === timeframesMap[tf] ? "bg-blue-500" : "bg-[#2c3035]"}`}
+                    className={`px-1 py-0.5 rounded text-xs ${
+                      timeframe === timeframesMap[tf]
+                        ? "bg-blue-500"
+                        : "bg-[#2c3035]"
+                    }`}
                     onClick={() => setTimeframe(timeframesMap[tf])}
                   >
                     {tf}
                   </button>
                 ))}
               </div>
-              <button className="text-gray-400 text-xs whitespace-nowrap mb-1 sm:mb-0">Indicators</button>
+              <button className="text-gray-400 text-xs whitespace-nowrap mb-1 sm:mb-0">
+                Indicators
+              </button>
               <div className="flex space-x-1 ml-auto">
                 <FaCog className="text-gray-400 w-4 h-4" />
                 <FaExpand className="text-gray-400 w-4 h-4" />
                 <FaCamera className="text-gray-400 w-4 h-4" />
               </div>
             </div>
-            <div id="tradingview_chart" className="flex-grow lg:h-[calc(50vh-5rem)] h-[calc(30vh-3rem)]" />
+            <div
+              id="tradingview_chart"
+              className="flex-grow lg:h-[calc(50vh-5rem)] h-[calc(30vh-3rem)]"
+            />
 
             {/* TradingWidget for smaller screens */}
             <div className="lg:hidden">
               <TradingWidget />
             </div>
 
-            <div className="p-2 overflow-y-auto flex-shrink-0" style={{ maxHeight: 'calc(30vh - 2rem)' }}>
+            <div
+              className="p-2 overflow-y-auto flex-shrink-0"
+              style={{ maxHeight: "calc(30vh - 2rem)" }}
+            >
               <div className="flex flex-wrap space-x-2 mb-2">
                 <button className="bg-blue-500 text-white px-2 py-1 rounded text-xs whitespace-nowrap mb-1 sm:mb-0">
                   Active Orders
@@ -316,13 +390,14 @@ export function TradingDashboard({
           <div className="lg:hidden fixed inset-0 bg-gray-800 z-50 overflow-y-auto">
             <div className="flex justify-between items-center p-2 bg-gray-700">
               <h2 className="text-base font-semibold">{activeWidget}</h2>
-              <button onClick={() => setActiveWidget(null)} className="text-gray-400 hover:text-white">
+              <button
+                onClick={() => setActiveWidget(null)}
+                className="text-gray-400 hover:text-white"
+              >
                 <FaTimes size={20} />
               </button>
             </div>
-            <div className="p-2">
-              {renderActiveWidget()}
-            </div>
+            <div className="p-2">{renderActiveWidget()}</div>
           </div>
         )}
       </div>
