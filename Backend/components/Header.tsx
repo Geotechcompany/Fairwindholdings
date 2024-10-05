@@ -1,9 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+
 export function Header() {
   return (
-    <header className="bg-[#1e2329] text-white p-4 flex justify-between items-center">
+    <header className="bg-[#1e2433] text-white p-4 flex justify-between items-center fixed top-0 left-0 right-0 z-20">
       <div className="flex items-center">
         <Image 
           src="/images/logo-cita-white.png" 

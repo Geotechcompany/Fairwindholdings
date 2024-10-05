@@ -144,11 +144,19 @@ export function Dashboard() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#111827] text-white overflow-hidden">
-      <Header />
-      <div className="flex flex-1">
-        <Sidebar onNavigate={setCurrentView} userData={userDataForSidebar} />
-        <main className="flex-grow p-6 mx-20">{renderView()}</main>
+    <div className="flex flex-col h-screen bg-[#111827] text-white">
+      <Header className="fixed top-0 left-0 right-0 z-10" />
+      <div className="flex flex-1 pt-16">
+        {" "}
+        {/* Adjust pt-16 based on your header height */}
+        <Sidebar
+          onNavigate={setCurrentView}
+          userData={userDataForSidebar}
+          className="fixed left-0 top-0 bottom-0 w-72 overflow-y-auto z-10"
+        />
+        <main className="flex-grow ml-72 p-6 overflow-y-auto pt-16">
+          {renderView()}
+        </main>
       </div>
     </div>
   );
