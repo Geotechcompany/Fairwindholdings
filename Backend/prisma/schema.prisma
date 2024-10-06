@@ -94,3 +94,14 @@ model Stats {
   loss             Float
   profitableOrders String
 }
+
+model Document {
+id        String   @id @default(cuid())
+  type      String
+  publicId  String
+  url       String
+  userId    String
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -2,78 +2,65 @@
 
 import React, { useState, useEffect } from "react";
 import { getUserData } from "@/app/actions/getuserData";
-import { useUser } from "@clerk/nextjs";
+import { useUser, UserProfile } from "@clerk/nextjs";
 import { Header } from "./Header";
 import Sidebar from "./Sidebar";
+import MobileSidebar from "./MobileSidebar";
 import StatCard from "./StatCard";
 import TradingResults from "./TradingResults";
 import AccountPanel from "./Accountpanel";
 import SuccessRateChart from "./SuccessRateChart";
 import Verification from "./Verification";
-import PersonalInfo from "./PersonalInfo";
 import Withdrawal from "./withdrawal";
 import Accounts from "./Accounts";
 import LiveChat from "./Livechat";
 import Savings from "./Savings";
-import Settings from "./Settings";
 import Deposit from "./Deposit";
-
-interface UserData {
-  balance: number;
-  leverage: string;
-  credit: number;
-  totalDeposits: number;
-  fullName: string;
-  firstName: string;
-  email: string;
-  profileImage: string;
-}
-
-interface Stats {
-  pnl: number;
-  profit: number;
-  loss: number;
-  profitableOrders: string;
-}
+import { UserData as UserDataType, Stats } from "@/types/user";
+import { FaBars } from "react-icons/fa";
 
 export function Dashboard() {
   const [currentView, setCurrentView] = useState("dashboard");
-  const [userData, setUserData] = useState<(UserData & Stats) | null>(null);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [userData, setUserData] = useState<(UserDataType & Stats) | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { user } = useUser();
+  const { user, isLoaded, isSignedIn } = useUser();
 
   useEffect(() => {
     async function fetchUserData() {
-      try {
-        const result = await getUserData();
-        if ("error" in result) {
-          setError(result.error);
-        } else {
-          setUserData(result.data);
+      if (isLoaded && isSignedIn && user?.primaryEmailAddress?.emailAddress) {
+        try {
+          const result = await getUserData(
+            user.primaryEmailAddress.emailAddress
+          );
+          if ("error" in result) {
+            setError(result.error || "An unknown error occurred");
+          } else {
+            setUserData(result.data || null);
+          }
+        } catch {
+          setError("Failed to fetch user data");
+        } finally {
+          setLoading(false);
         }
-      } catch (err) {
-        setError("Failed to fetch user data");
-      } finally {
-        setLoading(false);
       }
     }
 
     fetchUserData();
-  }, []);
+  }, [isLoaded, isSignedIn, user]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="text-center text-white">Loading...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="text-center text-red-500">Error: {error}</div>;
   }
 
   if (!userData) {
-    return <div>No user data available</div>;
+    return <div className="text-center text-white">No user data available</div>;
   }
-
   const userDataForSidebar: UserData = {
     firstName: user?.firstName || userData.firstName || "",
     fullName: user?.fullName || userData.fullName || "",
@@ -92,8 +79,6 @@ export function Dashboard() {
     switch (currentView) {
       case "verification":
         return <Verification />;
-      case "personal-info":
-        return <PersonalInfo />;
       case "withdrawal":
         return <Withdrawal />;
       case "accounts":
@@ -103,7 +88,11 @@ export function Dashboard() {
       case "savings":
         return <Savings />;
       case "settings":
-        return <Settings />;
+        return (
+          <div className="w-full max-w-4xl mx-auto">
+            <UserProfile routing="hash" />
+          </div>
+        );
       case "deposit":
         return <Deposit />;
       default:
@@ -126,12 +115,12 @@ export function Dashboard() {
                 <StatCard
                   title="Profitable Orders"
                   value={userData.profitableOrders}
-                  icon="flask"
+                  icon="money-bag"
                 />
                 <StatCard
                   title="Total Deposits"
                   value={`$${userData.totalDeposits.toFixed(2)}`}
-                  icon="chart"
+                  icon="bank"
                   note="* using current exchange rate"
                 />
               </div>
@@ -157,11 +146,29 @@ export function Dashboard() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#111827] text-white overflow-hidden">
-      <Header />
-      <div className="flex flex-1">
-        <Sidebar onNavigate={setCurrentView} userData={userDataForSidebar} />
-        <main className="flex-grow p-6 mx-20">{renderView()}</main>
+    <div className="flex flex-col min-h-screen bg-[#111827] text-white">
+      <Header
+        onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
+        className="fixed top-0 left-0 right-0 z-10 border-b border-gray-700"
+      />
+      <div className="flex flex-1 pt-16">
+        <Sidebar
+          onNavigate={setCurrentView}
+          userData={userDataForSidebar}
+          className="hidden lg:block fixed left-0 top-0 bottom-0 w-72 overflow-y-auto z-10 border-r border-gray-700"
+        />
+        <MobileSidebar
+          isOpen={isMobileSidebarOpen}
+          onClose={() => setIsMobileSidebarOpen(false)}
+          onNavigate={(view) => {
+            setCurrentView(view);
+            setIsMobileSidebarOpen(false);
+          }}
+          userData={userDataForSidebar}
+        />
+        <main className="flex-grow lg:ml-72 p-6 overflow-y-auto">
+          {renderView()}
+        </main>
       </div>
     </div>
   );
