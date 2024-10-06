@@ -51,7 +51,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <div
-      className={`bg-[#1e2433] text-white flex flex-col w-full pt-20 ${className}`}
+      className={`bg-[#1e2433] text-white flex flex-col w-64 pt-20 ${className}`}
     >
       {/* Profile section */}
       <div className="flex flex-col items-center mb-6 mt-4">
