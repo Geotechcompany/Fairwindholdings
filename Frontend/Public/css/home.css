@@ -4076,14 +4076,14 @@ fieldset:disabled .btn {
   --bs-navbar-padding-x: 0;
   --bs-navbar-padding-y: 0.5rem;
   --bs-navbar-color: #c38407;
-  --bs-navbar-hover-color: #11afff;
+  --bs-navbar-hover-color: #000;
   --bs-navbar-disabled-color: rgba(var(--bs-emphasis-color-rgb), 0.3);
-  --bs-navbar-active-color: #11afff;
+  --bs-navbar-active-color: #000;
   --bs-navbar-brand-padding-y: 0.3125rem;
   --bs-navbar-brand-margin-end: 1rem;
   --bs-navbar-brand-font-size: 1.25rem;
-  --bs-navbar-brand-color: #11afff;
-  --bs-navbar-brand-hover-color: #11afff;
+  --bs-navbar-brand-color: #000;
+  --bs-navbar-brand-hover-color: #000;
   --bs-navbar-nav-link-padding-x: 0.5rem;
   --bs-navbar-toggler-padding-y: 0.25rem;
   --bs-navbar-toggler-padding-x: 0.75rem;
@@ -13632,8 +13632,9 @@ p + .button {
   }
 }
 .blue-card-bg:before {
-  background-image: linear-gradient(180deg, #07cee0, #0c2780 20%);
-  border: 6px solid #0c2780;
+  /* background-image: linear-gradient(180deg, #07cee0, #0c2780 20%); */
+  background-image: linear-gradient(180deg, black, gold 20%);
+  border: 2px solid black;
   bottom: 0;
   left: 0;
   padding: 6px;
@@ -13651,7 +13652,8 @@ p + .button {
   }
 }
 .blue-card-bg:after {
-  background: radial-gradient(44% 158% at 37% 90%, #223f9f 0, #0c2780 100%);
+  /* background: radial-gradient(44% 158% at 37% 90%, #223f9f 0, #0c2780 100%); */
+  background: radial-gradient(44% 158% at 37% 90%, gold 0%, black 100%);
   border-radius: 1.125rem;
   bottom: 7px;
   left: 7px;
@@ -13671,7 +13673,8 @@ p + .button {
   }
 }
 .blue-card-bg.shadow-card:before {
-  box-shadow: 50px 72px 120px rgba(13, 40, 130, 0.24);
+  box-shadow: 50px 72px 120px rgba(255, 215, 0, 0.24);
+
 }
 @media (max-width: 1023.98px) {
   .blue-card-bg.not-perspective:after,
@@ -13687,7 +13690,7 @@ p + .button {
   }
 }
 .blue-card-bg.not-perspective:before {
-  border-right: 6px solid #0c2780;
+  border-right: 6px solid gold;
 }
 .blue-card-bg.not-perspective:after {
   border-radius: 1.125rem;
@@ -13704,23 +13707,24 @@ p + .button {
   }
 }
 .blue-card-bg.turquoise:before {
-  background-image: linear-gradient(180deg, #0c2780, #2e86fe 80%);
-  border-color: #2e86fe;
+  background-image: linear-gradient(180deg, gold, black 80%);
+  border-color: gold;
 }
 .blue-card-bg.turquoise:after {
-  background: radial-gradient(44% 158% at 37% 90%, #11afff 0, #2e86fe 100%);
+  /* background: radial-gradient(44% 158% at 37% 90%, #11afff 0, #2e86fe 100%); */
+  background: radial-gradient(44% 158% at 37% 90%, gold 0%, black 100%);
 }
 .blue-card-bg.white:before {
-  background-image: linear-gradient(180deg, #0c2780, #0c2780 80%);
+  background-image: linear-gradient(180deg, gold, black 80%);
   border-color: #fff;
 }
 .blue-card-bg.white:after {
   background: #fff;
 }
 .blue-card-bg.white-bg:before {
-  background-image: linear-gradient(90deg, #fff, #0c2780 20%);
+  background-image: linear-gradient(90deg, #fff, gold 20%);
   border: 6px solid #fff;
-  box-shadow: 0 1.375rem 4.9rem 0 rgba(0, 0, 0, 0.25);
+  box-shadow: 50px 72px 120px rgba(255, 215, 0, 0.24);
 }
 .blue-card-bg.white-bg:after {
   background: #fff;
@@ -14571,7 +14575,7 @@ header nav {
   /*! rtl:options:{} */
 }
 .is-sticky header nav {
-  background-color: hsla(0, 0%, 100%, 0.85);
+  background-color: gold;
   border-radius: 0 0 0.75rem 0.75rem;
 }
 header nav.navbar {
@@ -14579,7 +14583,13 @@ header nav.navbar {
 }
 header nav .logo svg {
   margin-bottom: 0.25rem;
-  max-width: 8rem;
+  max-width: 50rem;
+}
+.logo img {
+  width: 50px; /* Adjust the width as needed */
+  height: auto; /* Auto height to maintain aspect ratio */
+  display: block; /* Block-level element to avoid any inline issues */
+  padding: 5px; /* Optional padding around the logo */
 }
 @media (min-width: 1280px) {
   header nav .logo svg {
@@ -18579,6 +18589,7 @@ header a.nav-link:first-letter {
 .no-ad-style .product-card-link a:focus .product-brand.invest,
 .no-ad-style .product-card-link a:hover .product-brand.invest {
   background-image: url(../images/plus500-invest.svg);
+
 }
 .no-ad-style .product-card-link a:focus .product-brand.cfd,
 .no-ad-style .product-card-link a:hover .product-brand.cfd {
@@ -18647,7 +18658,7 @@ header a.nav-link:first-letter {
   color: #0c2780;
 }
 .no-ad-style .product-card-link .background-element {
-  background-repeat: no-repeat;
+  background-repeat: no-repeat; 
   border-radius: 1.5rem;
   height: 100%;
   opacity: 0.2;
@@ -18710,7 +18721,7 @@ header a.nav-link:first-letter {
 .no-ad-style .product-item-data {
   height: 100%;
 }
-.no-ad-style .product-brand {
+.no-ad-style . {
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: contain;
@@ -18720,6 +18731,8 @@ header a.nav-link:first-letter {
 }
 .no-ad-style .product-brand img {
   display: none;
+  width: 100%;
+  height: 100%;
 }
 .no-ad-style .product-desk {
   color: #0c2780;
