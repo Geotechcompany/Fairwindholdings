@@ -4,6 +4,8 @@ import { FaBars } from 'react-icons/fa';
 
 interface HeaderProps {
   onOpenMobileSidebar: () => void;
+  isAdminDashboard?: boolean;
+  className?: string; // Add this line
 }
 
 export function Header({ onOpenMobileSidebar }: HeaderProps) {

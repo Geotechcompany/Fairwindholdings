@@ -1,29 +1,43 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { authMiddleware } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
-const isPublicRoute = createRouteMatcher([
-  '/login(.*)',
-  '/sign-in(.*)',
-  '/sign-up(.*)',
-  '/register(.*)',
-  '/admin/login(.*)',
-  '/user(.*)',
-  '/api/webhooks/clerk'  // Add this line
-])
+export default authMiddleware({
+  publicRoutes: [
+    '/login(.*)',
+    '/sign-in(.*)',
+    '/sign-up(.*)',
+    '/register(.*)',
+    '/admin/login(.*)',
+    '/user(.*)',
+    '/api/webhooks/clerk'
+  ],
+  afterAuth(auth, req) {
+    // Handle authenticated requests
+    if (auth.userId) {
+      // User is authenticated
+      if (auth.isPublicRoute) {
+        // If user is on a public route like /login or /sign-up, redirect to /trading-dashboard
+        const path = req.nextUrl.pathname;
+        if (path === "/login" || path === "/sign-up") {
+          return NextResponse.redirect(new URL("/trading-dashboard", req.url));
+        }
+      }
+      
+      // All authenticated users can access /trading-dashboard
+      // No role check needed
+    } else {
+      // User is not authenticated
+      if (!auth.isPublicRoute) {
+        // If user is trying to access a protected route, redirect to /login
+        return NextResponse.redirect(new URL("/login", req.url));
+      }
+    }
 
-export default clerkMiddleware((auth, request) => {
-  const { userId } = auth()
-  const isAuthRoute = request.nextUrl.pathname === '/trading-dashboard'
-  const isTradingDashboardRoute = request.nextUrl.pathname === '/trading-dashboard'
-
-  if (!isPublicRoute(request) && !isAuthRoute && !isTradingDashboardRoute) {
-    auth().protect()
-  }
-
-  if (isAuthRoute && !userId) {
-    return Response.redirect(new URL('/sign-in', request.url))
-  }
-})
+    // Allow the request to continue
+    return NextResponse.next();
+  },
+});
 
 export const config = {
-  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
-}
+  matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
+};

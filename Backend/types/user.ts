@@ -53,3 +53,15 @@ export interface AccountPanelProps {
     credit: number;
   } | undefined;
 }
+
+export interface WithdrawalRequest {
+  id: string;
+  amount: number;
+  withdrawalMethod: string;
+  accountNumber: string;
+  accountHolderName: string;
+  iban?: string;
+  swiftCode?: string;
+  status: 'PENDING' | 'COMPLETED' | 'REJECTED';
+  createdAt: string;
+}

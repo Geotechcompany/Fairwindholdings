@@ -3,11 +3,12 @@ import { FaChartLine, FaUsers, FaExchangeAlt, FaCog, FaChartBar, FaSignOutAlt, F
 
 interface AdminSidebarProps {
   onNavigate: (view: string) => void;
+  className?: string; // Add this line
 }
 
-const AdminSidebar: React.FC<AdminSidebarProps> = ({ onNavigate }) => {
+const AdminSidebar: React.FC<AdminSidebarProps> = ({ onNavigate, className }) => {
   return (
-    <div className="w-64 bg-[#2c3035] flex flex-col justify-between">
+    <div className={`w-64 bg-[#2c3035] flex flex-col justify-between pt-20 ${className}`}>
       <div>
         <div className="text-center py-6 border-b border-gray-700">
           <h3 className="text-lg font-semibold">Admin Panel</h3>

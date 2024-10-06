@@ -8,7 +8,7 @@ const nextConfig = {
     return config;
   },
   images: {
-    domains: ["localhost", "img.clerk.com"],
+    domains: ["localhost", "img.clerk.com", "res.cloudinary.com"],
   },
   experimental: {
     serverActions: {
