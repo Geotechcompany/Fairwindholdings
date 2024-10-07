@@ -15142,8 +15142,11 @@ header a.nav-link:first-letter {
   text-align: center;
 }
 .main-banner {
-  background-color: #0c2780;
-  box-shadow: 0 2.75rem 3.625rem rgba(24, 74, 181, 0.3);
+  background-image: url(../images/hero-slider-cfd.png);
+  background-size: cover; /* Ensures the image covers the whole area */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents repeating the background */
+  box-shadow: 0 2.75rem 3.625rem rgba(255, 215, 0, 0.3);
   display: flex;
   flex-direction: column;
   height: calc(var(--viewh, 100vh) - var(--rwh, 52px) - 62px);
@@ -15152,6 +15155,17 @@ header a.nav-link:first-letter {
   position: relative;
   transition: height 0.3s ease;
 }
+.main-banner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Dark overlay */
+  z-index: -1; /* Keeps the overlay behind the content */
+}
+
 @media (min-width: 768px) {
   .main-banner {
     height: auto;
@@ -15289,22 +15303,21 @@ header a.nav-link:first-letter {
 .home .main-banner.hero-banner {
   --banner-bg-top-position: -3rem;
 }
-.main-banner.hero-banner:before {
+/* .main-banner.hero-banner:before {
   background-image: url(../images/hero-slider-cfd-mobile.webp);
-  /*! rtl:ignore */
   background-position: 60% 40%;
   background-size: cover;
   right: 0;
   width: 100%;
-}
+} */
 .edge .main-banner.hero-banner:before,
 .ff-old .main-banner.hero-banner:before,
 .safari .main-banner.hero-banner:before {
-  background-image: url(../images/hero-slider-cfd-mobile.png);
+  /* background-image: url(../images/hero-slider-cfd-mobile.png); */
 }
 @media (min-width: 768px) {
   .main-banner.hero-banner:before {
-    background-image: url(../images/hero-slider-cfd.webp);
+    /* background-image: url(../images/hero-slider-cfd.webp); */
     /*! rtl:ignore */
     background-position: right -50vw top 0;
     background-size: auto 100%;
@@ -15312,7 +15325,7 @@ header a.nav-link:first-letter {
   .edge .main-banner.hero-banner:before,
   .ff-old .main-banner.hero-banner:before,
   .safari .main-banner.hero-banner:before {
-    background-image: url(../images/hero-slider-cfd.png);
+    /* background-image: url(../images/hero-slider-cfd.png); */
   }
 }
 @media (min-width: 1024px) {
@@ -15380,7 +15393,7 @@ header a.nav-link:first-letter {
     180deg,
     rgba(140, 153, 195, 0) 0,
     rgba(12, 39, 128, 0.45) 35%,
-    #0c2780 60%
+    gold 60%
   );
   content: "";
   height: 100%;
@@ -15389,6 +15402,7 @@ header a.nav-link:first-letter {
   top: 0;
   width: 100%;
   z-index: 0;
+  background-color: rgba(0, 0, 0, 0.7);
 }
 @media (min-width: 768px) {
   .main-banner.marketing-banner:after {
