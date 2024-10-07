@@ -1,7 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 const MarketNews = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
+    if (!containerRef.current) return;
+
     const script = document.createElement("script");
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-timeline.js";
     script.async = true;
@@ -10,28 +14,24 @@ const MarketNews = () => {
       symbol: "OANDA:XAUUSD",
       isTransparent: false,
       displayMode: "adaptive",
-      width: "400",
-      height: "550",
+      width: "100%",
+      height: "100%",
       colorTheme: "dark",
       locale: "en",
     });
 
-    const widgetContainer = document.querySelector(".tradingview-widget-container__widget");
-    if (widgetContainer && !widgetContainer.firstChild) {
-      widgetContainer.appendChild(script);
-    }
+    containerRef.current.innerHTML = '';
+    containerRef.current.appendChild(script);
 
     return () => {
-      if (widgetContainer) {
-        widgetContainer.innerHTML = '';
+      if (containerRef.current) {
+        containerRef.current.innerHTML = '';
       }
     };
   }, []);
 
   return (
-    <div className="tradingview-widget-container">
-      <div className="tradingview-widget-container__widget"></div>
-    </div>
+    <div ref={containerRef} className="w-full h-full" style={{ minHeight: "100%" }} />
   );
 };
 

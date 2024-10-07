@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ProfitCalculatorModal from "./Trading/ProfitCalculatorModal";
+import TakeProfitStopLossModal from "./Trading/TakeProfitStopLossModal";
+import PendingOrderModal from "./Trading/PendingOrderModal";
 import { FaChartLine, FaClock, FaMoneyBillTrendUp } from "react-icons/fa6";
 
 const TradingWidget = () => {
@@ -7,6 +9,8 @@ const TradingWidget = () => {
   const [tradeVolume, setTradeVolume] = useState<number>(0.01);
   const [tradeType, setTradeType] = useState<"buy" | "sell" | null>(null);
   const [isProfitCalculatorOpen, setIsProfitCalculatorOpen] = useState(false);
+  const [isTakeProfitStopLossOpen, setIsTakeProfitStopLossOpen] = useState(false);
+  const [isPendingOrderOpen, setIsPendingOrderOpen] = useState(false);
 
   useEffect(() => {
     const fetchMarketPrice = async () => {
@@ -29,40 +33,56 @@ const TradingWidget = () => {
   };
 
   return (
-    <div className="flex flex-col p-2 bg-gray-900 text-white shadow-lg h-full">
+    <div className="flex flex-col p-1 bg-gray-900 text-white shadow-lg h-full text-xs">
       <div className="flex flex-row lg:flex-col">
         {/* Left column (smaller screens) / Top section (wider screens) */}
-        <div className="w-1/2 lg:w-full pr-2 lg:pr-0 mb-0 lg:mb-2 flex flex-col justify-between">
+        <div className="w-1/2 lg:w-full pr-1 lg:pr-0 mb-0 lg:mb-1 flex flex-col justify-between">
           {/* Volume */}
-          <div className="mb-2">
-            <label className="text-xs text-gray-400">Volume</label>
-            <div className="flex items-center bg-gray-800 py-3 p-1 lg:p-2 relative">
+          <div className="mb-1">
+            <label className="text-gray-400">Volume</label>
+            <div className="flex items-center bg-gray-800 p-1 relative">
               <input
                 type="text"
-                className="bg-transparent text-lg lg:text-xl text-white border-none focus:outline-none w-full"
+                className="bg-transparent text-white border-none focus:outline-none w-full py-2 pr-6"
                 value={tradeVolume}
                 onChange={(e) => setTradeVolume(parseFloat(e.target.value) || 0)}
               />
-              <div className="absolute right-1 flex flex-col">
-                <button className="bg-gray-600 p-0.5 lg:p-1 text-sm lg:text-base mb-0.5" onClick={() => handleVolumeChange(0.01)}>+</button>
-                <button className="bg-gray-600 p-0.5 lg:p-1 text-sm lg:text-base" onClick={() => handleVolumeChange(-0.01)}>-</button>
+              <div className="absolute right-1 flex flex-col h-full">
+                <button 
+                  className="bg-gray-600 hover:bg-gray-500 text-white font-bold py-0.5 px-1 text-[8px] border-b border-gray-700"
+                  onClick={() => handleVolumeChange(0.01)}
+                >
+                  +
+                </button>
+                <button 
+                  className="bg-gray-600 hover:bg-gray-500 text-white font-bold py-0.5 px-1 text-[8px]"
+                  onClick={() => handleVolumeChange(-0.01)}
+                >
+                  -
+                </button>
               </div>
             </div>
           </div>
           {/* Take Profit & Stop Loss */}
-          <button className="bg-gray-700 py-2 px-2 text-xs lg:text-sm w-full mb-2 flex items-center justify-center">
+          <button 
+            className="bg-gray-700 py-1 px-2 w-full mb-1 flex items-center justify-center"
+            onClick={() => setIsTakeProfitStopLossOpen(true)}
+          >
             <FaChartLine className="mr-1" /> Take Profit & Stop Loss
           </button>
           {/* Pending Market */}
-          <button className="bg-gray-700 py-2 px-2 text-xs lg:text-sm w-full flex items-center justify-center">
+          <button 
+            className="bg-gray-700 py-1 px-2 w-full flex items-center justify-center"
+            onClick={() => setIsPendingOrderOpen(true)}
+          >
             <FaClock className="mr-1" /> Pending Market
           </button>
         </div>
 
         {/* Right column (smaller screens) / Bottom section (wider screens) */}
-        <div className="w-1/2 lg:w-full pl-2 lg:pl-0 flex flex-col justify-between">
+        <div className="w-1/2 lg:w-full pl-1 lg:pl-0 flex flex-col justify-between">
           {/* Contract details */}
-          <div className="mb-2 text-xs lg:text-sm">
+          <div className="mb-1">
             {["Contract size", "Position", "Margin", "Free Margin", "Spread", "Leverage"].map((item, index) => (
               <div className="flex justify-between" key={index}>
                 <span>{item}:</span>
@@ -80,7 +100,7 @@ const TradingWidget = () => {
 
           {/* Profit Calculator button */}
           <button
-            className="bg-gray-600 py-1 lg:py-2 px-2 text-xs lg:text-sm w-full mb-2 flex items-center justify-center"
+            className="bg-gray-600 py-1 px-2 w-full mb-1 flex items-center justify-center"
             onClick={() => setIsProfitCalculatorOpen(true)}
           >
             <FaMoneyBillTrendUp className="mr-1" /> Profit Calculator
@@ -89,13 +109,13 @@ const TradingWidget = () => {
           {/* Buy and Sell buttons */}
           <div className="grid grid-cols-2 gap-1">
             <button
-              className="bg-green-600 py-1 lg:py-2 text-xs lg:text-sm"
+              className="bg-green-600 py-1"
               onClick={() => handlePlaceTrade("buy")}
             >
               BUY<br />{marketPrice.toFixed(2)}
             </button>
             <button
-              className="bg-red-600 py-1 lg:py-2 text-xs lg:text-sm"
+              className="bg-red-600 py-1"
               onClick={() => handlePlaceTrade("sell")}
             >
               SELL<br />{marketPrice.toFixed(2)}
@@ -107,6 +127,18 @@ const TradingWidget = () => {
       <ProfitCalculatorModal
         isOpen={isProfitCalculatorOpen}
         onClose={() => setIsProfitCalculatorOpen(false)}
+      />
+
+      <TakeProfitStopLossModal
+        isOpen={isTakeProfitStopLossOpen}
+        onClose={() => setIsTakeProfitStopLossOpen(false)}
+        currentPrice={marketPrice}
+      />
+
+      <PendingOrderModal
+        isOpen={isPendingOrderOpen}
+        onClose={() => setIsPendingOrderOpen(false)}
+        currentPrice={marketPrice}
       />
     </div>
   );
