@@ -1,7 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 const MarketWatch = () => {
+    const containerRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
+        if (!containerRef.current) return;
+
         const script = document.createElement("script");
         script.src = "https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js";
         script.async = true;
@@ -14,8 +18,8 @@ const MarketWatch = () => {
             isTransparent: false,
             showSymbolLogo: true,
             showFloatingTooltip: false,
-            width: "400",
-            height: "465",
+            width: "100%",
+            height: "100%",
             tabs: [
                 {
                     title: "Forex",
@@ -67,24 +71,18 @@ const MarketWatch = () => {
             ]
         });
 
-        const widgetContainer = document.querySelector(".tradingview-widget-container__widget");
-        if (widgetContainer && !widgetContainer.firstChild) {
-            widgetContainer.appendChild(script);
-        }
+        containerRef.current.innerHTML = '';
+        containerRef.current.appendChild(script);
 
         return () => {
-            if (widgetContainer) {
-                widgetContainer.innerHTML = '';
+            if (containerRef.current) {
+                containerRef.current.innerHTML = '';
             }
         };
     }, []);
 
     return (
-        <div className="tradingview-widget-container">
-            <div className="tradingview-widget-container__widget"></div>
-            <div className="tradingview-widget-copyright">
-            </div>
-        </div>
+        <div ref={containerRef} className="w-full h-full" style={{ minHeight: "100%" }} />
     );
 };
 
