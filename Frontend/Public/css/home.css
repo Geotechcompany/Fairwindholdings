@@ -15516,7 +15516,7 @@ header a.nav-link:first-letter {
 }
 .main-banner.extended-hours .button.hollow {
   background: transparent;
-  border-color: #2e86fe;
+  border-color: #270b03;
   color: #fff;
 }
 .main-banner.extended-hours .button.hollow:focus,
@@ -15661,7 +15661,7 @@ header a.nav-link:first-letter {
 }
 .main-banner-slogan strong span,
 .main-banner-title strong span {
-  color: #11afff;
+  color: #fff;
 }
 .main-banner-slogan {
   color: gold;
@@ -15697,7 +15697,7 @@ header a.nav-link:first-letter {
 }
 .main-banner-anim {
   align-items: center;
-  color: gold;
+  color: #fff;
   display: flex;
   font-size: 1.25rem;
   font-weight: 300;
