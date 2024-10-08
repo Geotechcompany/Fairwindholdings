@@ -1,22 +1,18 @@
 import React from "react";
 import { FaTimes } from "react-icons/fa";
-import Sidebar from "./Sidebar";
+import AdminSidebar from "../AdminSidebar";
 import Image from "next/image";
 
-interface MobileSidebarProps {
+interface AdminMobileSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   onNavigate: (view: string) => void;
-  userData: any;
-  className?: string; // Add this line
-
 }
 
-const MobileSidebar: React.FC<MobileSidebarProps> = ({
+const AdminMobileSidebar: React.FC<AdminMobileSidebarProps> = ({
   isOpen,
   onClose,
   onNavigate,
-  userData,
 }) => {
   return (
     <div
@@ -25,7 +21,7 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({
       }`}
     >
       <div
-        className={`absolute top-0 left-0 w-72 h-full bg-[#1e2433] transform transition-transform duration-300 flex flex-col ${
+        className={`absolute top-0 left-0 w-64 h-full bg-[#2c3035] transform transition-transform duration-300 flex flex-col ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -41,15 +37,11 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({
           </button>
         </div>
         <div className="flex-grow overflow-y-auto">
-          <Sidebar
-            onNavigate={onNavigate}
-            userData={userData}
-            className="h-full"
-          />
+          <AdminSidebar onNavigate={onNavigate} />
         </div>
       </div>
     </div>
   );
 };
 
-export default MobileSidebar;
+export default AdminMobileSidebar;

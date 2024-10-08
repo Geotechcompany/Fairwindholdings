@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 interface Withdrawal {
   id: string;
@@ -42,9 +42,15 @@ const WithdrawalManagement: React.FC = () => {
               <td className="py-4">{withdrawal.status}</td>
               <td className="py-4">{withdrawal.date}</td>
               <td className="py-4">
-                <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2">View</button>
-                <button className="bg-green-500 text-white px-2 py-1 rounded mr-2">Approve</button>
-                <button className="bg-red-500 text-white px-2 py-1 rounded">Reject</button>
+                <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2">
+                  View
+                </button>
+                <button className="bg-green-500 text-white px-2 py-1 rounded mr-2">
+                  Approve
+                </button>
+                <button className="bg-red-500 text-white px-2 py-1 rounded">
+                  Reject
+                </button>
               </td>
             </tr>
           ))}

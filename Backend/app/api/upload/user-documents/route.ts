@@ -13,7 +13,7 @@ export async function GET() {
       where: { userId },
       select: {
         id: true,
-        type: true,
+        type: true, 
         url: true,
         status: true,
         createdAt: true,
