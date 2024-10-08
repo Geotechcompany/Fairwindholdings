@@ -15303,21 +15303,21 @@ header a.nav-link:first-letter {
 .home .main-banner.hero-banner {
   --banner-bg-top-position: -3rem;
 }
-/* .main-banner.hero-banner:before {
+.main-banner.hero-banner:before {
   background-image: url(../images/hero-slider-cfd-mobile.webp);
   background-position: 60% 40%;
   background-size: cover;
   right: 0;
   width: 100%;
-} */
+}
 .edge .main-banner.hero-banner:before,
 .ff-old .main-banner.hero-banner:before,
 .safari .main-banner.hero-banner:before {
-  /* background-image: url(../images/hero-slider-cfd-mobile.png); */
+  background-image: url(../images/hero-slider-cfd-mobile.png);
 }
 @media (min-width: 768px) {
   .main-banner.hero-banner:before {
-    /* background-image: url(../images/hero-slider-cfd.webp); */
+    background-image: url(../images/hero-slider-cfd.webp);
     /*! rtl:ignore */
     background-position: right -50vw top 0;
     background-size: auto 100%;
@@ -15325,7 +15325,7 @@ header a.nav-link:first-letter {
   .edge .main-banner.hero-banner:before,
   .ff-old .main-banner.hero-banner:before,
   .safari .main-banner.hero-banner:before {
-    /* background-image: url(../images/hero-slider-cfd.png); */
+    background-image: url(../images/hero-slider-cfd.png);
   }
 }
 @media (min-width: 1024px) {
@@ -20249,7 +20249,7 @@ header a.nav-link:first-letter {
 }
 .insights .blue-card-bg.lazyloaded:after {
   background-image: url(../images/insights-bg-new.webp),
-    radial-gradient(44% 158% at 37% 90%, #0c2780 0, #0c2780 100%);
+    radial-gradient(44% 158% at 37% 90%, gold 0, gold 100%);
 }
 .edge .insights .blue-card-bg.lazyloaded:after,
 .ff-old .insights .blue-card-bg.lazyloaded:after,
@@ -20357,7 +20357,7 @@ header a.nav-link:first-letter {
   line-height: 1.3;
 }
 .insights-content a {
-  color: #fff;
+  color: #270b03;
   text-decoration: underline;
 }
 .insights-content a:focus,
@@ -20415,6 +20415,7 @@ header a.nav-link:first-letter {
   padding-top: 5rem;
   position: relative;
   text-align: center;
+  
 }
 @media (min-width: 1px) and (max-width: 767.98px) {
   .trading-section:after,
@@ -20430,8 +20431,8 @@ header a.nav-link:first-letter {
     z-index: -1;
   }
   .trading-section:before {
-    background-image: linear-gradient(180deg, #07cee0, #0c2780 20%);
-    border: 6px solid #0c2780;
+    background-image: linear-gradient(180deg, gold,#270b03 20%);
+    border: 6px solid gold;
     border-right: none;
     bottom: 0;
     left: 0;
@@ -20440,7 +20441,7 @@ header a.nav-link:first-letter {
     top: 0;
   }
   .trading-section:after {
-    background: radial-gradient(44% 158% at 37% 90%, #223f9f 0, #0c2780 100%);
+    background: radial-gradient(44% 158% at 37% 90%, gold, #270b03 100%);
     border-radius: 1.125rem;
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
@@ -20452,7 +20453,7 @@ header a.nav-link:first-letter {
 }
 @media (min-width: 768px) {
   .trading-section {
-    background: linear-gradient(180deg, #0c2780 60%, #fff 96%);
+    background: linear-gradient(180deg, #270b03 40%, #fff 96%);
     padding-top: 8.25rem;
   }
 }
