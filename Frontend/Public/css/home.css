@@ -13404,7 +13404,7 @@ p + .button {
   pointer-events: none;
 }
 .title-section {
-  color: #0c2780;
+  color: gold;
   font-size: 1.625rem;
   font-weight: 300;
   line-height: 1.1;
@@ -13425,7 +13425,7 @@ p + .button {
   line-height: 1;
 }
 .title-section.big strong {
-  color: #2e86fe;
+  color: #270b03;
   font-size: 3.375rem;
   font-size: 4.75rem;
 }
@@ -13436,6 +13436,7 @@ p + .button {
   font-size: 2rem;
   font-weight: 600;
   margin-top: 0.2rem;
+  padding-left: 6%;
 }
 @media (min-width: 768px) {
   .title-section span,
@@ -13461,8 +13462,8 @@ p + .button {
     background: linear-gradient(
       180deg,
       rgba(12, 39, 128, 0) 0,
-      #0c2780 10%,
-      #0c2780 90%,
+      gold 0%,
+      gold 90%,
       rgba(12, 39, 128, 0)
     );
     content: "";
@@ -13474,7 +13475,7 @@ p + .button {
   }
 }
 .page-title {
-  color: #0c2780;
+  color: gold;
   font-size: 1.5rem;
   font-weight: 400;
   margin-bottom: 1rem;
@@ -13649,7 +13650,7 @@ p + .button {
 }
 @media (min-width: 1280px) {
   .blue-card-bg:before {
-    background-image: linear-gradient(168deg, #07cee0, #0c2780 87%);
+    background-image: linear-gradient(168deg, #270b03, gold 87%);
   }
 }
 .blue-card-bg:after {
@@ -15142,7 +15143,8 @@ header a.nav-link:first-letter {
   text-align: center;
 }
 .main-banner {
-  background-image: url(../images/hero-slider-cfd.png);
+  /* background-image: url(../images/hero-slider-cfd.png); */
+  background-color: #000;
   background-size: cover; /* Ensures the image covers the whole area */
   background-position: center; /* Centers the image */
   background-repeat: no-repeat; /* Prevents repeating the background */
@@ -16935,7 +16937,7 @@ header a.nav-link:first-letter {
   }
 }
 .slide-content .title strong {
-  color: gold;
+  color: #270b03;
   display: block;
   font-size: 1.875rem;
   font-weight: 800;
@@ -18594,6 +18596,8 @@ header a.nav-link:first-letter {
 }
 .no-ad-style .product-card-invest .product-brand {
   background-image: url(../images/plus500-invest.svg#blue);
+  background-size: 200px 200px ;
+
 }
 .no-ad-style .product-card-cfd {
   order: 1;
@@ -19826,7 +19830,7 @@ header a.nav-link:first-letter {
   }
 }
 .trade-title {
-  color: #0c2780;
+  color: #270b03;
   font-size: 1.375rem;
   font-weight: 300;
   line-height: 1.3;
@@ -19931,7 +19935,7 @@ header a.nav-link:first-letter {
   }
 }
 .trade-item {
-  color: black;
+  color: #270b03;
   font-size: 1.375rem;
   font-weight: 300;
   line-height: 1.1;
@@ -20248,14 +20252,14 @@ header a.nav-link:first-letter {
   }
 }
 .insights .blue-card-bg.lazyloaded:after {
-  background-image: url(../images/insights-bg-new.webp),
-    radial-gradient(44% 158% at 37% 90%, gold 0, gold 100%);
+  background-image: url(../images/insights-bg-new.png),
+    /* radial-gradient(44% 158% at 37% 90%, #27 0, gold 100%); */
 }
 .edge .insights .blue-card-bg.lazyloaded:after,
 .ff-old .insights .blue-card-bg.lazyloaded:after,
 .safari .insights .blue-card-bg.lazyloaded:after {
   background-image: url(../images/insights-bg-new.png),
-    radial-gradient(44% 158% at 37% 90%, #0c2780 0, #0c2780 100%);
+    radial-gradient(44% 158% at 37% 90%, #270b03 0, gold 100%);
 }
 .insights .blue-card-content {
   padding-bottom: 3rem;
@@ -20392,7 +20396,7 @@ header a.nav-link:first-letter {
 }
 .insights-img {
   border-radius: 2.5rem;
-  box-shadow: 0 45px 58px rgba(24, 74, 181, 0.34);
+  box-shadow: 0 45px 58px rgba(39, 11, 3, 0.34);
   display: block;
   height: auto;
   left: 0;
