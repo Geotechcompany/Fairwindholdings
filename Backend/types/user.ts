@@ -30,8 +30,13 @@ export interface Stats {
 export interface User {
   id: string;
   email: string;
+  firstName: string;
+  lastName: string;
   fullName: string;
+  role: string;
   profileImage: string;
+  phoneNumber: string;
+  gender: string;
   balance: number;
   leverage: string;
   credit: number;

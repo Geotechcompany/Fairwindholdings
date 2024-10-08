@@ -79,10 +79,12 @@ model Deposit {
 model Withdrawal {
   id                String   @id @default(cuid())
   userId            String
+  email             String
   amount            Float
   currency          String
   accountNumber     String?
   accountHolderName String
+  bank              String
   iban              String?
   swiftCode         String?
   status            String   @default("PENDING")

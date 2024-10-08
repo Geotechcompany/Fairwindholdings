@@ -1,23 +1,34 @@
 import { NextResponse } from "next/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/session/route";
 
 export async function GET() {
   try {
-    const currentUser = await getCurrentUser();
+    const { userId } = auth();
 
-    if (!currentUser) {
+    if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const withdrawals = await prisma.withdrawal.findMany({
-      where: { userId: currentUser.id },
+      where: { userId },
       orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        amount: true,
+        currency: true,
+        status: true,
+        createdAt: true,
+        accountNumber: true,
+        accountHolderName: true,
+        iban: true,
+        swiftCode: true,
+      },
     });
 
     return NextResponse.json(withdrawals);
   } catch (error) {
-    console.error("Failed to fetch withdrawals:", error);
+    console.error("Error fetching withdrawals:", error);
     return NextResponse.json(
       { error: "Failed to fetch withdrawals" },
       { status: 500 }
@@ -27,24 +38,41 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const currentUser = await getCurrentUser();
+    const { userId } = auth();
 
-    if (!currentUser) {
+    if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Get the user's email from Clerk using clerkClient
+    const clerkUser = await clerkClient.users.getUser(userId);
+    const userEmail = clerkUser.emailAddresses[0]?.emailAddress;
+
+    if (!userEmail) {
+      return NextResponse.json({ error: "User email not found" }, { status: 404 });
+    }
+
+    // Find the user in your database using the email
+    const user = await prisma.user.findUnique({
+      where: { email: userEmail },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found in database" }, { status: 404 });
     }
 
     const body = await request.json();
     const {
       amount,
-      currency,
       accountNumber,
       accountHolderName,
       iban,
       swiftCode,
+      bank,
     } = body;
 
     // Validate input
-    if (!amount || !currency || !accountNumber || !accountHolderName) {
+    if (!amount || !accountNumber || !accountHolderName) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -54,9 +82,10 @@ export async function POST(request: Request) {
     // Create new withdrawal request
     const withdrawal = await prisma.withdrawal.create({
       data: {
-        userId: currentUser.id,
+        userId: user.id, // Use the database user ID
         amount: parseFloat(amount),
-        currency,
+        bank,
+        currency: "AUD",
         accountNumber,
         accountHolderName,
         iban,

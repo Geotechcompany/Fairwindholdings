@@ -1,72 +1,59 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaCheck, FaTimes, FaEye, FaFile, FaDownload } from "react-icons/fa";
+import { FaCheck, FaTimes, FaEye, FaDownload } from "react-icons/fa";
 import { format, parseISO, isValid } from 'date-fns';
+import useSWR from 'swr';
 
 interface Document {
   id: string;
   type: string;
-  url: string; // Changed from documentUrl to url
+  url: string;
   status: string;
   createdAt: string;
   updatedAt: string;
+
 }
 
-const fallbackImageUrl = "/path/to/fallback-image.jpg"; // Replace with an actual fallback image path
+const fallbackImageUrl = "/path/to/fallback-image.jpg";
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function KYCManagement() {
-  const [documents, setDocuments] = useState<Document[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [selectedDocument, setSelectedDocument] = useState<Document | null>(
-    null
-  );
+  const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
+  const { data: documents, error, mutate } = useSWR<Document[]>('/api/kyc', fetcher);
 
-  useEffect(() => {
-    fetchDocuments();
-  }, []);
-
-  async function fetchDocuments() {
-    try {
-      const response = await fetch("/api/kyc");
-      if (!response.ok) throw new Error("Failed to fetch documents");
-      const data = await response.json();
-      setDocuments(data);
-    } catch (error) {
-      console.error("Error fetching documents:", error);
-      toast.error("Failed to load KYC documents");
-    } finally {
-      setIsLoading(false);
-    }
+  if (error) {
+    toast.error("Failed to load KYC documents");
+    return <div>Failed to load KYC documents</div>;
   }
 
-  async function handleStatusChange(id: string, newStatus: string) {
+  if (!documents) {
+    return <div>Loading...</div>;
+  }
+
+  const handleStatusChange = async (docId: string, newStatus: string) => {
     try {
-      const response = await fetch(
-        `/api/kyc/${id}/${newStatus.toLowerCase()}`,
-        {
-          method: "POST",
-        }
-      );
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to update status");
+      const response = await fetch(`/api/kyc/${docId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        toast.success(`Document ${newStatus.toLowerCase()}d successfully`);
+        mutate(); // Refetch the KYC documents
+      } else {
+        toast.error(`Failed to ${newStatus.toLowerCase()} document`);
       }
-      const updatedDocument = await response.json();
-      setDocuments((docs) =>
-        docs.map((doc) => (doc.id === id ? updatedDocument : doc))
-      );
-      toast.success(`Document ${newStatus.toLowerCase()}d successfully`);
     } catch (error) {
-      console.error("Error updating document status:", error);
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Failed to update document status"
-      );
+      console.error(`Error ${newStatus.toLowerCase()}ing document:`, error);
+      toast.error(`An error occurred while ${newStatus.toLowerCase()}ing the document`);
     }
-  }
+  };
 
   const getImageSrc = (doc: Document) => {
     if (doc.url && doc.url.startsWith("http")) {
@@ -79,15 +66,12 @@ export function KYCManagement() {
     if (!dateString) return 'N/A';
     
     try {
-      // First, try parsing as ISO
       let date = parseISO(dateString);
       
-      // If not valid, try creating a new Date object
       if (!isValid(date)) {
         date = new Date(dateString);
       }
       
-      // If still not valid, throw an error
       if (!isValid(date)) {
         throw new Error('Invalid date');
       }
@@ -116,13 +100,6 @@ export function KYCManagement() {
       });
   };
 
-  if (isLoading)
-    return (
-      <div className="flex justify-center items-center h-screen">
-        Loading...
-      </div>
-    );
-
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8 text-center text-white">
@@ -139,6 +116,9 @@ export function KYCManagement() {
                 Type
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
+                User
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                 Status
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
@@ -149,36 +129,32 @@ export function KYCManagement() {
               </th>
             </tr>
           </thead>
-          <tbody className="bg-gray-100 divide-y divide-gray-200">
+          <tbody>
             {documents.map((doc) => (
               <motion.tr
                 key={doc.id}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="hover:bg-gray-200 transition-colors duration-150"
+                exit={{ opacity: 0 }}
+                className="bg-white"
               >
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="relative w-16 h-16">
-                    {doc.url ? (
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 h-10 w-10">
                       <Image
+                        className="h-10 w-10 rounded-full"
                         src={getImageSrc(doc)}
-                        alt={doc.type}
-                        width={64}
-                        height={64}
-                        objectFit="cover"
-                        className="rounded-md"
+                        alt=""
+                        width={40}
+                        height={40}
                       />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-300 rounded-md">
-                        <FaFile className="text-gray-500 text-2xl" />
-                      </div>
-                    )}
+                    </div>
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-black">
                   {doc.type}
                 </td>
+           
                 <td className="px-6 py-4 whitespace-nowrap text-black">
                   {doc.status}
                 </td>
