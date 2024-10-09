@@ -82,8 +82,10 @@ const OrdersDropdown: React.FC<OrdersDropdownProps> = ({ isOpen, onToggle }) => 
         </button>
       </div>
       {isOpen && (
-        <div className="p-1 overflow-x-auto">
-          {activeTab === 'active' ? renderActiveOrders() : renderOrdersHistory()}
+        <div className="p-1 overflow-x-auto max-w-full">
+          <div className="min-w-max">
+            {activeTab === 'active' ? renderActiveOrders() : renderOrdersHistory()}
+          </div>
         </div>
       )}
     </div>

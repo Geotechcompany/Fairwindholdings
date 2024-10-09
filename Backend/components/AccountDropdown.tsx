@@ -23,7 +23,10 @@ const AccountDropdown: React.FC<{ accountDetails: AccountDetails }> = ({ account
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center justify-between w-full bg-gray-800 p-2 rounded text-white"
       >
-        <span>Account</span>
+        <div className="flex flex-col items-start">
+          <span className="text-green-500 text-xs font-semibold">STANDARD ACCOUNT</span>
+          <span className="text-green-500 text-xl font-bold self-end">A${accountDetails.balance}</span>
+        </div>
         {isOpen ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
       </button>
       {isOpen && (
