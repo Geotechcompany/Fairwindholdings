@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
@@ -10,8 +10,16 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const user = await prisma.user.findFirst({
+      where: { clerkId: userId },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found in database" }, { status: 404 });
+    }
+
     const withdrawals = await prisma.withdrawal.findMany({
-      where: { userId },
+      where: { userId: user.id },
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
@@ -23,6 +31,7 @@ export async function GET() {
         accountHolderName: true,
         iban: true,
         swiftCode: true,
+        bank: true,
       },
     });
 
@@ -44,23 +53,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get the user's email from Clerk using clerkClient
-    const clerkUser = await clerkClient.users.getUser(userId);
-    const userEmail = clerkUser.emailAddresses[0]?.emailAddress;
-
-    if (!userEmail) {
-      return NextResponse.json({ error: "User email not found" }, { status: 404 });
-    }
-
-    // Find the user in your database using the email
-    const user = await prisma.user.findUnique({
-      where: { email: userEmail },
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found in database" }, { status: 404 });
-    }
-
     const body = await request.json();
     const {
       amount,
@@ -69,6 +61,7 @@ export async function POST(request: Request) {
       iban,
       swiftCode,
       bank,
+      email,
     } = body;
 
     // Validate input
@@ -79,10 +72,25 @@ export async function POST(request: Request) {
       );
     }
 
+    // Find the user in your database using clerkId or email
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { clerkId: userId },
+          { email: email }
+        ]
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found in database" }, { status: 404 });
+    }
+
     // Create new withdrawal request
     const withdrawal = await prisma.withdrawal.create({
       data: {
-        userId: user.id, // Use the database user ID
+        userId: user.id,
+        email: user.email, // Use the email from the found user
         amount: parseFloat(amount),
         bank,
         currency: "AUD",
@@ -96,7 +104,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(withdrawal);
   } catch (error) {
-    console.error("Failed to create withdrawal request:", error);
+    console.error("Error creating withdrawal request:", error);
     return NextResponse.json(
       { error: "Failed to create withdrawal request" },
       { status: 500 }
