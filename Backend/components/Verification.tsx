@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { IconType } from "react-icons";
 import {
   FaIdCard,
@@ -8,6 +8,7 @@ import {
   FaUpload,
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
+import useSWR from 'swr';
 
 interface Document {
   id: string;
@@ -25,6 +26,8 @@ interface UploadAreaProps {
   onUpload: (file: File) => void;
   isUploaded: boolean;
 }
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const UploadArea: React.FC<UploadAreaProps> = ({
   icon: Icon,
@@ -91,26 +94,11 @@ const UploadArea: React.FC<UploadAreaProps> = ({
 };
 
 const Verification = () => {
-  const [uploadedDocs, setUploadedDocs] = useState<Document[]>([]);
+  const { data: uploadedDocs, error, mutate } = useSWR<Document[]>('/api/upload/user-documents', fetcher);
 
-  useEffect(() => {
-    fetchUserDocuments();
-  }, []);
-
-  const fetchUserDocuments = async () => {
-    try {
-      const response = await fetch("/api/upload/user-documents");
-      if (response.ok) {
-        const documents = await response.json();
-        setUploadedDocs(documents);
-      } else {
-        toast.error("Failed to fetch uploaded documents");
-      }
-    } catch (error) {
-      console.error("Error fetching user documents:", error);
-      toast.error("An error occurred while fetching documents");
-    }
-  };
+  if (error) {
+    toast.error("Failed to fetch uploaded documents");
+  }
 
   const handleUpload = (docType: string) => async (file: File) => {
     const formData = new FormData();
@@ -126,7 +114,7 @@ const Verification = () => {
       if (response.ok) {
         await response.json(); // Consume the response body if needed
         toast.success(`${docType} uploaded successfully`);
-        fetchUserDocuments(); // Refresh the list of documents
+        mutate(); // Trigger revalidation
       } else {
         const errorData = await response.json();
         toast.error(errorData.error || "Upload failed");
@@ -175,6 +163,10 @@ const Verification = () => {
       docType: "selfie",
     },
   ];
+
+  if (!uploadedDocs) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="p-4 sm:p-6">

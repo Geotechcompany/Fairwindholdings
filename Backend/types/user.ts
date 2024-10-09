@@ -30,8 +30,13 @@ export interface Stats {
 export interface User {
   id: string;
   email: string;
+  firstName: string;
+  lastName: string;
   fullName: string;
+  role: string;
   profileImage: string;
+  phoneNumber: string;
+  gender: string;
   balance: number;
   leverage: string;
   credit: number;
@@ -52,4 +57,16 @@ export interface AccountPanelProps {
     leverage: string;
     credit: number;
   } | undefined;
+}
+
+export interface WithdrawalRequest {
+  id: string;
+  amount: number;
+  withdrawalMethod: string;
+  accountNumber: string;
+  accountHolderName: string;
+  iban?: string;
+  swiftCode?: string;
+  status: 'PENDING' | 'COMPLETED' | 'REJECTED';
+  createdAt: string;
 }

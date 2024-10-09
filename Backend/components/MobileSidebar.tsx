@@ -8,6 +8,8 @@ interface MobileSidebarProps {
   onClose: () => void;
   onNavigate: (view: string) => void;
   userData: any;
+  className?: string; // Add this line
+
 }
 
 const MobileSidebar: React.FC<MobileSidebarProps> = ({
