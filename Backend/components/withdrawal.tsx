@@ -1,14 +1,12 @@
-import React, { useState } from "react";
-import useSWR from "swr";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
-import { useAuth } from "@clerk/nextjs";
-import { Loader2 } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
+import { Badge } from "@/components/ui/badge";
 
-// Define the schema for withdrawal form validation
 const withdrawalSchema = z.object({
   amount: z.number().positive("Amount must be positive"),
   bank: z.string().min(1, "Bank is required"),
@@ -16,43 +14,26 @@ const withdrawalSchema = z.object({
   accountHolderName: z.string().min(1, "Account holder name is required"),
   iban: z.string().min(1, "IBAN is required"),
   swiftCode: z.string().min(1, "SWIFT code is required"),
+  email: z.string().email("Invalid email address"), // Add this line
 });
 
 type WithdrawalFormData = z.infer<typeof withdrawalSchema>;
 
-interface WithdrawalRequest {
+interface WithdrawalData {
   id: string;
   amount: number;
   currency: string;
   status: string;
   createdAt: string;
+  bank: string;
   accountNumber: string;
   accountHolderName: string;
-  bank: string;
 }
 
 const Withdrawal: React.FC = () => {
-  const { getToken } = useAuth();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const fetcher = async (url: string) => {
-    const token = await getToken();
-    const res = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (!res.ok) {
-      throw new Error("An error occurred while fetching the data.");
-    }
-    return res.json();
-  };
-
-  const {
-    data: withdrawalRequests,
-    error,
-    mutate,
-  } = useSWR<WithdrawalRequest[]>("/api/user-withdrawals", fetcher);
+  const { user } = useUser();
+  const [withdrawals, setWithdrawals] = useState<WithdrawalData[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -63,38 +44,72 @@ const Withdrawal: React.FC = () => {
     resolver: zodResolver(withdrawalSchema),
   });
 
-  const onSubmit = async (data: WithdrawalFormData) => {
-    setIsSubmitting(true);
+  useEffect(() => {
+    if (user) {
+      fetchWithdrawals();
+    }
+  }, [user]);
+
+  const fetchWithdrawals = async () => {
+    setIsLoading(true);
     try {
-      const token = await getToken();
+      const response = await fetch("/api/withdrawals");
+      if (!response.ok) {
+        throw new Error("Failed to fetch withdrawals");
+      }
+      const data = await response.json();
+      setWithdrawals(data);
+    } catch (error) {
+      console.error("Error fetching withdrawals:", error);
+      toast.error("Failed to fetch withdrawals");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onSubmit = async (data: WithdrawalFormData) => {
+    try {
       const response = await fetch("/api/withdrawals", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          email: user?.primaryEmailAddress?.emailAddress, // Add this line
+        }),
       });
 
-      if (response.ok) {
-        toast.success("Withdrawal request submitted successfully");
-        reset();
-        mutate();
-      } else {
-        const errorData = await response.json();
-        toast.error(errorData.error || "Failed to submit withdrawal request");
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to submit withdrawal request: ${errorText}`);
       }
+
+      toast.success("Withdrawal request submitted successfully");
+      reset();
+      fetchWithdrawals();
     } catch (error) {
       console.error("Error submitting withdrawal request:", error);
-      toast.error("An error occurred while submitting the request");
-    } finally {
-      setIsSubmitting(false);
+      if (error instanceof Error) {
+        toast.error(`Failed to submit withdrawal request: ${error.message}`);
+      } else {
+        toast.error("An unknown error occurred while submitting the withdrawal request");
+      }
     }
   };
 
-  if (error) {
-    toast.error("Failed to load withdrawal requests");
-  }
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "pending":
+        return "bg-yellow-500";
+      case "approved":
+        return "bg-green-500";
+      case "rejected":
+        return "bg-red-500";
+      default:
+        return "bg-gray-500";
+    }
+  };
 
   return (
     <div className="p-6 bg-[#1e2329] text-white">
@@ -201,54 +216,67 @@ const Withdrawal: React.FC = () => {
             )}
           </div>
 
+          <div>
+            <label htmlFor="email" className="block mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              {...register("email")}
+              defaultValue={user?.primaryEmailAddress?.emailAddress || ''}
+              readOnly
+              className="w-full p-2 bg-[#2a2f35] rounded"
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+
           <button
             type="submit"
-            disabled={isSubmitting}
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors disabled:bg-gray-400"
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors"
           >
-            {isSubmitting ? "Submitting..." : "Request Withdrawal"}
+            Request Withdrawal
           </button>
         </form>
       </div>
 
       <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">YOUR WITHDRAWAL REQUESTS</h2>
-        {error ? (
-          <p className="text-red-500">Error loading withdrawal requests.</p>
-        ) : !withdrawalRequests ? (
-          <div className="flex items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin" />
-            <span className="ml-2">Loading withdrawal requests...</span>
-          </div>
-        ) : withdrawalRequests.length > 0 ? (
+        <h2 className="text-2xl font-bold mb-4">Your Withdrawal Requests</h2>
+        {isLoading ? (
+          <p>Loading withdrawals...</p>
+        ) : withdrawals.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left text-gray-400">
-                  <th className="pb-2">Date</th>
-                  <th className="pb-2">Amount</th>
-                  <th className="pb-2">Currency</th>
-                  <th className="pb-2">Bank</th>
-                  <th className="pb-2">Account Number</th>
-                  <th className="pb-2">Account Holder</th>
-                  <th className="pb-2">Status</th>
+                <tr className="bg-gray-800">
+                  <th className="px-4 py-2 text-left">Date</th>
+                  <th className="px-4 py-2 text-left">Amount</th>
+                  <th className="px-4 py-2 text-left">Currency</th>
+                  <th className="px-4 py-2 text-left">Bank</th>
+                  <th className="px-4 py-2 text-left">Account Number</th>
+                  <th className="px-4 py-2 text-left">Account Holder</th>
+                  <th className="px-4 py-2 text-left">Status</th>
                 </tr>
               </thead>
               <tbody>
-                {withdrawalRequests.map((request) => (
-                  <tr key={request.id} className="border-t border-gray-700">
-                    <td className="py-2">
-                      {format(new Date(request.createdAt), "dd/MM/yyyy HH:mm")}
+                {withdrawals.map((withdrawal) => (
+                  <tr key={withdrawal.id} className="border-b border-gray-700">
+                    <td className="px-4 py-2">
+                      {format(new Date(withdrawal.createdAt), "dd/MM/yyyy HH:mm")}
                     </td>
-                    <td className="py-2">{request.amount}</td>
-                    <td className="py-2">{request.currency}</td>
-                    <td className="py-2">{request.bank}</td>
-                    <td className="py-2">{request.accountNumber}</td>
-                    <td className="py-2">{request.accountHolderName}</td>
-                    <td className="py-2">
-                      <span className="px-2 py-1 rounded text-xs font-semibold bg-yellow-500 text-black">
-                        {request.status}
-                      </span>
+                    <td className="px-4 py-2">{withdrawal.amount}</td>
+                    <td className="px-4 py-2">{withdrawal.currency}</td>
+                    <td className="px-4 py-2">{withdrawal.bank}</td>
+                    <td className="px-4 py-2">{withdrawal.accountNumber}</td>
+                    <td className="px-4 py-2">{withdrawal.accountHolderName}</td>
+                    <td className="px-4 py-2">
+                      <Badge className={`${getStatusColor(withdrawal.status)} text-white`}>
+                        {withdrawal.status}
+                      </Badge>
                     </td>
                   </tr>
                 ))}

@@ -67,13 +67,14 @@ model KYCDocument {
 }
 
 model Deposit {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  amount    Float
-  currency  String
-  status    String
-  createdAt DateTime @default(now())
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  amount         Float
+  currency       String
+  status         String
+  proofImageUrl  String
+  createdAt      DateTime @default(now())
 }
 
 model Withdrawal {

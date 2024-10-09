@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from 'react';
+import { toast } from 'react-hot-toast';
+import useSWR from 'swr';
 
 interface Withdrawal {
   id: string;
@@ -6,16 +8,33 @@ interface Withdrawal {
   amount: number;
   currency: string;
   status: string;
-  date: string;
+  createdAt: string;
 }
 
-const WithdrawalManagement: React.FC = () => {
-  const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-  useEffect(() => {
-    // Fetch withdrawals from API
-    // setWithdrawals(fetchedWithdrawals);
-  }, []);
+const WithdrawalManagement: React.FC = () => {
+  const { data, error } = useSWR<Withdrawal[] | { error: string }>('/api/admin/withdrawals', fetcher);
+
+  if (error) {
+    toast.error("Failed to load withdrawals");
+    return <div>Failed to load withdrawals</div>;
+  }
+
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
+  if ('error' in data) {
+    toast.error(data.error);
+    return <div>{data.error}</div>;
+  }
+
+  const withdrawals = Array.isArray(data) ? data : [];
+
+  if (withdrawals.length === 0) {
+    return <div>No withdrawals found</div>;
+  }
 
   return (
     <div className="bg-[#1e2329] text-white p-6">
@@ -40,17 +59,11 @@ const WithdrawalManagement: React.FC = () => {
               <td className="py-4">{withdrawal.amount}</td>
               <td className="py-4">{withdrawal.currency}</td>
               <td className="py-4">{withdrawal.status}</td>
-              <td className="py-4">{withdrawal.date}</td>
+              <td className="py-4">{new Date(withdrawal.createdAt).toLocaleString()}</td>
               <td className="py-4">
-                <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2">
-                  View
-                </button>
-                <button className="bg-green-500 text-white px-2 py-1 rounded mr-2">
-                  Approve
-                </button>
-                <button className="bg-red-500 text-white px-2 py-1 rounded">
-                  Reject
-                </button>
+                <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2">View</button>
+                <button className="bg-green-500 text-white px-2 py-1 rounded mr-2">Approve</button>
+                <button className="bg-red-500 text-white px-2 py-1 rounded">Reject</button>
               </td>
             </tr>
           ))}

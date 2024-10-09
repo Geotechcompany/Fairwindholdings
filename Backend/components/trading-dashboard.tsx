@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
@@ -17,6 +17,7 @@ import {
   FaPlus,
   FaMinus,
 } from "react-icons/fa";
+import { FaMoneyBills } from "react-icons/fa6";
 import MarketWatch from "./MarketWatch";
 import EconomicCalendar from "./EconomicCalendar";
 import MarketNews from "./MarketNews";
@@ -170,17 +171,22 @@ export function TradingDashboard({
   };
 
   const renderWidget = (widgetName: string) => {
-    switch (widgetName) {
-      case "MARKET WATCH":
-        return <MarketWatch />;
-      case "ECONOMIC CALENDAR":
-        return <EconomicCalendar showCalendar={true} />;
-      case "MARKET NEWS":
-        return <MarketNews />;
-      // Add cases for other widgets as needed
-      default:
-        return null;
-    }
+    return (
+      <Suspense fallback={<div className="flex items-center justify-center h-full">Loading...</div>}>
+        {(() => {
+          switch (widgetName) {
+            case "MARKET WATCH":
+              return <MarketWatch />;
+            case "ECONOMIC CALENDAR":
+              return <EconomicCalendar showCalendar={true} />;
+            case "MARKET NEWS":
+              return <MarketNews />;
+            default:
+              return null;
+          }
+        })()}
+      </Suspense>
+    );
   };
 
   const renderSidebarButton = (
@@ -191,18 +197,18 @@ export function TradingDashboard({
     const isActive = activeWidgets.includes(widgetName);
     return (
       <button
-        className={`flex flex-col items-center justify-center mb-6 text-gray-400 hover:text-white relative group`}
+      className={`w-full aspect-square flex flex-col items-center justify-center text-gray-400 hover:text-white relative group`}
         onClick={() => toggleWidget(widgetName)}
       >
-        <div className="absolute top-0 right-0 bg-blue-500 rounded-full p-1 text-white text-xs">
+        <div className="absolute top-0 right-0 bg-gray-500 rounded-full p-1 text-white text-xs">
           {isActive ? <FaMinus size={8} /> : <FaPlus size={8} />}
         </div>
         <div className={`sm:text-xl md:text-2xl ${isActive ? 'text-white' : ''}`}>{icon}</div>
-        <span className={`mt-1 text-[8px] sm:text-xs md:text-sm ${isActive ? 'text-white' : ''}`}>
+        <span className={`mt-1 text-[8px] sm:text-xs md:text-sm text-center leading-tight${isActive ? 'text-white' : ''}`}>
           {label}
         </span>
         {isActive && (
-          <div className="absolute inset-0 bg-blue-500 opacity-20 rounded-lg"></div>
+          <div className="absolute inset-0 bg-gray-700 opacity-20"></div>
         )}
       </button>
     );
@@ -223,113 +229,108 @@ export function TradingDashboard({
 
   return (
     <div className="bg-[#1e2329] text-white h-screen flex flex-col">
-      <header className="bg-[#2c3035] p-2">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-2">
+      <header className="bg-[#2c3035] p-2 flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <Image
+            src="/images/logo-cita-white.png"
+            alt="CITA TRADING GROUP"
+            width={120}
+            height={36}
+            className="w-24 sm:w-32 hidden sm:inline"
+          />
+          <button className="bg-blue-600 text-white px-4 py-2 rounded text-sm items-center hidden sm:flex">
             <Image
-              src="/images/logo-cita-white.png"
-              alt="CITA TRADING GROUP"
-              width={100}
+              src="/images/gold-icon.png"
+              alt="Gold"
+              width={30}
               height={30}
-              className="w-20 sm:w-24"
+              className="w-6 h-6 mr-2"
             />
-            <button className="hidden md:flex bg-blue-600 text-white px-2 py-1 rounded text-xs items-center">
-              <Image
-                src="/images/gold-icon.png"
-                alt="Gold"
-                width={16}
-                height={16}
-                className="w-4 h-4 mr-1"
-              />
-              Gold metals <FaChevronDown className="ml-1" size={10} />
-            </button>
+            Gold metals <FaChevronDown className="ml-2" size={16} />
+          </button>
+        </div>
+
+        <div className="flex items-center justify-between w-full sm:w-auto sm:space-x-3">
+          <button className="border border-green-500 text-green-500 px-3 py-2 rounded flex items-center text-sm hover:bg-green-500 hover:text-white transition-colors duration-300">
+            <FaMoneyBills className="sm:hidden" />
+            <span className="hidden sm:inline">Deposit</span>
+          </button>
+
+          <div className="w-40 sm:w-48">
+            <AccountDropdown 
+              accountDetails={accountDetails}
+            />
           </div>
 
-          <div className="flex items-center space-x-2">
-            <button className="border border-green-500 text-green-500 px-2 py-1 rounded flex items-center text-xs hover:bg-green-500 hover:text-white transition-colors duration-300">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-3 w-3 mr-1"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2H4zm3 2a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1zm0 4a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Deposit
-            </button>
+          <div className="flex items-center">
+            <Image
+              src="/images/mvp-badge.png"
+              alt="MVP"
+              width={12}
+              height={12}
+              className="w-12 h-12 mr-2 sm:mr-0"
+            />
 
-            <div className="w-28 sm:w-32">
-              <AccountDropdown accountDetails={accountDetails} />
-            </div>
-
-            <div className="flex items-center space-x-1">
-              <Image
-                src="/images/mvp-badge.png"
-                alt="MVP"
-                width={20}
-                height={20}
-                className="w-5 h-5"
-              />
-              <Link href="/">
-                <button className="bg-gray-750 p-1 rounded-full text-gray-400 hover:text-white transition-colors duration-300">
-                  {user?.imageUrl ? (
-                    <Image
-                      src={user.imageUrl}
-                      alt="User Profile"
-                      width={24}
-                      height={24}
-                      className="rounded-full"
-                    />
-                  ) : (
-                    <FaUser className="text-white" size={16} />
-                  )}
-                </button>
-              </Link>
-            </div>
+            <Link href="/">
+              <button className="bg-gray-750 p-2 rounded-full text-gray-400 hover:text-white transition-colors duration-300">
+                {user?.imageUrl ? (
+                  <Image
+                    src={user.imageUrl}
+                    alt="User Profile"
+                    width={12}
+                    height={12}
+                    className="rounded-full w-12 h-12 hidden sm:inline"
+                  />
+                ) : (
+                  <FaUser className="text-white" size={20} />
+                )}
+              </button>
+            </Link>
           </div>
         </div>
       </header>
 
       <div className="flex flex-grow overflow-hidden">
-        <aside className="flex w-16 sm:w-20 md:w-24 bg-[#2c3035] flex-shrink-0 flex-col py-2 sm:py-4">
-          {renderSidebarButton(<FaChartLine size={16} />, "MARKET WATCH", "MARKET WATCH")}
-          {renderSidebarButton(<FaShoppingCart size={16} />, "ACTIVE ORDERS", "ACTIVE ORDERS")}
-          {renderSidebarButton(<FaHistory size={16} />, "TRADING HISTORY", "TRADING HISTORY")}
-          {renderSidebarButton(<FaCalendarAlt size={16} />, "ECONOMIC CALENDAR", "ECONOMIC CALENDAR")}
-          {renderSidebarButton(<FaNewspaper size={16} />, "MARKET NEWS", "MARKET NEWS")}
+        <aside className="flex flex-col w-16 sm:w-20 md:w-24 bg-[#2c3035] flex-shrink-0">
+          {renderSidebarButton(<FaChartLine size={20} />, "MARKET WATCH", "MARKET WATCH")}
+          {renderSidebarButton(<FaShoppingCart size={20} />, "ACTIVE ORDERS", "ACTIVE ORDERS")}
+          {renderSidebarButton(<FaHistory size={20} />, "TRADING HISTORY", "TRADING HISTORY")}
+          {renderSidebarButton(<FaCalendarAlt size={20} />, "ECONOMIC CALENDAR", "ECONOMIC CALENDAR")}
+          {renderSidebarButton(<FaNewspaper size={20} />, "MARKET NEWS", "MARKET NEWS")}
         </aside>
 
-        <div className="flex-grow flex flex-col overflow-hidden relative">
+        <div className="flex-grow flex overflow-hidden relative">
           {/* Active Widgets */}
           {activeWidgets.length > 0 && (
-            <div className="lg:w-64 bg-gray-800 overflow-hidden absolute left-0 top-0 bottom-0 z-10">
+            <div className="absolute inset-y-0 left-0 z-10 bg-gray-800 overflow-hidden lg:relative lg:w-64">
               {renderActiveWidgets()}
             </div>
           )}
 
-          <main className="flex-grow flex flex-col overflow-hidden">
-            <div className="flex-grow flex flex-col lg:flex-row relative">
-              {/* Chart */}
-              <div id="tradingview_chart" className="flex-grow" />
+          <main className={`flex-grow flex flex-col overflow-hidden ${activeWidgets.length > 0 ? 'lg:ml-4' : ''}`}>
+            <div className="flex-grow flex">
+              <div id="tradingview_chart" className="w-full h-full flex-grow" />
+            </div>
 
-              {/* TradingWidget */}
-              <div className="lg:w-64 bg-gray-800 overflow-hidden">
-                <TradingWidget />
-              </div>
+            {/* TradingWidget for small screens */}
+            <div className="lg:hidden bg-gray-800 overflow-hidden">
+              <TradingWidget />
             </div>
 
             {/* Orders Dropdown */}
             <div className={`transition-all duration-300 ${isOrdersOpen ? 'h-48' : 'h-10'} overflow-hidden`}>
-              <OrdersDropdown 
-                isOpen={isOrdersOpen} 
-                onToggle={() => setIsOrdersOpen(!isOrdersOpen)} 
+              <OrdersDropdown
+                isOpen={isOrdersOpen}
+                onToggle={() => setIsOrdersOpen(!isOrdersOpen)}
               />
             </div>
           </main>
+
+          {/* TradingWidget */}
+          <div className={"hidden lg:block lg:w-64 bg-gray-800 overflow-hidden transition-all duration-300 ${isOrdersOpen ? 'h-[calc(100%-12)]' : 'h-[calc(100%-2.5rem)]'}"}>
+            <TradingWidget />
+          </div>
+
         </div>
       </div>
 
