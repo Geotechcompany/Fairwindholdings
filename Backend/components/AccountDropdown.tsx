@@ -4,14 +4,14 @@ import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 interface AccountDetails {
   accountType: string;
   accountNumber: string;
-  balance: string;
-  credit: string;
-  invested: string;
-  profit: string;
-  equity: string;
-  margin: string;
-  marginLevel: string;
-  freeMargin: string;
+  balance: number;
+  credit: number;
+  invested: number;
+  profit: number;
+  equity: number;
+  margin: number;
+  marginLevel: number;
+  freeMargin: number;
 }
 
 const AccountDropdown: React.FC<{ accountDetails: AccountDetails }> = ({ accountDetails }) => {
@@ -25,7 +25,7 @@ const AccountDropdown: React.FC<{ accountDetails: AccountDetails }> = ({ account
       >
         <div className="flex flex-col items-start">
           <span className="text-green-500 text-xs font-semibold">STANDARD ACCOUNT</span>
-          <span className="text-green-500 text-xl font-bold self-end">A${accountDetails.balance}</span>
+          <span className="text-green-500 text-xl font-bold self-end">A${accountDetails.balance.toFixed(2)}</span>
         </div>
         {isOpen ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
       </button>
@@ -42,7 +42,7 @@ const AccountDropdown: React.FC<{ accountDetails: AccountDetails }> = ({ account
                 <div key={key} className="flex items-baseline text-sm">
                   <span className="text-gray-400 capitalize flex-shrink-0">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
                   <div className="flex-grow mx-2 border-b border-gray-600 border-dotted"></div>
-                  <span className="text-white font-medium flex-shrink-0">${value}</span>
+                  <span className="text-white font-medium flex-shrink-0">${typeof value === 'number' ? value.toFixed(2) : value}</span>
                 </div>
               )
             ))}
