@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import ProfitCalculatorModal from "./Trading/ProfitCalculatorModal";
 import TakeProfitStopLossModal from "./Trading/TakeProfitStopLossModal";
 import PendingOrderModal from "./Trading/PendingOrderModal";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 import { FaChartLine, FaClock, FaMoneyBillTrendUp } from "react-icons/fa6";
 
 const TradingWidget = () => {
-  const [marketPrice, setMarketPrice] = useState<number>(2658.16);
+  const [buyPrice, setBuyPrice] = useState<number | null>(null);
+  const [sellPrice, setSellPrice] = useState<number | null>(null);
   const [tradeVolume, setTradeVolume] = useState<number>(0.01);
   const [tradeType, setTradeType] = useState<"buy" | "sell" | null>(null);
   const [isProfitCalculatorOpen, setIsProfitCalculatorOpen] = useState(false);
@@ -15,14 +18,34 @@ const TradingWidget = () => {
   const [stopLossValue, setStopLossValue] = useState<number | null>(null);
   const [pendingOrderValue, setPendingOrderValue] = useState<number | null>(null);
 
+
   useEffect(() => {
-    const fetchMarketPrice = async () => {
-      const price = 2658.16 + Math.random() * 2;
-      setMarketPrice(price);
+    const fetchPrices = async () => {
+      try {
+        const response = await axios.get('https://marketdata.tradermade.com/api/v1/live', {
+          params: {
+            currency: 'XAUUSD',
+            api_key: process.env.NEXT_PUBLIC_TRADERMADE_API_KEY
+          }
+        });
+        
+        console.log('API Response:', response.data); // Log the response for debugging
+
+        if (response.data && response.data.quotes && response.data.quotes.length > 0) {
+          const { ask, bid } = response.data.quotes[0];
+          setBuyPrice(parseFloat(ask));
+          setSellPrice(parseFloat(bid));
+        } else {
+          throw new Error('Invalid response structure');
+        }
+      } catch (error) {
+        console.error('Error fetching market price:', error);
+        toast.error("Failed to fetch market prices");
+      }
     };
 
-    fetchMarketPrice();
-    const intervalId = setInterval(fetchMarketPrice, 5000);
+    fetchPrices();
+    const intervalId = setInterval(fetchPrices, 5000);
     return () => clearInterval(intervalId);
   }, []);
 
@@ -32,7 +55,12 @@ const TradingWidget = () => {
 
   const handlePlaceTrade = (type: "buy" | "sell") => {
     setTradeType(type);
-    alert(`Trade placed: ${type.toUpperCase()} at ${marketPrice}`);
+    const price = type === 'buy' ? buyPrice : sellPrice;
+    if (price) {
+      toast.success(`Trade placed: ${type.toUpperCase()} at ${price.toFixed(5)}`);
+    } else {
+      toast.error('Failed to place trade');
+    }
   };
 
   return (
@@ -123,13 +151,13 @@ const TradingWidget = () => {
               className="bg-green-600 py-1"
               onClick={() => handlePlaceTrade("buy")}
             >
-              BUY<br />{marketPrice.toFixed(2)}
+              BUY<br />{buyPrice ? buyPrice.toFixed(5) : 'Loading...'}
             </button>
             <button
               className="bg-red-600 py-1"
               onClick={() => handlePlaceTrade("sell")}
             >
-              SELL<br />{marketPrice.toFixed(2)}
+              SELL<br />{sellPrice ? sellPrice.toFixed(5) : 'Loading...'}
             </button>
           </div>
         </div>
@@ -143,13 +171,13 @@ const TradingWidget = () => {
       <TakeProfitStopLossModal
         isOpen={isTakeProfitStopLossOpen}
         onClose={() => setIsTakeProfitStopLossOpen(false)}
-        currentPrice={marketPrice}
+        currentPrice={buyPrice || 0}
       />
 
       <PendingOrderModal
         isOpen={isPendingOrderOpen}
         onClose={() => setIsPendingOrderOpen(false)}
-        currentPrice={marketPrice}
+        currentPrice={buyPrice || 0}
       />
     </div>
   );
