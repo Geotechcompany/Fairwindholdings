@@ -23,7 +23,17 @@ interface Deposit {
 
 const fallbackImageUrl = "/path/to/fallback-image.jpg";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+  if (!res.ok) {
+    const error = new Error('An error occurred while fetching the data.');
+    // Attach extra info to the error object.
+    (error as any).info = await res.json();
+    (error as any).status = res.status;
+    throw error;
+  }
+  return res.json();
+};
 
 const DepositManagement: React.FC = () => {
   const [selectedDeposit, setSelectedDeposit] = useState<Deposit | null>(null);
@@ -78,63 +88,69 @@ const DepositManagement: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#1e2329] text-white p-6">
+    <div className="bg-[#1e2329] text-white p-4 sm:p-6">
       <h1 className="text-2xl font-bold mb-6">Deposit Management</h1>
-      <table className="w-full">
-        <thead>
-          <tr className="text-left text-gray-400 border-b border-gray-700">
-            <th className="pb-2">ID</th>
-            <th className="pb-2">Proof</th>
-            <th className="pb-2">Amount</th>
-            <th className="pb-2">Currency</th>
-            <th className="pb-2">Status</th>
-            <th className="pb-2">Date</th>
-            <th className="pb-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {deposits.map((deposit) => (
-            <tr key={deposit.id} className="border-b border-gray-700">
-              <td className="py-4">{deposit.id}</td>
-              <td className="py-4">
-                <div className="relative w-16 h-16 cursor-pointer" onClick={() => setSelectedDeposit(deposit)}>
-                  <Image
-                    src={deposit.proofImageUrl || fallbackImageUrl}
-                    alt="Deposit Proof"
-                    layout="fill"
-                    objectFit="cover"
-                    className="rounded"
-                  />
-                </div>
-              </td>
-              <td className="py-4">{deposit.amount}</td>
-              <td className="py-4">{deposit.currency}</td>
-              <td className="py-4">{deposit.status}</td>
-              <td className="py-4">{new Date(deposit.createdAt).toLocaleString()}</td>
-              <td className="py-4">
-                <button
-                  onClick={() => setSelectedDeposit(deposit)}
-                  className="bg-blue-500 text-white px-2 py-1 rounded mr-2"
-                >
-                  View
-                </button>
-                <button
-                  onClick={() => handleStatusChange(deposit.id, "APPROVED")}
-                  className="bg-green-500 text-white px-2 py-1 rounded mr-2"
-                >
-                  Approve
-                </button>
-                <button
-                  onClick={() => handleStatusChange(deposit.id, "REJECTED")}
-                  className="bg-red-500 text-white px-2 py-1 rounded"
-                >
-                  Reject
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {deposits.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px]">
+            <thead>
+              <tr className="text-left text-gray-400 border-b border-gray-700">
+                <th className="pb-2 px-2">ID</th>
+                <th className="pb-2 px-2">Proof</th>
+                <th className="pb-2 px-2">Amount</th>
+                <th className="pb-2 px-2">Currency</th>
+                <th className="pb-2 px-2">Status</th>
+                <th className="pb-2 px-2">Date</th>
+                <th className="pb-2 px-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {deposits.map((deposit) => (
+                <tr key={deposit.id} className="border-b border-gray-700">
+                  <td className="py-4 px-2">{deposit.id.slice(0, 8)}...</td>
+                  <td className="py-4 px-2">
+                    <div className="relative w-16 h-16 cursor-pointer" onClick={() => setSelectedDeposit(deposit)}>
+                      <Image
+                        src={deposit.proofImageUrl || fallbackImageUrl}
+                        alt="Deposit Proof"
+                        layout="fill"
+                        objectFit="cover"
+                        className="rounded"
+                      />
+                    </div>
+                  </td>
+                  <td className="py-4 px-2">{deposit.amount}</td>
+                  <td className="py-4 px-2">{deposit.currency}</td>
+                  <td className="py-4 px-2">{deposit.status}</td>
+                  <td className="py-4 px-2">{new Date(deposit.createdAt).toLocaleString()}</td>
+                  <td className="py-4 px-2">
+                    <button
+                      onClick={() => setSelectedDeposit(deposit)}
+                      className="bg-blue-500 text-white px-2 py-1 rounded mr-2 mb-2 sm:mb-0"
+                    >
+                      View
+                    </button>
+                    <button
+                      onClick={() => handleStatusChange(deposit.id, "APPROVED")}
+                      className="bg-green-500 text-white px-2 py-1 rounded mr-2 mb-2 sm:mb-0"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => handleStatusChange(deposit.id, "REJECTED")}
+                      className="bg-red-500 text-white px-2 py-1 rounded"
+                    >
+                      Reject
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p>No deposits found.</p>
+      )}
 
       <AnimatePresence>
         {selectedDeposit && (
