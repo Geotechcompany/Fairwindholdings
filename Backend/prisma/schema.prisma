@@ -16,6 +16,7 @@ model User {
   lastName    String
   email       String   @unique
   clerkId     String?  @unique
+  balance     Float    @default(0)
   stats       Stats?
   mainAccount Account? @relation("UserMainAccount")
   password    String
@@ -41,10 +42,10 @@ model Account {
   userId        String
   mainUser      User?   @relation("UserMainAccount", fields: [mainUserId], references: [id])
   mainUserId    String? @unique
-  balance       Float
-  leverage      String
-  credit        Float
-  totalDeposits Float
+  balance       Float   @default(0)
+  leverage      String  @default("1:100")
+  credit        Float   @default(0)
+  totalDeposits Float   @default(0)
 }
 
 model Session {

@@ -7,9 +7,6 @@ import {
   FaHistory,
   FaCalendarAlt,
   FaNewspaper,
-  FaCog,
-  FaExpand,
-  FaCamera,
   FaChevronDown,
   FaUser,
   FaShoppingCart,
@@ -21,9 +18,12 @@ import { FaMoneyBills } from "react-icons/fa6";
 import MarketWatch from "./MarketWatch";
 import EconomicCalendar from "./EconomicCalendar";
 import MarketNews from "./MarketNews";
-import TradingWidget from "./TradingWidget";
 import AccountDropdown from "./AccountDropdown";
-import OrdersDropdown from './OrdersDropdown';
+import OrdersDropdown from "./OrdersDropdown";
+import { getAccountSummary, getOpenTrades } from "@/lib/oandaClient/route";
+import ProfitCalculator from "./Trading/ProfitCalculatorModal";
+import ActiveOrders from "./ActiveOrders";
+import TradingHistory from "./TradingHistory";
 
 declare global {
   interface Window {
@@ -36,12 +36,6 @@ interface TradingDashboardProps {
   stats: any;
 }
 
-interface LoginModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onLogin: (user: any) => void;
-}
-
 export function TradingDashboard({
   userData,
   stats,
@@ -50,17 +44,76 @@ export function TradingDashboard({
   stats: any;
 }) {
   const { user } = useUser();
-  const [selectedMarket, setSelectedMarket] = useState("GOLD");
-  const [timeframe, setTimeframe] = useState("1D");
+  const [accountSummary, setAccountSummary] = useState<any>(null);
+  const [openTrades, setOpenTrades] = useState<any[]>([]);
   const [currentTime, setCurrentTime] = useState<string>("");
   const [activeWidgets, setActiveWidgets] = useState<string[]>([]);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isProfitCalculatorOpen, setIsProfitCalculatorOpen] = useState(false);
   const [isOrdersOpen, setIsOrdersOpen] = useState(true);
+  const [accountDetails, setAccountDetails] = useState<AccountDetails>({
+    accountType: "STANDARD",
+    accountNumber: "Loading...",
+    balance: 0,
+    credit: 0,
+    invested: 0,
+    profit: 0,
+    equity: 0,
+    margin: 0,
+    marginLevel: 0,
+    freeMargin: 0,
+  });
+  const [activeOrders, setActiveOrders] = useState([]);
+  const [tradingHistory, setTradingHistory] = useState([]);
+
+  useEffect(() => {
+    const fetchAccountData = async () => {
+      try {
+        const summary = await getAccountSummary();
+        setAccountSummary(summary);
+        const trades = await getOpenTrades();
+        setOpenTrades(trades.trades);
+      } catch (error) {
+        console.error("Error fetching account data:", error);
+      }
+    };
+
+    fetchAccountData();
+    const intervalId = setInterval(fetchAccountData, 60000); // Update every minute
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    const fetchAccountDetails = async () => {
+      try {
+        const response = await fetch("/api/account/details");
+        if (!response.ok) {
+          throw new Error("Failed to fetch account details");
+        }
+        const data = await response.json();
+        setAccountDetails({
+          accountType: "STANDARD",
+          accountNumber: data.id,
+          balance: data.balance,
+          credit: data.credit,
+          invested: data.totalDeposits,
+          profit: stats.pnl,
+          equity: data.balance + stats.pnl,
+          margin: 0, // You may need to calculate this based on your business logic
+          marginLevel: 0, // You may need to calculate this based on your business logic
+          freeMargin: data.balance, // Assuming free margin is the same as balance for simplicity
+        });
+      } catch (error) {
+        console.error("Error fetching account details:", error);
+      }
+    };
+
+    fetchAccountDetails();
+  }, [stats.pnl]);
 
   useEffect(() => {
     const script = document.createElement("script");
-    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+    script.src =
+      "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
     script.async = true;
     script.innerHTML = JSON.stringify({
       autosize: true,
@@ -79,7 +132,7 @@ export function TradingDashboard({
       container_id: "tradingview_chart",
       hide_top_toolbar: false,
       hide_legend: false,
-      save_image: false,
+      save_image: true,
       hide_popup_button: true,
       overrides: {
         "paneProperties.background": "#131722",
@@ -114,13 +167,25 @@ export function TradingDashboard({
     return () => clearInterval(timer);
   }, []);
 
-  const timeframesMap: { [key: string]: string } = {
-    "1m": "1",
-    "5m": "5",
-    "15m": "15",
-    "1h": "60",
-    "4h": "240",
-    "1d": "D",
+  useEffect(() => {
+    fetchActiveOrders();
+    fetchTradingHistory();
+  }, []);
+
+  const fetchActiveOrders = async () => {
+    const response = await fetch("/api/trade/active");
+    if (response.ok) {
+      const data = await response.json();
+      setActiveOrders(data);
+    }
+  };
+
+  const fetchTradingHistory = async () => {
+    const response = await fetch("/api/trade/history");
+    if (response.ok) {
+      const data = await response.json();
+      setTradingHistory(data);
+    }
   };
 
   const toggleWidget = (widget: string) => {
@@ -148,10 +213,7 @@ export function TradingDashboard({
     return (
       <div className="bg-gray-800 overflow-hidden flex flex-col h-full">
         {activeWidgets.map((widget) => (
-          <div
-            key={widget}
-            className="flex-1 border-gray-700 flex flex-col"
-          >
+          <div key={widget} className="flex-1 border-gray-700 flex flex-col">
             <div className="flex justify-between items-center p-2 bg-gray-700">
               <h2 className="text-base font-semibold">{widget}</h2>
               <button
@@ -172,7 +234,13 @@ export function TradingDashboard({
 
   const renderWidget = (widgetName: string) => {
     return (
-      <Suspense fallback={<div className="flex items-center justify-center h-full">Loading...</div>}>
+      <Suspense
+        fallback={
+          <div className="flex items-center justify-center h-full">
+            Loading...
+          </div>
+        }
+      >
         {(() => {
           switch (widgetName) {
             case "MARKET WATCH":
@@ -197,14 +265,22 @@ export function TradingDashboard({
     const isActive = activeWidgets.includes(widgetName);
     return (
       <button
-      className={`w-full aspect-square flex flex-col items-center justify-center text-gray-400 hover:text-white relative group`}
+        className={`w-full aspect-square flex flex-col items-center justify-center text-gray-400 hover:text-white relative group`}
         onClick={() => toggleWidget(widgetName)}
       >
         <div className="absolute top-0 right-0 bg-gray-500 rounded-full p-1 text-white text-xs">
           {isActive ? <FaMinus size={8} /> : <FaPlus size={8} />}
         </div>
-        <div className={`sm:text-xl md:text-2xl ${isActive ? 'text-white' : ''}`}>{icon}</div>
-        <span className={`mt-1 text-[8px] sm:text-xs md:text-sm text-center leading-tight${isActive ? 'text-white' : ''}`}>
+        <div
+          className={`sm:text-xl md:text-2xl ${isActive ? "text-white" : ""}`}
+        >
+          {icon}
+        </div>
+        <span
+          className={`mt-1 text-[8px] sm:text-xs md:text-sm text-center leading-tight${
+            isActive ? "text-white" : ""
+          }`}
+        >
           {label}
         </span>
         {isActive && (
@@ -212,19 +288,6 @@ export function TradingDashboard({
         )}
       </button>
     );
-  };
-
-  const accountDetails = {
-    accountType: "STANDARD",
-    accountNumber: "1645520",
-    balance: "0.00",
-    credit: "0.00",
-    invested: "0.00",
-    profit: "0.00",
-    equity: "0.00",
-    margin: "0.00",
-    marginLevel: "-",
-    freeMargin: "-",
   };
 
   return (
@@ -256,10 +319,8 @@ export function TradingDashboard({
             <span className="hidden sm:inline">Deposit</span>
           </button>
 
-          <div className="w-40 sm:w-48">
-            <AccountDropdown 
-              accountDetails={accountDetails}
-            />
+          <div className="w-48 sm:w-56">
+            <AccountDropdown accountDetails={accountDetails} />
           </div>
 
           <div className="flex items-center">
@@ -292,11 +353,31 @@ export function TradingDashboard({
 
       <div className="flex flex-grow overflow-hidden">
         <aside className="flex flex-col w-16 sm:w-20 md:w-24 bg-[#2c3035] flex-shrink-0">
-          {renderSidebarButton(<FaChartLine size={20} />, "MARKET WATCH", "MARKET WATCH")}
-          {renderSidebarButton(<FaShoppingCart size={20} />, "ACTIVE ORDERS", "ACTIVE ORDERS")}
-          {renderSidebarButton(<FaHistory size={20} />, "TRADING HISTORY", "TRADING HISTORY")}
-          {renderSidebarButton(<FaCalendarAlt size={20} />, "ECONOMIC CALENDAR", "ECONOMIC CALENDAR")}
-          {renderSidebarButton(<FaNewspaper size={20} />, "MARKET NEWS", "MARKET NEWS")}
+          {renderSidebarButton(
+            <FaChartLine size={20} />,
+            "MARKET WATCH",
+            "MARKET WATCH"
+          )}
+          {renderSidebarButton(
+            <FaShoppingCart size={20} />,
+            "ACTIVE ORDERS",
+            "ACTIVE ORDERS"
+          )}
+          {renderSidebarButton(
+            <FaHistory size={20} />,
+            "TRADING HISTORY",
+            "TRADING HISTORY"
+          )}
+          {renderSidebarButton(
+            <FaCalendarAlt size={20} />,
+            "ECONOMIC CALENDAR",
+            "ECONOMIC CALENDAR"
+          )}
+          {renderSidebarButton(
+            <FaNewspaper size={20} />,
+            "MARKET NEWS",
+            "MARKET NEWS"
+          )}
         </aside>
 
         <div className="flex-grow flex overflow-hidden relative">
@@ -307,37 +388,54 @@ export function TradingDashboard({
             </div>
           )}
 
-          <main className={`flex-grow flex flex-col overflow-hidden ${activeWidgets.length > 0 ? 'lg:ml-4' : ''}`}>
+          <main
+            className={`flex-grow flex flex-col overflow-hidden ${
+              activeWidgets.length > 0 ? "lg:ml-4" : ""
+            }`}
+          >
             <div className="flex-grow flex">
               <div id="tradingview_chart" className="w-full h-full flex-grow" />
             </div>
 
             {/* TradingWidget for small screens */}
             <div className="lg:hidden bg-gray-800 overflow-hidden">
-              <TradingWidget />
+              <ProfitCalculator />
             </div>
 
             {/* Orders Dropdown */}
-            <div className={`transition-all duration-300 ${isOrdersOpen ? 'h-48' : 'h-10'} overflow-hidden`}>
+            <div
+              className={`transition-all duration-300 ${
+                isOrdersOpen ? "h-48" : "h-10"
+              } overflow-hidden`}
+            >
               <OrdersDropdown
                 isOpen={isOrdersOpen}
                 onToggle={() => setIsOrdersOpen(!isOrdersOpen)}
+                openTrades={openTrades}
               />
             </div>
           </main>
 
           {/* TradingWidget */}
-          <div className={"hidden lg:block lg:w-64 bg-gray-800 overflow-hidden transition-all duration-300 ${isOrdersOpen ? 'h-[calc(100%-12)]' : 'h-[calc(100%-2.5rem)]'}"}>
-            <TradingWidget />
+          <div
+            className={`hidden lg:block lg:w-96 bg-gray-800 overflow-hidden transition-all duration-300 ${
+              isOrdersOpen ? "h-[calc(100%-12rem)]" : "h-[calc(100%-2.5rem)]"
+            }`}
+          >
+            <ProfitCalculator />
           </div>
-
         </div>
       </div>
 
       <footer className="bg-[#2c3035] p-2 flex flex-wrap justify-between items-center text-xs">
         <div className="flex items-center space-x-2 mb-1 sm:mb-0">
-          <span>Balance: $0.00</span>
-          <span>Credit: $0.00</span>
+          <span>Balance: ${parseFloat(accountDetails.balance).toFixed(2)}</span>
+          <span>Credit: ${accountDetails.credit}</span>
+        </div>
+        <div className="flex items-center space-x-2 mb-1 sm:mb-0">
+          <span>
+            Lifetime PnL: ${parseFloat(accountDetails.profit).toFixed(2)}
+          </span>
         </div>
         <div className="flex items-center space-x-2">
           <button className="text-blue-500">LIVE CHAT</button>
