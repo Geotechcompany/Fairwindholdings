@@ -1,91 +1,72 @@
-import React, { useState } from 'react';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import React from "react";
+import { FaChevronUp, FaChevronDown } from "react-icons/fa";
+
+interface Trade {
+  id: string;
+  instrument: string;
+  currentUnits: number;
+  price: number;
+  unrealizedPL: number;
+}
 
 interface OrdersDropdownProps {
   isOpen: boolean;
   onToggle: () => void;
+  openTrades: Trade[];
 }
 
-const OrdersDropdown: React.FC<OrdersDropdownProps> = ({ isOpen, onToggle }) => {
-  const [activeTab, setActiveTab] = useState<'active' | 'history'>('active');
-
-  const renderActiveOrders = () => (
-    <table className="w-full text-xs">
-      <thead>
-        <tr className="text-gray-400">
-          <th className="text-left p-1">Symbol</th>
-          <th className="text-left p-1">ID</th>
-          <th className="text-left p-1">Type</th>
-          <th className="text-left p-1">Volume</th>
-          <th className="text-left p-1">Open Price</th>
-          <th className="text-left p-1">Open Time</th>
-          <th className="text-left p-1">SL</th>
-          <th className="text-left p-1">TP</th>
-          <th className="text-left p-1">Price</th>
-          <th className="text-left p-1">Commission</th>
-          <th className="text-left p-1">Swap</th>
-          <th className="text-left p-1">PnL</th>
-          <th className="text-left p-1">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {/* Add rows for active orders here */}
-      </tbody>
-    </table>
-  );
-
-  const renderOrdersHistory = () => (
-    <table className="w-full text-xs">
-      <thead>
-        <tr className="text-gray-400">
-          <th className="text-left p-1">Symbol</th>
-          <th className="text-left p-1">ID</th>
-          <th className="text-left p-1">Type</th>
-          <th className="text-left p-1">Volume</th>
-          <th className="text-left p-1">Open Price</th>
-          <th className="text-left p-1">Open Time</th>
-          <th className="text-left p-1">Close Price</th>
-          <th className="text-left p-1">Close Time</th>
-          <th className="text-left p-1">Commission</th>
-          <th className="text-left p-1">Swap</th>
-          <th className="text-left p-1">PnL</th>
-        </tr>
-      </thead>
-      <tbody>
-        {/* Add rows for order history here */}
-      </tbody>
-    </table>
-  );
-
+const OrdersDropdown: React.FC<OrdersDropdownProps> = ({
+  isOpen,
+  onToggle,
+  openTrades,
+}) => {
   return (
     <div className="bg-gray-800 text-white">
-      <div className="flex items-center justify-between p-1 bg-gray-700">
-        <div className="flex">
-          <button
-            className={`py-1 px-2 text-xs font-medium ${activeTab === 'active' ? 'bg-blue-500 text-white' : 'bg-gray-600 text-gray-300'} rounded-l`}
-            onClick={() => setActiveTab('active')}
-          >
-            ACTIVE ORDERS
-          </button>
-          <button
-            className={`py-1 px-2 text-xs font-medium ${activeTab === 'history' ? 'bg-blue-500 text-white' : 'bg-gray-600 text-gray-300'} rounded-r`}
-            onClick={() => setActiveTab('history')}
-          >
-            ORDERS HISTORY
-          </button>
-        </div>
-        <button
-          onClick={onToggle}
-          className="text-gray-300 hover:text-white"
-        >
-          {isOpen ? <FaChevronDown size={12} /> : <FaChevronUp size={12} />}
-        </button>
-      </div>
+      <button
+        className="w-full p-2 flex justify-between items-center"
+        onClick={onToggle}
+      >
+        <span>Open Orders</span>
+        {isOpen ? <FaChevronUp /> : <FaChevronDown />}
+      </button>
       {isOpen && (
-        <div className="p-1 overflow-x-auto max-w-full">
-          <div className="min-w-max">
-            {activeTab === 'active' ? renderActiveOrders() : renderOrdersHistory()}
-          </div>
+        <div className="p-2">
+          {openTrades.length === 0 ? (
+            <p>No open trades</p>
+          ) : (
+            <table className="w-full">
+              <thead>
+                <tr>
+                  <th>Instrument</th>
+                  <th>Type</th>
+                  <th>Units</th>
+                  <th>Price</th>
+                  <th>P/L</th>
+                </tr>
+              </thead>
+              <tbody>
+                {openTrades.map((trade) => (
+                  <tr key={trade.id}>
+                    <td>{trade.instrument}</td>
+                    <td>
+                      {parseFloat(trade.currentUnits) > 0 ? "Buy" : "Sell"}
+                    </td>
+                    <td>{Math.abs(parseFloat(trade.currentUnits))}</td>
+                    <td>{parseFloat(trade.price).toFixed(5)}</td>
+                    <td
+                      className={
+                        parseFloat(trade.unrealizedPL) >= 0
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }
+                    >
+                      {parseFloat(trade.unrealizedPL).toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       )}
     </div>
