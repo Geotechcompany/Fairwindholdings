@@ -339,6 +339,9 @@ export function TradingDashboard({
           <span>Balance: $0.00</span>
           <span>Credit: $0.00</span>
         </div>
+        <div className="flex items-center space-x-2 mb-1 sm:mb-0">
+          <span>Lifetime PnL: $0.00</span>
+        </div>
         <div className="flex items-center space-x-2">
           <button className="text-blue-500">LIVE CHAT</button>
           <span>CURRENT TIME: {currentTime}</span>

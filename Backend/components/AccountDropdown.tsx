@@ -21,7 +21,7 @@ const AccountDropdown: React.FC<{ accountDetails: AccountDetails }> = ({ account
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full bg-gray-800 p-2 rounded text-white"
+        className="flex items-center justify-between w-full p-2 rounded text-white"
       >
         <div className="flex flex-col items-start">
           <span className="text-green-500 text-xs font-semibold">STANDARD ACCOUNT</span>

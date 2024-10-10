@@ -11,6 +11,9 @@ const TradingWidget = () => {
   const [isProfitCalculatorOpen, setIsProfitCalculatorOpen] = useState(false);
   const [isTakeProfitStopLossOpen, setIsTakeProfitStopLossOpen] = useState(false);
   const [isPendingOrderOpen, setIsPendingOrderOpen] = useState(false);
+  const [takeProfitValue, setTakeProfitValue] = useState<number | null>(null);
+  const [stopLossValue, setStopLossValue] = useState<number | null>(null);
+  const [pendingOrderValue, setPendingOrderValue] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchMarketPrice = async () => {
@@ -65,17 +68,25 @@ const TradingWidget = () => {
           </div>
           {/* Take Profit & Stop Loss */}
           <button 
-            className="bg-gray-700 py-1 px-2 w-full mb-1 flex items-center justify-center"
+            className="bg-gray-700 py-1 px-2 w-full mb-1 flex flex-col items-center justify-center"
             onClick={() => setIsTakeProfitStopLossOpen(true)}
           >
-            <FaChartLine className="mr-1" /> Take Profit & Stop Loss
+            <span>Take Profit & Stop Loss</span>
+            <div className="text-gray-400 text-xs mt-1">
+              <span>{takeProfitValue ? `$${takeProfitValue.toFixed(2)}` : 'Not Set'}</span>
+              <span className="mx-1">&</span>
+              <span>{stopLossValue ? `$${stopLossValue.toFixed(2)}` : 'Not Set'}</span>
+            </div>
           </button>
           {/* Pending Market */}
           <button 
-            className="bg-gray-700 py-1 px-2 w-full flex items-center justify-center"
+            className="bg-gray-700 py-1 px-2 w-full flex flex-col items-center justify-center"
             onClick={() => setIsPendingOrderOpen(true)}
           >
-            <FaClock className="mr-1" /> Pending Market
+            <span>Pending Market</span>
+            <div className="text-gray-400 text-xs mt-1">
+              {pendingOrderValue ? `$${pendingOrderValue.toFixed(2)}` : 'Not Set'}
+            </div>
           </button>
         </div>
 

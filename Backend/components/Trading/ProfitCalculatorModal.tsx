@@ -52,21 +52,22 @@ export function ProfitCalculatorModal({ isOpen, onClose }: ProfitCalculatorModal
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="p-0 bg-transparent border-none shadow-none">
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#1e2329] text-white p-4 rounded-lg shadow-xl w-[400px]">
-          <button
+      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[400px] md:max-w-[800px] max-h-[90vh]">
+        <button
             onClick={onClose}
-            className="absolute top-2 right-2 text-gray-400 hover:text-white"
+            className="absolute -top-4 -left-4 bg-gray-500 text-white p-2 rounded-full shadow-md z-10"
             aria-label="Close"
           >
-            <X size={20} />
+            <X className="font-bold" size={20} />
           </button>
+          <div className="bg-[#1e2329] text-white p-4 rounded-lg shadow-xl overflow-y-auto h-full">
           <div className="flex mb-4">
             <Button className="bg-green-500 hover:bg-green-600 w-[80px] text-sm font-bold">BUY</Button>
             <Button className="bg-[#2c3035] hover:bg-[#3c4045] w-[80px] text-sm font-bold ml-2">SELL</Button>
           </div>
-          <div className="flex">
-            {/* Left side */}
-            <div className="w-1/2 pr-2 space-y-2">
+          <div className="flex flex-col md:flex-row md:space-x-4">
+            {/* Inputs */}
+            <div className="w-full md:w-1/2 space-y-2 mb-4 md:mb-0">
               <div className="flex justify-between items-center bg-[#2c3035] p-2">
                 <span className="text-gray-400 text-xs">Volume</span>
                 <Input
@@ -101,8 +102,8 @@ export function ProfitCalculatorModal({ isOpen, onClose }: ProfitCalculatorModal
               </div>
             </div>
             
-            {/* Right side */}
-            <div className="w-1/2 pl-2">
+            {/* Outputs */}
+            <div className="w-full md:w-1/2">
               <div className="bg-[#2c3035] p-3 rounded-md h-full">
                 <h3 className="text-sm mb-2 font-bold">Calculations for Gold</h3>
                 <div className="space-y-1">
@@ -133,6 +134,7 @@ export function ProfitCalculatorModal({ isOpen, onClose }: ProfitCalculatorModal
                 </div>
               </div>
             </div>
+          </div>
           </div>
         </div>
       </DialogContent>
