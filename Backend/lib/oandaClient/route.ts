@@ -1,5 +1,5 @@
 import { Context } from "@v20-javascript/context";
-import { AccountID, InstrumentName } from "@v20-javascript/primitives";
+import { AccountID } from "@v20-javascript/primitives";
 
 const accountId = process.env.OANDA_ACCOUNT_ID as AccountID;
 const accessToken = process.env.OANDA_ACCESS_TOKEN as string;
@@ -9,10 +9,6 @@ export const oandaClient = new Context({
   port: 443,
   token: accessToken,
 });
-
-export async function getAccountSummary() {
-  return await oandaClient.account.summary(accountId);
-}
 
 export async function placeTrade(
   instrument: string,
@@ -68,13 +64,3 @@ export async function getInstrumentCandles(
     ...params,
   });
 }
-
-// Make sure all functions are exported
-export {
-  getAccountSummary,
-  placeTrade,
-  getOpenTrades,
-  closeTrade,
-  getInstruments,
-  getPricing,
-};
