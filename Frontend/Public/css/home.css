@@ -19201,8 +19201,8 @@ header a.nav-link:first-letter {
   max-width: 90rem;
 }
 .sticky-footer-wrapper .rw-container {
-  background-color: #ececec;
-  border-top: 1px solid #ccc;
+  background-color: gold;
+  border-top: 1px solid #270b03;
   padding: 0.25rem 0;
   position: relative;
   z-index: 2;

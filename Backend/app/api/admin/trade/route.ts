@@ -1,52 +1,57 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import { placeTrade } from "@/lib/oandaClient/route";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
+export async function POST(request: Request) {
+  const { userId } = auth();
+
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    const { userIdentifier, identifierType, instrument, units, type } =
-      req.body;
+    const {
+      userIdentifier,
+      identifierType,
+      instrument,
+      units,
+      type,
+      openPrice,
+      status,
+    } = await request.json();
 
     // Find the user based on the identifier
-    let user;
-    if (identifierType === "id") {
-      user = await prisma.user.findUnique({ where: { id: userIdentifier } });
-    } else if (identifierType === "email") {
-      user = await prisma.user.findUnique({ where: { email: userIdentifier } });
-    }
+    const user = await prisma.user.findUnique({
+      where:
+        identifierType === "id"
+          ? { id: userIdentifier }
+          : { email: userIdentifier },
+    });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Place the trade using the OANDA API
-    const oandaTrade = await placeTrade(instrument, units, type);
-
-    // Create a record of the trade in your database
+    // Create the trade
     const trade = await prisma.trade.create({
       data: {
         userId: user.id,
         instrument,
         units: parseFloat(units),
         type,
-        openPrice: parseFloat(oandaTrade.orderFillTransaction.price),
-        tradeId: oandaTrade.orderFillTransaction.id,
-        status: "OPEN",
+        openPrice: parseFloat(openPrice),
+        status,
       },
     });
 
-    res.status(200).json(trade);
+    return NextResponse.json({ trade });
   } catch (error) {
     console.error("Error creating trade:", error);
-    res
-      .status(500)
-      .json({ message: "An error occurred while creating the trade" });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  } finally {
+    await prisma.$disconnect();
   }
 }

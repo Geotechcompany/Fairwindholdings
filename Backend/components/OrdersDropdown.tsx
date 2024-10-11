@@ -1,25 +1,57 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa";
 
 interface Trade {
   id: string;
   instrument: string;
-  currentUnits: number;
-  price: number;
-  unrealizedPL: number;
+  units: number;
+  type: string;
+  openPrice: number;
+  status: string;
 }
 
 interface OrdersDropdownProps {
   isOpen: boolean;
   onToggle: () => void;
-  openTrades: Trade[];
 }
 
 const OrdersDropdown: React.FC<OrdersDropdownProps> = ({
   isOpen,
   onToggle,
-  openTrades,
 }) => {
+  const [openTrades, setOpenTrades] = useState<Trade[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchOpenTrades = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch("/api/trade/active");
+        if (!response.ok) {
+          throw new Error("Failed to fetch open trades");
+        }
+        const trades = await response.json();
+        setOpenTrades(trades);
+      } catch (err) {
+        setError("Error fetching open trades");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOpenTrades();
+    // Set up an interval to fetch trades every minute
+    const intervalId = setInterval(fetchOpenTrades, 60000);
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
+  console.log("Open trades in OrdersDropdown:", openTrades);
+
   return (
     <div className="bg-gray-800 text-white">
       <button
@@ -30,38 +62,32 @@ const OrdersDropdown: React.FC<OrdersDropdownProps> = ({
         {isOpen ? <FaChevronUp /> : <FaChevronDown />}
       </button>
       {isOpen && (
-        <div className="p-2">
-          {openTrades.length === 0 ? (
-            <p>No open trades</p>
+        <div className="p-2 overflow-x-auto">
+          {isLoading ? (
+            <p className="text-center py-4">Loading...</p>
+          ) : error ? (
+            <p className="text-center py-4 text-red-500">{error}</p>
+          ) : openTrades.length === 0 ? (
+            <p className="text-center py-4">No open trades</p>
           ) : (
-            <table className="w-full">
+            <table className="w-full min-w-max">
               <thead>
-                <tr>
-                  <th>Instrument</th>
-                  <th>Type</th>
-                  <th>Units</th>
-                  <th>Price</th>
-                  <th>P/L</th>
+                <tr className="text-left bg-gray-700">
+                  <th className="p-2">Instrument</th>
+                  <th className="p-2">Type</th>
+                  <th className="p-2">Units</th>
+                  <th className="p-2">Open Price</th>
+                  <th className="p-2">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {openTrades.map((trade) => (
-                  <tr key={trade.id}>
-                    <td>{trade.instrument}</td>
-                    <td>
-                      {parseFloat(trade.currentUnits) > 0 ? "Buy" : "Sell"}
-                    </td>
-                    <td>{Math.abs(parseFloat(trade.currentUnits))}</td>
-                    <td>{parseFloat(trade.price).toFixed(5)}</td>
-                    <td
-                      className={
-                        parseFloat(trade.unrealizedPL) >= 0
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }
-                    >
-                      {parseFloat(trade.unrealizedPL).toFixed(2)}
-                    </td>
+                  <tr key={trade.id} className="border-b border-gray-700">
+                    <td className="p-2">{trade.instrument}</td>
+                    <td className="p-2">{trade.type}</td>
+                    <td className="p-2">{trade.units}</td>
+                    <td className="p-2">{trade.openPrice.toFixed(5)}</td>
+                    <td className="p-2">{trade.status}</td>
                   </tr>
                 ))}
               </tbody>

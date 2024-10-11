@@ -20,7 +20,11 @@ import EconomicCalendar from "./EconomicCalendar";
 import MarketNews from "./MarketNews";
 import AccountDropdown from "./AccountDropdown";
 import OrdersDropdown from "./OrdersDropdown";
-import { getAccountSummary, getOpenTrades } from "@/lib/oandaClient/route";
+import {
+  getAccountSummary,
+  getOpenTrades,
+  getPricing,
+} from "@/lib/oandaClient/route";
 import ProfitCalculator from "./Trading/ProfitCalculatorModal";
 import ActiveOrders from "./ActiveOrders";
 import TradingHistory from "./TradingHistory";
@@ -63,6 +67,7 @@ export function TradingDashboard({
   });
   const [activeOrders, setActiveOrders] = useState([]);
   const [tradingHistory, setTradingHistory] = useState([]);
+  const [userTrades, setUserTrades] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchAccountData = async () => {
@@ -70,7 +75,17 @@ export function TradingDashboard({
         const summary = await getAccountSummary();
         setAccountSummary(summary);
         const trades = await getOpenTrades();
-        setOpenTrades(trades.trades);
+        console.log("Fetched open trades:", trades); // Add this line
+        const instruments = trades.trades.map((trade: any) => trade.instrument);
+        const pricing = await getPricing(instruments);
+
+        const updatedTrades = trades.trades.map((trade: any) => ({
+          ...trade,
+          currentPrice: pricing[trade.instrument]?.price?.ask || trade.price,
+        }));
+
+        console.log("Updated trades:", updatedTrades); // Add this line
+        setOpenTrades(updatedTrades);
       } catch (error) {
         console.error("Error fetching account data:", error);
       }
@@ -170,6 +185,7 @@ export function TradingDashboard({
   useEffect(() => {
     fetchActiveOrders();
     fetchTradingHistory();
+    fetchUserTrades();
   }, []);
 
   const fetchActiveOrders = async () => {
@@ -187,6 +203,26 @@ export function TradingDashboard({
       setTradingHistory(data);
     }
   };
+
+  const fetchUserTrades = async () => {
+    try {
+      const response = await fetch("/api/user/trades");
+      if (response.ok) {
+        const trades = await response.json();
+        console.log("Fetched user trades:", trades);
+        setOpenTrades(trades); // This should now correctly set the open trades
+      }
+    } catch (error) {
+      console.error("Error fetching user trades:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserTrades();
+    const intervalId = setInterval(fetchUserTrades, 60000); // Update every minute
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   const toggleWidget = (widget: string) => {
     setActiveWidgets((prev) => {
@@ -411,7 +447,6 @@ export function TradingDashboard({
               <OrdersDropdown
                 isOpen={isOrdersOpen}
                 onToggle={() => setIsOrdersOpen(!isOrdersOpen)}
-                openTrades={openTrades}
               />
             </div>
           </main>
