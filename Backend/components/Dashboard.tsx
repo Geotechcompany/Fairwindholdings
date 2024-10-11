@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { getUserData } from "@/app/actions/getuserData";
 import { useUser, UserProfile } from "@clerk/nextjs";
+import { useSearchParams } from "next/navigation";
 import { Header } from "./Header";
 import Sidebar from "./Sidebar";
 import MobileSidebar from "./MobileSidebar";
@@ -17,10 +18,11 @@ import LiveChat from "./Livechat";
 import Savings from "./Savings";
 import Deposit from "./Deposit";
 import { UserData as UserDataType, Stats } from "@/types/user";
-import { FaBars } from "react-icons/fa";
 
 export function Dashboard() {
-  const [currentView, setCurrentView] = useState("dashboard");
+  const searchParams = useSearchParams();
+  const initialView = searchParams.get("view") || "main";
+  const [currentView, setCurrentView] = useState(initialView);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [userData, setUserData] = useState<(UserDataType & Stats) | null>(null);
   const [loading, setLoading] = useState(true);
@@ -50,6 +52,13 @@ export function Dashboard() {
     fetchUserData();
   }, [isLoaded, isSignedIn, user]);
 
+  useEffect(() => {
+    const view = searchParams.get("view");
+    if (view) {
+      setCurrentView(view);
+    }
+  }, [searchParams]);
+
   if (loading) {
     return <div className="text-center text-white">Loading...</div>;
   }
@@ -61,7 +70,8 @@ export function Dashboard() {
   if (!userData) {
     return <div className="text-center text-white">No user data available</div>;
   }
-  const userDataForSidebar: UserData = {
+
+  const userDataForSidebar: UserDataType = {
     firstName: user?.firstName || userData.firstName || "",
     fullName: user?.fullName || userData.fullName || "",
     email: user?.primaryEmailAddress?.emailAddress || userData.email || "",

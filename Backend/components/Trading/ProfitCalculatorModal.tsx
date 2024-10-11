@@ -41,7 +41,7 @@ export function ProfitCalculator() {
     };
 
   return (
-    <div className="bg-[#1e2329] text-white p-4 rounded-lg shadow-xl w-full max-w-md mx-auto">
+    <div className="bg-[#181F2D] text-white p-4 rounded-lg shadow-xl w-full max-w-md mx-auto">
       <h2 className="text-xl font-bold mb-4">Profit Calculator</h2>
       <div className="space-y-4">
         <InputField

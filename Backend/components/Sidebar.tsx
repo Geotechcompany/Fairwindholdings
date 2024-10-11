@@ -41,6 +41,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const navigationItems = [
     { name: "Dashboard", icon: FaChartLine, view: "dashboard" },
+    { name: "Deposit", icon: FaMoneyBillWave, view: "deposit" },
     { name: "Withdrawal", icon: FaMoneyBillWave, view: "withdrawal" },
     { name: "Verification", icon: FaIdCard, view: "verification" },
     { name: "Accounts", icon: FaUserCircle, view: "accounts" },
@@ -56,7 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       {/* Profile section */}
       <div className="flex flex-col items-center mb-6 mt-4">
         <Image
-          src={userData.profileImage}
+          src={userData.profileImage || "/default-profile.png"}
           alt="Profile"
           width={80}
           height={80}
@@ -65,15 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         <h2 className="text-lg font-semibold">{userData.fullName}</h2>
         <p className="text-sm text-gray-400">{userData.email}</p>
       </div>
-      {/* Deposit button */}
-      <div className="flex justify-center mb-4">
-        <button
-          onClick={() => onNavigate("deposit")}
-          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-3/4 text-lg"
-        >
-          Deposit
-        </button>
-      </div>
+
       {/* Navigation links */}
       <nav className="flex-grow">
         <ul className="space-y-2">

@@ -1,20 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { Trade } from "@/types/trade";
 import AdminTradeCreation from "./AdminTradeCreation";
-
-interface Trade {
-  id: string;
-  userId: string;
-  instrument: string;
-  type: string;
-  units: number;
-  openPrice: number;
-  closePrice: number | null;
-  profitLoss: number | null;
-  status: string;
-}
+import EditTradeModal from "./EditTradeModal";
 
 const TradeManagement: React.FC = () => {
   const [trades, setTrades] = useState<Trade[]>([]);
+  const [editingTrade, setEditingTrade] = useState<Trade | null>(null);
 
   useEffect(() => {
     const fetchActiveTrades = async () => {
@@ -35,6 +26,55 @@ const TradeManagement: React.FC = () => {
 
     return () => clearInterval(intervalId);
   }, []);
+
+  const handleCloseTrade = async (tradeId: string) => {
+    try {
+      const response = await fetch(`/api/admin/trade/${tradeId}/close`, {
+        method: "POST",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to close trade");
+      }
+      setTrades(trades.filter((trade) => trade.id !== tradeId));
+    } catch (error) {
+      console.error("Error closing trade:", error);
+    }
+  };
+
+  const handleEditTrade = (trade: Trade) => {
+    setEditingTrade(trade);
+  };
+
+  const handleSaveEdit = async (updatedTrade: Trade) => {
+    try {
+      const response = await fetch(`/api/admin/trades/${updatedTrade.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          instrument: updatedTrade.instrument,
+          type: updatedTrade.type,
+          units: updatedTrade.units,
+          openPrice: updatedTrade.openPrice,
+          closePrice: updatedTrade.closePrice,
+          profitLoss: updatedTrade.profitLoss,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update trade");
+      }
+      const updatedTradeData = await response.json();
+      setTrades(
+        trades.map((trade) =>
+          trade.id === updatedTradeData.id ? updatedTradeData : trade
+        )
+      );
+      setEditingTrade(null);
+    } catch (error) {
+      console.error("Error updating trade:", error);
+    }
+  };
 
   return (
     <div className="bg-[#1e2329] text-white p-6">
@@ -71,10 +111,16 @@ const TradeManagement: React.FC = () => {
                   <td className="py-4">{trade.profitLoss || "-"}</td>
                   <td className="py-4">{trade.status}</td>
                   <td className="py-4">
-                    <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2">
+                    <button
+                      className="bg-blue-500 text-white px-2 py-1 rounded mr-2"
+                      onClick={() => handleEditTrade(trade)}
+                    >
                       Edit
                     </button>
-                    <button className="bg-red-500 text-white px-2 py-1 rounded">
+                    <button
+                      className="bg-red-500 text-white px-2 py-1 rounded"
+                      onClick={() => handleCloseTrade(trade.id)}
+                    >
                       Close
                     </button>
                   </td>
@@ -84,6 +130,13 @@ const TradeManagement: React.FC = () => {
           </table>
         </div>
       </div>
+      {editingTrade && (
+        <EditTradeModal
+          trade={editingTrade}
+          onSave={handleSaveEdit}
+          onClose={() => setEditingTrade(null)}
+        />
+      )}
     </div>
   );
 };

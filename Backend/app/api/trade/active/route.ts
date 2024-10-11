@@ -19,11 +19,22 @@ export async function GET() {
     }
 
     const activeTrades = await prisma.trade.findMany({
-      where: { 
+      where: {
         userId: user.id,
-        status: 'OPEN'
+        status: "OPEN",
       },
-      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        instrument: true,
+        type: true,
+        units: true,
+        openPrice: true,
+        closePrice: true,
+        profitLoss: true,
+        status: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: "desc" },
     });
 
     return NextResponse.json(activeTrades);

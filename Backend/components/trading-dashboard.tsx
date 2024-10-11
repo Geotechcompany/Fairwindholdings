@@ -20,11 +20,7 @@ import EconomicCalendar from "./EconomicCalendar";
 import MarketNews from "./MarketNews";
 import AccountDropdown from "./AccountDropdown";
 import OrdersDropdown from "./OrdersDropdown";
-import {
-  getAccountSummary,
-  getOpenTrades,
-  getPricing,
-} from "@/lib/oandaClient/route";
+import { getOpenTrades, getPricing } from "@/lib/oandaClient/route";
 import ProfitCalculator from "./Trading/ProfitCalculatorModal";
 import ActiveOrders from "./ActiveOrders";
 import TradingHistory from "./TradingHistory";
@@ -72,8 +68,6 @@ export function TradingDashboard({
   useEffect(() => {
     const fetchAccountData = async () => {
       try {
-        const summary = await getAccountSummary();
-        setAccountSummary(summary);
         const trades = await getOpenTrades();
         console.log("Fetched open trades:", trades); // Add this line
         const instruments = trades.trades.map((trade: any) => trade.instrument);
@@ -185,7 +179,6 @@ export function TradingDashboard({
   useEffect(() => {
     fetchActiveOrders();
     fetchTradingHistory();
-    fetchUserTrades();
   }, []);
 
   const fetchActiveOrders = async () => {
@@ -203,26 +196,6 @@ export function TradingDashboard({
       setTradingHistory(data);
     }
   };
-
-  const fetchUserTrades = async () => {
-    try {
-      const response = await fetch("/api/user/trades");
-      if (response.ok) {
-        const trades = await response.json();
-        console.log("Fetched user trades:", trades);
-        setOpenTrades(trades); // This should now correctly set the open trades
-      }
-    } catch (error) {
-      console.error("Error fetching user trades:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchUserTrades();
-    const intervalId = setInterval(fetchUserTrades, 60000); // Update every minute
-
-    return () => clearInterval(intervalId);
-  }, []);
 
   const toggleWidget = (widget: string) => {
     setActiveWidgets((prev) => {
@@ -285,6 +258,9 @@ export function TradingDashboard({
               return <EconomicCalendar showCalendar={true} />;
             case "MARKET NEWS":
               return <MarketNews />;
+            case "ACTIVE ORDERS":
+              return <ActiveOrders orders={activeOrders} />;
+
             default:
               return null;
           }
@@ -327,8 +303,8 @@ export function TradingDashboard({
   };
 
   return (
-    <div className="bg-[#1e2329] text-white h-screen flex flex-col">
-      <header className="bg-[#2c3035] p-2 flex items-center justify-between">
+    <div className="bg-[#181F2D]  text-white h-screen flex flex-col">
+      <header className="bg-[#181F2D] p-2 flex items-center justify-between border-b border-gray-700">
         <div className="flex items-center space-x-2">
           <Image
             src="/images/logo-cita-white.png"
@@ -337,26 +313,41 @@ export function TradingDashboard({
             height={36}
             className="w-24 sm:w-32 hidden sm:inline"
           />
-          <button className="bg-blue-600 text-white px-4 py-2 rounded text-sm items-center hidden sm:flex">
+          <button className="bg-#181F2D text-white px-9 py-2 rounded text-sm items-center hidden sm:flex border border-gray-400">
             <Image
               src="/images/gold-icon.png"
               alt="Gold"
-              width={30}
-              height={30}
-              className="w-6 h-6 mr-2"
+              width={50}
+              height={50}
+              className="w-9 h-9 mr-2"
             />
-            Gold metals <FaChevronDown className="ml-2" size={16} />
+            GOLD <br></br>metal
           </button>
         </div>
 
         <div className="flex items-center justify-between w-full sm:w-auto sm:space-x-3">
-          <button className="border border-green-500 text-green-500 px-3 py-2 rounded flex items-center text-sm hover:bg-green-500 hover:text-white transition-colors duration-300">
-            <FaMoneyBills className="sm:hidden" />
-            <span className="hidden sm:inline">Deposit</span>
-          </button>
+          <div className="flex items-center space-x-4">
+            <Link href="/dashboard?view=deposit" passHref>
+              <button className="bg-[#181F2D] hover:bg-[#4CAF50] text-[#4CAF50] hover:text-white font-semibold py-3 px-6 rounded transition-all duration-300 border border-[#4CAF50] flex items-center space-x-3 text-lg">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2H4zm3 2a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1zm0 3a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1zm0 3a1 1 0 011-1h2a1 1 0 110 2H8a1 1 0 01-1-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span>Deposit</span>
+              </button>
+            </Link>
 
-          <div className="w-48 sm:w-56">
-            <AccountDropdown accountDetails={accountDetails} />
+            <div className="w-56">
+              <AccountDropdown accountDetails={accountDetails} />
+            </div>
           </div>
 
           <div className="flex items-center">
@@ -388,7 +379,7 @@ export function TradingDashboard({
       </header>
 
       <div className="flex flex-grow overflow-hidden">
-        <aside className="flex flex-col w-16 sm:w-20 md:w-24 bg-[#2c3035] flex-shrink-0">
+        <aside className="flex flex-col w-16 sm:w-20 md:w-24 bg-[#181F2D] flex-shrink-0">
           {renderSidebarButton(
             <FaChartLine size={20} />,
             "MARKET WATCH",
@@ -462,7 +453,7 @@ export function TradingDashboard({
         </div>
       </div>
 
-      <footer className="bg-[#2c3035] p-2 flex flex-wrap justify-between items-center text-xs">
+      <footer className="bg-[#181F2D] p-2 flex flex-wrap justify-between items-center text-xs border-t border-gray-700">
         <div className="flex items-center space-x-2 mb-1 sm:mb-0">
           <span>Balance: ${parseFloat(accountDetails.balance).toFixed(2)}</span>
           <span>Credit: ${accountDetails.credit}</span>
@@ -473,7 +464,11 @@ export function TradingDashboard({
           </span>
         </div>
         <div className="flex items-center space-x-2">
-          <button className="text-blue-500">LIVE CHAT</button>
+          <Link href="/dashboard?view=live-chat" passHref>
+            <button className="text-blue-500 hover:text-blue-600 transition-colors duration-300">
+              LIVE CHAT
+            </button>
+          </Link>
           <span>CURRENT TIME: {currentTime}</span>
         </div>
       </footer>
