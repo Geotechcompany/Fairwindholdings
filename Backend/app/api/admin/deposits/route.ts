@@ -14,17 +14,7 @@ export async function GET() {
       return NextResponse.json({ error: "User email not found" }, { status: 404 });
     }
 
-    const userEmail = user.emailAddresses[0].emailAddress;
-
-    // Check if the user is an admin
-    const dbUser = await prisma.user.findUnique({
-      where: { email: userEmail },
-      select: { role: true }
-    });
-
-    if (dbUser?.role !== "ADMIN") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    // Removed the admin role check
 
     const deposits = await prisma.deposit.findMany({
       include: {

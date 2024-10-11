@@ -1,5 +1,6 @@
 import { Context } from "@v20-javascript/context";
 import { AccountID } from "@v20-javascript/primitives";
+import { getAccountSummary } from "@/lib/oandaClient/route";
 
 const accountId = process.env.OANDA_ACCOUNT_ID as AccountID;
 const accessToken = process.env.OANDA_ACCESS_TOKEN as string;
@@ -63,4 +64,8 @@ export async function getInstrumentCandles(
     granularity: "S5",
     ...params,
   });
+}
+
+export async function getAccountInstruments() {
+  return await oandaClient.account.instruments(accountId);
 }

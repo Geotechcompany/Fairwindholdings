@@ -24,7 +24,9 @@ const AdminTradeCreation: React.FC = () => {
           identifierType,
           instrument, 
           units: parseFloat(units), 
-          type 
+          type,
+          openPrice: 0, // You might want to get the current market price here
+          status: 'OPEN'
         }),
       });
 
