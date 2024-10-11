@@ -19430,7 +19430,7 @@ header a.nav-link:first-letter {
 .regulatory-list-data li:before {
   background-image: url(../images/plus-blue-fill.svg);
   background-repeat: no-repeat;
-  background-size: 130% auto;
+  background-size: 100% auto;
   content: "";
   height: 4rem;
   left: 0;
