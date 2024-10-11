@@ -20512,8 +20512,6 @@ header a.nav-link:first-letter {
 }
 .trading-img {
   bottom: -6rem;
-  /*! rtl:ignore */
-  direction: ltr;
   display: flex;
   justify-content: flex-end;
   margin-bottom: 6rem;
@@ -20521,6 +20519,7 @@ header a.nav-link:first-letter {
   padding-top: 0;
   position: relative;
 }
+
 @media (min-width: 768px) {
   .trading-img {
     bottom: 0;
@@ -20528,65 +20527,61 @@ header a.nav-link:first-letter {
     padding-top: 4.5rem;
   }
 }
+
 .trading-img .plus-bg {
   z-index: 2;
 }
+
 .trading-img .plus-bg-small {
-  /*! rtl:ignore */
-  left: auto;
-  /*! rtl:ignore */
   right: 16%;
   top: 84%;
 }
+
 .trading-img .plus-bg-medium {
-  /*! rtl:ignore */
   left: 20%;
-  /*! rtl:ignore */
-  right: auto;
   top: 40%;
 }
+
 @media (min-width: 1px) and (max-width: 767.98px) {
   .trading-img .plus-bg-medium,
   .trading-img .plus-bg-small {
     display: block;
   }
   .trading-img .plus-bg-small {
-    height: 4rem;
-    /*! rtl:ignore */
+    height: 3rem; /* Reduced size */
     left: 6%;
-    /*! rtl:ignore */
-    right: auto;
-    width: 4rem;
+    width: 3rem; /* Reduced size */
   }
   .trading-img .plus-bg-medium {
-    height: 6rem;
-    /*! rtl:ignore */
-    left: auto;
-    /*! rtl:ignore */
+    height: 5rem; /* Reduced size */
     right: 6%;
     top: 60%;
-    width: 6rem;
+    width: 5rem; /* Reduced size */
   }
 }
+
 .trading-img-box {
   display: block;
-  max-width: 100%;
+  max-width: 80%; /* Reduced width */
   position: relative;
   width: auto;
 }
+
 @media (min-width: 1px) and (max-width: 767.98px) {
   .trading-img-box {
-    max-height: 20rem;
+    max-height: 15rem; /* Reduced height */
     overflow: hidden;
   }
 }
+
 @media (min-width: 768px) {
   .trading-img-box {
     margin-right: -4%;
-    min-height: 38rem;
-    width: 64%;
+    min-height: 30rem; /* Reduced height */
+    width: 50%; /* Reduced width */
   }
 }
+
 .trading-img-box:before {
   background: linear-gradient(180deg, hsla(0, 0%, 100%, 0) 0, #fff);
   bottom: 0;
@@ -20596,21 +20591,32 @@ header a.nav-link:first-letter {
   width: 100%;
   z-index: 1;
 }
+
 @media (min-width: 768px) {
   .trading-img-box:before {
     bottom: -4rem;
   }
 }
+
 .trading-img-box img {
   max-width: none;
 }
+
 @media (min-width: 1px) and (max-width: 767.98px) {
   .trading-img-box img {
     margin-right: 4%;
-    transform: scale(0.75);
+    transform: scale(0.6); /* Reduced image scaling */
     transform-origin: 0 0;
   }
 }
+
+@media (min-width: 768px) {
+  .trading-img-box img {
+    transform: scale(0.8); /* Reduce the size slightly for larger screens */
+    transform-origin: 0 0;
+  }
+}
+
 .product-section {
   padding-top: 5rem;
 }
