@@ -1,111 +1,58 @@
+'use client'
+
 import React from 'react';
 import { FaChartLine, FaUsers, FaExchangeAlt, FaCog, FaChartBar, FaSignOutAlt, FaIdCard, FaMoneyBillWave, FaComments, FaShieldAlt } from 'react-icons/fa';
 
 interface AdminSidebarProps {
   onNavigate: (view: string) => void;
-  className?: string; // Add this line
+  className?: string;
 }
 
-const AdminSidebar: React.FC<AdminSidebarProps> = ({ onNavigate, className }) => {
-  return (
-    <div className={`w-64 bg-[#2c3035] flex flex-col justify-between pt-20 ${className}`}>
-      <div>
-        <div className="text-center py-6 border-b border-gray-700">
-          <h3 className="text-lg font-semibold">Admin Panel</h3>
-        </div>
+function AdminSidebar({ onNavigate, className }: AdminSidebarProps) {
+  const menuItems = [
+    { icon: FaChartLine, label: "Dashboard", view: "dashboard" },
+    { icon: FaUsers, label: "User Management", view: "users" },
+    { icon: FaExchangeAlt, label: "Trade Management", view: "trades" },
+    { icon: FaIdCard, label: "KYC Management", view: "kyc" },
+    { icon: FaMoneyBillWave, label: "Deposits", view: "deposits" },
+    { icon: FaMoneyBillWave, label: "Withdrawals", view: "withdrawals" },
+    { icon: FaComments, label: "Support", view: "support" },
+    { icon: FaCog, label: "System Settings", view: "settings" },
+    { icon: FaShieldAlt, label: "Security", view: "security" },
+    { icon: FaChartBar, label: "Analytics", view: "analytics" },
+  ];
 
-        <nav className="py-4">
-          <ul className="space-y-2">
-            <li>
-              <button 
-                onClick={() => onNavigate('dashboard')} 
-                className="flex items-center w-full py-2 px-4 hover:bg-[#3a3f45] transition-colors duration-200"
-              >
-                <FaChartLine className="mr-3" /> Dashboard
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => onNavigate('users')} 
-                className="flex items-center w-full py-2 px-4 hover:bg-[#3a3f45] transition-colors duration-200"
-              >
-                <FaUsers className="mr-3" /> User Management
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => onNavigate('trades')} 
-                className="flex items-center w-full py-2 px-4 hover:bg-[#3a3f45] transition-colors duration-200"
-              >
-                <FaExchangeAlt className="mr-3" /> Trade Management
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => onNavigate('kyc')} 
-                className="flex items-center w-full py-2 px-4 hover:bg-[#3a3f45] transition-colors duration-200"
-              >
-                <FaIdCard className="mr-3" /> Manage KYC
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => onNavigate('deposits')} 
-                className="flex items-center w-full py-2 px-4 hover:bg-[#3a3f45] transition-colors duration-200"
-              >
-                <FaMoneyBillWave className="mr-3" /> Deposits
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => onNavigate('withdrawals')} 
-                className="flex items-center w-full py-2 px-4 hover:bg-[#3a3f45] transition-colors duration-200"
-              >
-                <FaMoneyBillWave className="mr-3" /> Withdrawals
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => onNavigate('support')} 
-                className="flex items-center w-full py-2 px-4 hover:bg-[#3a3f45] transition-colors duration-200"
-              >
-                <FaComments className="mr-3" /> Support
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => onNavigate('settings')} 
-                className="flex items-center w-full py-2 px-4 hover:bg-[#3a3f45] transition-colors duration-200"
-              >
-                <FaCog className="mr-3" /> System Settings
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => onNavigate('security')} 
-                className="flex items-center w-full py-2 px-4 hover:bg-[#3a3f45] transition-colors duration-200"
-              >
-                <FaShieldAlt className="mr-3" /> Security
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => onNavigate('analytics')} 
-                className="flex items-center w-full py-2 px-4 hover:bg-[#3a3f45] transition-colors duration-200"
-              >
-                <FaChartBar className="mr-3" /> Analytics
-              </button>
-            </li>
-          </ul>
-        </nav>
+  return (
+    <aside className={`w-64 bg-[#2c3035] flex flex-col min-h-screen pt-20 ${className}`}>
+      <div className="text-center py-6 border-b border-gray-700">
+        <h3 className="text-xl font-semibold text-white">Admin Panel</h3>
       </div>
 
-      <button 
-        className="flex items-center justify-center py-4 text-gray-400 hover:text-white hover:bg-[#3a3f45] transition-colors duration-200"
-      >
-        <FaSignOutAlt className="mr-3" /> Log Out
-      </button>
-    </div>
+      <nav className="flex-grow py-4">
+        <ul className="space-y-2">
+          {menuItems.map(({ icon: Icon, label, view }) => (
+            <li key={view}>
+              <button 
+                onClick={() => onNavigate(view)} 
+                className="flex items-center w-full py-3 px-6 hover:bg-[#3a3f45] transition-colors duration-200 text-gray-300 hover:text-white"
+              >
+                <Icon className="w-6 h-6 mr-4" />
+                <span className="text-base">{label}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div className="mt-auto pb-6 pt-4 flex justify-center">
+        <button 
+          onClick={() => onNavigate('logout')}
+          className="flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#3a3f45] transition-colors duration-200 text-base w-3/4 py-3 px-4 rounded"
+        >
+          <FaSignOutAlt className="w-6 h-6 mr-3" /> Log Out
+        </button>
+      </div>
+    </aside>
   );
 }
 

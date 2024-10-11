@@ -67,10 +67,20 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        'pulse-border': {
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(59, 130, 246, 0.5)' },
+          '50%': { boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.5)' },
+        },
+        'pulse-border-green': {
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(34, 197, 94, 0.5)' },
+          '50%': { boxShadow: '0 0 0 4px rgba(34, 197, 94, 0.5)' },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        'pulse-border': 'pulse-border 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'pulse-border-green': 'pulse-border-green 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
     },
   },

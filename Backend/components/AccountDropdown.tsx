@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaChevronDown, FaChevronUp, FaDollarSign } from 'react-icons/fa';
 
 interface AccountDetails {
   accountType: string;
@@ -10,8 +10,8 @@ interface AccountDetails {
   profit: number;
   equity: number;
   margin: number;
-  marginLevel: number;
-  freeMargin: number;
+  marginLevel: number | string;
+  freeMargin: number | string;
 }
 
 const AccountDropdown: React.FC<{ accountDetails: AccountDetails }> = ({ accountDetails }) => {
@@ -21,31 +21,47 @@ const AccountDropdown: React.FC<{ accountDetails: AccountDetails }> = ({ account
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full p-2 rounded text-white"
+        className="flex items-center space-x-2 py-1 px-2 rounded text-white bg-[#181F2D]"
       >
-        <div className="flex flex-col items-start">
-          <span className="text-green-500 text-xs font-semibold">STANDARD ACCOUNT</span>
-          <span className="text-green-500 text-xl font-bold self-end">A${accountDetails.balance.toFixed(2)}</span>
+        <div className="flex flex-col items-end">
+          <span className="text-[#4CAF50] text-xs font-semibold">STANDARD ACCOUNT</span>
+          <span className="text-[#4CAF50] text-xl font-bold leading-tight">${accountDetails.balance.toFixed(2)}</span>
         </div>
-        {isOpen ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
+        <div className="flex items-center">
+          {isOpen ? (
+            <FaChevronUp size={10} className="text-[#4CAF50]" />
+          ) : (
+            <FaChevronDown size={10} className="text-[#4CAF50]" />
+          )}
+        </div>
       </button>
       {isOpen && (
-        <div className="absolute w-64 bg-gray-800 mt-1 rounded-md shadow-lg z-10 right-0">
-          <div className="p-3 border-b border-gray-700">
-            <div className="text-green-500 text-sm font-semibold">{accountDetails.accountType} ACCOUNT</div>
-            <div className="text-green-500 text-sm">#{accountDetails.accountNumber}</div>
-            <div className="text-green-500 text-sm mt-1">Status: Active</div>
-          </div>
-          <div className="p-3 space-y-2">
+        <div className="absolute w-[700px] bg-[#1E2530] mt-1 rounded shadow-lg z-10 right-0 flex">
+          <div className="w-[300px] p-4 bg-[#242D3C]">
+            <div className="text-white text-sm font-semibold mb-3">REAL ACCOUNT</div>
+            <div className="text-gray-400 text-xs mb-3">#{accountDetails.accountNumber}</div>
             {Object.entries(accountDetails).map(([key, value]) => (
               key !== 'accountType' && key !== 'accountNumber' && (
-                <div key={key} className="flex items-baseline text-sm">
-                  <span className="text-gray-400 capitalize flex-shrink-0">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
-                  <div className="flex-grow mx-2 border-b border-gray-600 border-dotted"></div>
-                  <span className="text-white font-medium flex-shrink-0">${typeof value === 'number' ? value.toFixed(2) : value}</span>
+                <div key={key} className="flex items-baseline text-sm mb-2">
+                  <span className="text-gray-400 capitalize flex-shrink-0 w-24">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
+                  <div className="flex-grow border-b border-gray-600 border-dotted mx-2"></div>
+                  <span className="text-white font-medium flex-shrink-0">
+                    {typeof value === 'number' ? `$${value.toFixed(2)}` : (value || '-')}
+                  </span>
                 </div>
               )
             ))}
+          </div>
+          <div className="flex-grow p-4 bg-[#1E2530] flex items-start">
+            <div className="bg-[#242D3C] w-full p-3 rounded flex items-center">
+              <FaDollarSign className="text-[#4CAF50] mr-3" size={24} />
+              <div className="flex-grow">
+                <div className="text-white text-sm font-bold">STANDARD ACCOUNT</div>
+                <div className="text-gray-400 text-xs mb-1">#{accountDetails.accountNumber}</div>
+                <div className="text-[#4CAF50] text-lg font-bold">${accountDetails.balance.toFixed(2)}</div>
+              </div>
+              <span className="text-[#4CAF50] text-xs">Active</span>
+            </div>
           </div>
         </div>
       )}

@@ -137,6 +137,7 @@ model Trade {
   type        String
   openPrice   Float
   closePrice  Float?
+  profitLoss  Float?
   status      String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
