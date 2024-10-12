@@ -67,8 +67,9 @@ const OrdersDropdown: React.FC<OrdersDropdownProps> = ({
   };
 
   return (
-    <div className="bg-[#1E2530] text-white">
+    <div className="bg-[#1E2530] text-white w-full absolute right-0 z-50">
       <div className="flex items-center justify-between px-4 py-2 bg-[#242D3C] border-b border-[#2A3544]">
+        {" "}
         <div className="flex space-x-4">
           <button
             className={`text-sm font-semibold ${
