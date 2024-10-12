@@ -45,6 +45,7 @@ export async function GET() {
           id: account.id,
           balance: account.balance,
           credit: account.credit,
+          leverage: account.leverage,
           totalDeposits: account.totalDeposits,
           pnl: updatedUser.stats?.pnl || 0,
         });
@@ -54,6 +55,7 @@ export async function GET() {
         id: user.mainAccount.id,
         balance: user.mainAccount.balance,
         credit: user.mainAccount.credit,
+        leverage: user.mainAccount.leverage,
         totalDeposits: user.mainAccount.totalDeposits,
         pnl: user.stats?.pnl || 0,
       });
