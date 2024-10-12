@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
 
 type SuccessRateChartProps = {
   profit: number;
@@ -19,26 +19,52 @@ const SuccessRateChart: React.FC<SuccessRateChartProps> = ({
     { name: "Loss", value: loss },
   ];
 
-  const COLORS = ["#4caf50", "#f44336"];
+  const COLORS = ["#00C49F", "#FF8042"];
 
-  const successRate = (profit / (profit + loss)) * 100 || 0;
+  const RADIAN = Math.PI / 180;
+  const renderCustomizedLabel = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    percent,
+  }: any) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill="white"
+        textAnchor={x > cx ? "start" : "end"}
+        dominantBaseline="central"
+        className="text-sm md:text-lg font-semibold"
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
 
   return (
     <div
-      className={`bg-[#1e2433] rounded-lg p-4 shadow-lg ${className} h-full flex flex-col w-[800px]`}
+      className={`bg-[#1e2433] rounded-lg p-6 shadow-lg ${className} flex flex-col`}
+      style={{ minHeight: '450px' }}
     >
-      <h3 className="text-lg font-semibold mb-4">Success Rate</h3>
-      <div className="flex-grow relative">
+      <h3 className="text-2xl font-semibold mb-6 text-center">Success Rate</h3>
+      <div className="flex-grow">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
               data={data}
               cx="50%"
               cy="50%"
-              innerRadius="60%"
+              labelLine={false}
+              label={renderCustomizedLabel}
               outerRadius="80%"
               fill="#8884d8"
-              paddingAngle={5}
               dataKey="value"
             >
               {data.map((entry, index) => (
@@ -48,19 +74,16 @@ const SuccessRateChart: React.FC<SuccessRateChartProps> = ({
                 />
               ))}
             </Pie>
+            <Legend 
+              verticalAlign="bottom" 
+              height={36} 
+              iconSize={12} 
+              formatter={(value, entry, index) => (
+                <span className="text-lg">{value}</span>
+              )}
+            />
           </PieChart>
         </ResponsiveContainer>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <p className="text-3xl font-bold">{successRate.toFixed(0)}%</p>
-        </div>
-      </div>
-      <div className="mt-4 text-sm">
-        <div className="flex items-center justify-center">
-          <span className="w-3 h-3 rounded-full bg-green-400 mr-2"></span>
-          <span className="mr-4">Closed with Profit</span>
-          <span className="w-3 h-3 rounded-full bg-red-400 mr-2"></span>
-          <span>Closed with Loss</span>
-        </div>
       </div>
     </div>
   );

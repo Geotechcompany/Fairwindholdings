@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { getUserData } from "@/app/actions/getuserData";
 import { useUser, UserProfile } from "@clerk/nextjs";
-import { useSearchParams } from "next/navigation";
 import { Header } from "./Header";
 import Sidebar from "./Sidebar";
 import MobileSidebar from "./MobileSidebar";
@@ -18,11 +17,10 @@ import LiveChat from "./Livechat";
 import Savings from "./Savings";
 import Deposit from "./Deposit";
 import { UserData as UserDataType, Stats } from "@/types/user";
+import { FaBars } from "react-icons/fa";
 
 export function Dashboard() {
-  const searchParams = useSearchParams();
-  const initialView = searchParams.get("view") || "main";
-  const [currentView, setCurrentView] = useState(initialView);
+  const [currentView, setCurrentView] = useState("main");
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [userData, setUserData] = useState<(UserDataType & Stats) | null>(null);
   const [loading, setLoading] = useState(true);
@@ -52,13 +50,6 @@ export function Dashboard() {
     fetchUserData();
   }, [isLoaded, isSignedIn, user]);
 
-  useEffect(() => {
-    const view = searchParams.get("view");
-    if (view) {
-      setCurrentView(view);
-    }
-  }, [searchParams]);
-
   if (loading) {
     return <div className="text-center text-white">Loading...</div>;
   }
@@ -70,8 +61,7 @@ export function Dashboard() {
   if (!userData) {
     return <div className="text-center text-white">No user data available</div>;
   }
-
-  const userDataForSidebar: UserDataType = {
+  const userDataForSidebar: UserData = {
     firstName: user?.firstName || userData.firstName || "",
     fullName: user?.fullName || userData.fullName || "",
     email: user?.primaryEmailAddress?.emailAddress || userData.email || "",
@@ -108,8 +98,8 @@ export function Dashboard() {
       default:
         return (
           <>
-            <div className="flex flex-col lg:flex-row gap-6 mb-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:w-[600px] lg:grid-cols-2">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-6">
+              <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <StatCard
                   title="Total Balance"
                   value={`$${userData.balance.toFixed(2)}`}
@@ -134,10 +124,11 @@ export function Dashboard() {
                   note="* using current exchange rate"
                 />
               </div>
-              <div className="flex-grow flex justify-end">
+              <div className="lg:col-span-2">
                 <SuccessRateChart
                   profit={userData.profit}
                   loss={userData.loss}
+                  className="h-full"
                 />
               </div>
             </div>
