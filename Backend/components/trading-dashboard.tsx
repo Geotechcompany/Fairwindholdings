@@ -424,11 +424,6 @@ export function TradingDashboard({
               <div id="tradingview_chart" className="w-full h-full flex-grow" />
             </div>
 
-            {/* TradingWidget for small screens */}
-            <div className="lg:hidden bg-gray-800 overflow-hidden">
-              <ProfitCalculator />
-            </div>
-
             {/* Orders Dropdown */}
             <div
               className={`transition-all duration-300 ${
@@ -448,7 +443,7 @@ export function TradingDashboard({
               isOrdersOpen ? "h-[calc(100%-12rem)]" : "h-[calc(100%-2.5rem)]"
             }`}
           >
-            <ProfitCalculator />
+            <ActiveOrders orders={activeOrders} />
           </div>
         </div>
       </div>
