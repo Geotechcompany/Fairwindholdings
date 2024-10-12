@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react';
-import { FaChartLine, FaUsers, FaExchangeAlt, FaCog, FaChartBar, FaSignOutAlt, FaIdCard, FaMoneyBillWave, FaComments, FaShieldAlt } from 'react-icons/fa';
+import { FaChartLine, FaUsers, FaExchangeAlt, FaCog, FaChartBar, FaSignOutAlt, FaIdCard, FaMoneyBillWave, FaComments, FaShieldAlt, FaUserCog } from 'react-icons/fa';
 
 interface AdminSidebarProps {
   onNavigate: (view: string) => void;
@@ -12,6 +12,7 @@ function AdminSidebar({ onNavigate, className }: AdminSidebarProps) {
   const menuItems = [
     { icon: FaChartLine, label: "Dashboard", view: "dashboard" },
     { icon: FaUsers, label: "User Management", view: "users" },
+    { icon: FaUserCog, label: "Account Management", view: "accounts" }, // Added Account Management
     { icon: FaExchangeAlt, label: "Trade Management", view: "trades" },
     { icon: FaIdCard, label: "KYC Management", view: "kyc" },
     { icon: FaMoneyBillWave, label: "Deposits", view: "deposits" },
