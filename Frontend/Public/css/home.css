@@ -19444,6 +19444,7 @@ header a.nav-link:first-letter {
     height: 2.2rem;
     margin-top: -1.1rem;
     width: 2rem;
+    /* background-size: 50% auto; */
   }
   .regulatory-list-data li {
     padding: 1.5rem 1.5rem 1.5rem 4rem;
