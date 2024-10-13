@@ -19,8 +19,8 @@ export default function LoginPage() {
         className="z-0"
       />
       <div className="absolute inset-0 bg-black opacity-0 z-10"></div>
-      <div className="relative z-20 w-full max-w-md p-8 space-y-8 bg-black bg-opacity-70 rounded-lg backdrop-blur-sm">
-        <h1 className="text-3xl font-bold text-center text-yellow-400 mb-6">User Login</h1>
+      <div className="relative z-20 w-full max-w-md p-8 space-y-8 bg-black bg-opacity-20 rounded-lg backdrop-blur-sm">
+        <h1 className="text-3xl font-bold text-center text-yellow-400 mb-6">Welcome Back</h1>
         <SignIn 
           routing="path"
           path="/login"
