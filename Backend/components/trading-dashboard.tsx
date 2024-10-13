@@ -357,6 +357,8 @@ export function TradingDashboard({
               width={12}
               height={12}
               className="w-12 h-12 mr-2 sm:mr-0"
+              quality={100}
+              unoptimized
             />
 
             <Link href="/">
@@ -368,6 +370,8 @@ export function TradingDashboard({
                     width={12}
                     height={12}
                     className="rounded-full w-12 h-12 hidden sm:inline"
+                    quality={100}
+                    unoptimized
                   />
                 ) : (
                   <FaUser className="text-white" size={20} />
