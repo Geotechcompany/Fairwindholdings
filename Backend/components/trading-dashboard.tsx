@@ -307,7 +307,7 @@ export function TradingDashboard({
       <header className="bg-[#181F2D] p-2 flex items-center justify-between border-b border-gray-700">
         <div className="flex items-center space-x-2">
           <Image
-            src="/images/logo-cita-white.png"
+            src="/images/cita_white logo.png"
             alt="CITA TRADING GROUP"
             width={120}
             height={36}
