@@ -128,40 +128,40 @@ const Verification = () => {
   const uploadAreas = [
     {
       icon: FaIdCard,
-      title: "UPLOAD PROOF OF ID",
+      title: "UPLOAD PROOF OF DRIVING LICENCE FRONT",
       description: "drag and drop or click to upload",
       docType: "proofOfId",
     },
-    {
-      icon: FaHome,
-      title: "UPLOAD PROOF OF RESIDENCE",
-      description: "drag and drop or click to upload",
-      docType: "proofOfResidence",
-    },
-    {
-      icon: FaCreditCard,
-      title: "UPLOAD CREDIT CARD FRONT",
-      description: "drag and drop or click to upload",
-      docType: "creditCardFront",
-    },
-    {
-      icon: FaCreditCard,
-      title: "UPLOAD CREDIT CARD BACK",
-      description: "drag and drop or click to upload",
-      docType: "creditCardBack",
-    },
+    // {
+    //   icon: FaHome,
+    //   title: "UPLOAD PROOF OF RESIDENCE",
+    //   description: "drag and drop or click to upload",
+    //   docType: "proofOfResidence",
+    // },
+    // {
+    //   icon: FaCreditCard,
+    //   title: "UPLOAD CREDIT CARD FRONT",
+    //   description: "drag and drop or click to upload",
+    //   docType: "creditCardFront",
+    // },
+    // {
+    //   icon: FaCreditCard,
+    //   title: "UPLOAD CREDIT CARD BACK",
+    //   description: "drag and drop or click to upload",
+    //   docType: "creditCardBack",
+    // },
     {
       icon: FaIdCard,
-      title: "UPLOAD PROOF OF ID BACK",
+      title: "UPLOAD PROOF OF DRIVING LICENCE BACK",
       description: "drag and drop or click to upload",
       docType: "proofOfIdBack",
     },
-    {
-      icon: FaUser,
-      title: "UPLOAD SELFIE",
-      description: "drag and drop or click to upload",
-      docType: "selfie",
-    },
+    // {
+    //   icon: FaUser,
+    //   title: "UPLOAD SELFIE",
+    //   description: "drag and drop or click to upload",
+    //   docType: "selfie",
+    // },
   ];
 
   if (!uploadedDocs) {
