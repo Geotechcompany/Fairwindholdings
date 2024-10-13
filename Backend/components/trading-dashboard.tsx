@@ -50,7 +50,7 @@ export function TradingDashboard({
   const [activeWidgets, setActiveWidgets] = useState<string[]>([]);
   const [isOrdersOpen, setIsOrdersOpen] = useState(true);
   const [accountDetails, setAccountDetails] = useState<AccountDetails>({
-    accountType: "STANDARD",
+    accountType: "LIVE",
     accountNumber: "Loading...",
     balance: 0,
     credit: 0,
@@ -100,7 +100,7 @@ export function TradingDashboard({
         }
         const data = await response.json();
         setAccountDetails({
-          accountType: "STANDARD",
+          accountType: "LIVE",
           accountNumber: data.id,
           balance: data.balance,
           credit: data.credit,
