@@ -12,7 +12,7 @@ function AdminSidebar({ onNavigate, className }: AdminSidebarProps) {
   const menuItems = [
     { icon: FaChartLine, label: "Dashboard", view: "dashboard" },
     { icon: FaUsers, label: "User Management", view: "users" },
-    { icon: FaUserCog, label: "Account Management", view: "accounts" }, // Added Account Management
+    { icon: FaUserCog, label: "Accounts", view: "accounts" }, // Added Account Management
     { icon: FaExchangeAlt, label: "Trade Management", view: "trades" },
     { icon: FaIdCard, label: "KYC Management", view: "kyc" },
     { icon: FaMoneyBillWave, label: "Deposits", view: "deposits" },
