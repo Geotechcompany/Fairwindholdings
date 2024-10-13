@@ -17,7 +17,7 @@ interface Withdrawal {
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 function WithdrawalManagement() {
-  const { data: withdrawals, error } = useSWR<Withdrawal[]>('/api/admin/withdrawals', fetcher);
+  const { data: withdrawals, error, mutate } = useSWR<Withdrawal[]>('/api/admin/withdrawals', fetcher);
 
   if (error) {
     toast.error("Failed to load withdrawals");
@@ -26,6 +26,37 @@ function WithdrawalManagement() {
 
   if (!withdrawals) {
     return <div>Loading...</div>;
+  }
+
+  async function handleStatusChange(
+    withdrawalId: string,
+    newStatus: "APPROVED" | "REJECTED"
+  ) {
+    try {
+      const response = await fetch(`/api/admin/withdrawals/${withdrawalId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ withdrawalId, newStatus }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update withdrawal status');
+      }
+
+      const result = await response.json();
+      if (result.success) {
+        toast.success(result.message);
+        // Refresh the withdrawals data
+        mutate();
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      console.error('Error updating withdrawal status:', error);
+      toast.error('Failed to update withdrawal status');
+    }
   }
 
   return (
@@ -48,16 +79,26 @@ function WithdrawalManagement() {
             <tbody>
               {withdrawals.map((withdrawal) => (
                 <tr key={withdrawal.id} className="border-b border-gray-700">
-                  <td className="py-4 px-2">{withdrawal.id.slice(0, 8)}...</td>
-                  <td className="py-4 px-2">{withdrawal.userId.slice(0, 8)}...</td>
+                  <td className="py-4 px-2">{withdrawal.id}</td>
+                  <td className="py-4 px-2">{withdrawal.userId}</td>
                   <td className="py-4 px-2">{withdrawal.amount}</td>
                   <td className="py-4 px-2">{withdrawal.currency}</td>
                   <td className="py-4 px-2">{withdrawal.status}</td>
                   <td className="py-4 px-2">{new Date(withdrawal.createdAt).toLocaleString()}</td>
                   <td className="py-4 px-2">
                     <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2 mb-2 sm:mb-0">View</button>
-                    <button className="bg-green-500 text-white px-2 py-1 rounded mr-2 mb-2 sm:mb-0">Approve</button>
-                    <button className="bg-red-500 text-white px-2 py-1 rounded">Reject</button>
+                    <button 
+                      onClick={() => handleStatusChange(withdrawal.id, "APPROVED")}
+                      className="bg-green-500 text-white px-2 py-1 rounded mr-2 mb-2 sm:mb-0"
+                    >
+                      Approve
+                    </button>
+                    <button 
+                      onClick={() => handleStatusChange(withdrawal.id, "REJECTED")}
+                      className="bg-red-500 text-white px-2 py-1 rounded"
+                    >
+                      Reject
+                    </button>
                   </td>
                 </tr>
               ))}

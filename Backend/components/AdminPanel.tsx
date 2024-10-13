@@ -27,6 +27,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import AccountManagement from "./AdminComponents/AccountManagement";
+import Accounts from "./Accounts";
 
 interface AdminPanelProps {
   adminData: AdminData;
@@ -38,6 +40,7 @@ function AdminPanel({ adminData }: AdminPanelProps) {
   const [isAdmin, setIsAdmin] = useState(false);
   const { user, isLoaded } = useUser();
   const [dashboardStats, setDashboardStats] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   useEffect(() => {
     if (isLoaded && user) {
@@ -86,6 +89,8 @@ function AdminPanel({ adminData }: AdminPanelProps) {
         return <DepositManagement />;
       case "withdrawals":
         return <WithdrawalManagement />;
+      case "accounts":
+        return <AccountManagement />;
       case "support":
         return <Support />;
       case "settings":
@@ -94,13 +99,17 @@ function AdminPanel({ adminData }: AdminPanelProps) {
         return <Security />;
       case "analytics":
         return <Analytics />;
+      
       default:
         return (
           <div className="flex flex-col gap-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <StatCard
                 title="Total Users"
-                value={dashboardStats?.totalUsers.toString() || adminData.totalUsers.toString()}
+                value={
+                  dashboardStats?.totalUsers.toString() ||
+                  adminData.totalUsers.toString()
+                }
                 icon="bank"
               />
               <StatCard
@@ -110,26 +119,42 @@ function AdminPanel({ adminData }: AdminPanelProps) {
               />
               <StatCard
                 title="Total Trades"
-                value={dashboardStats?.totalTrades.toString() || adminData.totalTrades.toString()}
+                value={
+                  dashboardStats?.totalTrades.toString() ||
+                  adminData.totalTrades.toString()
+                }
                 icon="money-bag"
               />
               <StatCard
                 title="Total Volume"
-                value={`$${(dashboardStats?.totalVolume || adminData.totalVolume).toFixed(2)}`}
+                value={`$${(
+                  dashboardStats?.totalVolume || adminData.totalVolume
+                ).toFixed(2)}`}
                 icon="coins"
               />
             </div>
             {dashboardStats?.monthlyData && (
               <div className="bg-[#1e2329] p-4 rounded-lg">
                 <h3 className="text-lg font-semibold mb-2">Analytics</h3>
-                <div className="h-[calc(100vh-300px)] min-h-[400px]"> {/* Adjusted height */}
+                <div className="h-[calc(100vh-300px)] min-h-[400px]">
+                  {" "}
+                  {/* Adjusted height */}
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={dashboardStats.monthlyData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#2c3e50" />
                       <XAxis dataKey="month" stroke="#718096" />
                       <YAxis yAxisId="left" stroke="#718096" />
-                      <YAxis yAxisId="right" orientation="right" stroke="#718096" />
-                      <Tooltip contentStyle={{ backgroundColor: "#2d3748", border: "none" }} />
+                      <YAxis
+                        yAxisId="right"
+                        orientation="right"
+                        stroke="#718096"
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "#2d3748",
+                          border: "none",
+                        }}
+                      />
                       <Legend />
                       <Line
                         yAxisId="left"
@@ -175,6 +200,7 @@ function AdminPanel({ adminData }: AdminPanelProps) {
           }}
         />
         <main className="flex-grow lg:ml-64 p-6 overflow-y-auto">
+          {activeTab === "accountManagement" && <AccountManagement />}
           {renderView()}
         </main>
       </div>

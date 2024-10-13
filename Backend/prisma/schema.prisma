@@ -44,9 +44,11 @@ model Account {
   mainUser      User?   @relation("UserMainAccount", fields: [mainUserId], references: [id])
   mainUserId    String? @unique
   balance       Float   @default(0)
+  equity        Float   @default(0)
   leverage      String  @default("1:100")
   credit        Float   @default(0)
   totalDeposits Float   @default(0)
+  status        String  @default("ACTIVE")
 }
 
 model Session {
