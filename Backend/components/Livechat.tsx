@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Avatar from 'boring-avatars';
+import Loader from './Loader';
 
 interface Message {
   id: string;
@@ -64,10 +65,13 @@ function LiveChat() {
     } catch (error) {
       console.error('Error fetching conversations:', error);
       toast.error('Failed to load conversations');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const fetchMessages = async (conversationId: string) => {
+    setIsLoading(true);
     try {
       const response = await fetch(`/api/chat/messages/${conversationId}`);
       if (response.ok) {
@@ -79,6 +83,8 @@ function LiveChat() {
     } catch (error) {
       console.error('Error fetching messages:', error);
       toast.error('Failed to load messages');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -108,6 +114,10 @@ function LiveChat() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="bg-[#1e2329] text-white flex h-full flex-col md:flex-row">

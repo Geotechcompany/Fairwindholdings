@@ -29,7 +29,6 @@ import {
 } from "recharts";
 import AccountManagement from "./AdminComponents/AccountManagement";
 import ChatManagement from "./AdminComponents/ChatManagement";
-import Loader from './Loader';
 
 interface AdminPanelProps {
   adminData: AdminData;
@@ -42,7 +41,6 @@ function AdminPanel({ adminData }: AdminPanelProps) {
   const { user, isLoaded } = useUser();
   const [dashboardStats, setDashboardStats] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (isLoaded && user) {
@@ -55,7 +53,6 @@ function AdminPanel({ adminData }: AdminPanelProps) {
 
   useEffect(() => {
     const fetchDashboardStats = async () => {
-      setIsLoading(true);
       try {
         const response = await fetch("/api/admin/dashboard-stats");
         if (!response.ok) {
@@ -66,8 +63,6 @@ function AdminPanel({ adminData }: AdminPanelProps) {
       } catch (error) {
         console.error("Error fetching dashboard stats:", error);
         toast.error("Failed to fetch dashboard stats");
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -78,7 +73,7 @@ function AdminPanel({ adminData }: AdminPanelProps) {
     }
   }, [isAdmin]);
 
-  if (!isLoaded || isLoading) return <Loader />;
+  if (!isLoaded) return null;
 
   if (!isAdmin) return null;
 
