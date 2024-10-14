@@ -28,8 +28,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import AccountManagement from "./AdminComponents/AccountManagement";
-import Accounts from "./Accounts";
 import ChatManagement from "./AdminComponents/ChatManagement";
+import Loader from './Loader';
 
 interface AdminPanelProps {
   adminData: AdminData;
@@ -42,6 +42,7 @@ function AdminPanel({ adminData }: AdminPanelProps) {
   const { user, isLoaded } = useUser();
   const [dashboardStats, setDashboardStats] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (isLoaded && user) {
@@ -54,6 +55,7 @@ function AdminPanel({ adminData }: AdminPanelProps) {
 
   useEffect(() => {
     const fetchDashboardStats = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch("/api/admin/dashboard-stats");
         if (!response.ok) {
@@ -64,6 +66,8 @@ function AdminPanel({ adminData }: AdminPanelProps) {
       } catch (error) {
         console.error("Error fetching dashboard stats:", error);
         toast.error("Failed to fetch dashboard stats");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -74,7 +78,7 @@ function AdminPanel({ adminData }: AdminPanelProps) {
     }
   }, [isAdmin]);
 
-  if (!isLoaded) return <div>Loading...</div>;
+  if (!isLoaded || isLoading) return <Loader />;
 
   if (!isAdmin) return null;
 
@@ -92,8 +96,8 @@ function AdminPanel({ adminData }: AdminPanelProps) {
         return <WithdrawalManagement />;
       case "accounts":
         return <AccountManagement />;
-        case "chat":
-        return <ChatManagement />
+      case "chat":
+        return <ChatManagement />;
       case "support":
         return <Support />;
       case "settings":
@@ -102,7 +106,6 @@ function AdminPanel({ adminData }: AdminPanelProps) {
         return <Security />;
       case "analytics":
         return <Analytics />;
-      
       default:
         return (
           <div className="flex flex-col gap-6">
@@ -140,8 +143,6 @@ function AdminPanel({ adminData }: AdminPanelProps) {
               <div className="bg-[#1e2329] p-4 rounded-lg">
                 <h3 className="text-lg font-semibold mb-2">Analytics</h3>
                 <div className="h-[calc(100vh-300px)] min-h-[400px]">
-                  {" "}
-                  {/* Adjusted height */}
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={dashboardStats.monthlyData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#2c3e50" />

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useRef } from "react";
 import { IconType } from "react-icons";
 import {
@@ -9,6 +11,7 @@ import {
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import useSWR from 'swr';
+import Loader from './Loader';
 
 interface Document {
   id: string;
@@ -67,7 +70,7 @@ const UploadArea: React.FC<UploadAreaProps> = ({
 
   return (
     <div
-      className={`bg-[#1e2433] rounded-lg p-4 flex flex-col items-center justify-center h-40 ${
+      className={`bg-[#1e2433] rounded-lg p-4 flex flex-col items-center justify-center h-40 w-full ${
         isUploaded ? "cursor-default" : "cursor-pointer hover:bg-[#2a3142]"
       } transition-colors duration-200`}
       onDragOver={handleDragOver}
@@ -112,9 +115,9 @@ const Verification = () => {
       });
 
       if (response.ok) {
-        await response.json(); // Consume the response body if needed
+        await response.json();
         toast.success(`${docType} uploaded successfully`);
-        mutate(); // Trigger revalidation
+        mutate();
       } else {
         const errorData = await response.json();
         toast.error(errorData.error || "Upload failed");
@@ -132,40 +135,16 @@ const Verification = () => {
       description: "drag and drop or click to upload",
       docType: "proofOfId",
     },
-    // {
-    //   icon: FaHome,
-    //   title: "UPLOAD PROOF OF RESIDENCE",
-    //   description: "drag and drop or click to upload",
-    //   docType: "proofOfResidence",
-    // },
-    // {
-    //   icon: FaCreditCard,
-    //   title: "UPLOAD CREDIT CARD FRONT",
-    //   description: "drag and drop or click to upload",
-    //   docType: "creditCardFront",
-    // },
-    // {
-    //   icon: FaCreditCard,
-    //   title: "UPLOAD CREDIT CARD BACK",
-    //   description: "drag and drop or click to upload",
-    //   docType: "creditCardBack",
-    // },
     {
       icon: FaIdCard,
       title: "UPLOAD PROOF OF DRIVING LICENCE BACK",
       description: "drag and drop or click to upload",
       docType: "proofOfIdBack",
     },
-    // {
-    //   icon: FaUser,
-    //   title: "UPLOAD SELFIE",
-    //   description: "drag and drop or click to upload",
-    //   docType: "selfie",
-    // },
   ];
 
   if (!uploadedDocs) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   return (
@@ -174,7 +153,7 @@ const Verification = () => {
         VERIFICATION
       </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
         {uploadAreas.map((area) => (
           <UploadArea
             key={area.docType}

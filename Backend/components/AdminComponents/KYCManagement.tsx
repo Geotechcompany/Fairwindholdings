@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaDownload } from "react-icons/fa";
 import { format, parseISO, isValid } from 'date-fns';
 import useSWR from 'swr';
+import Loader from '../Loader';
 
 interface Document {
   id: string;
@@ -23,6 +26,17 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export function KYCManagement() {
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const { data: documents, error, mutate } = useSWR<Document[]>('/api/kyc', fetcher);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (documents || error) {
+      setIsLoading(false);
+    }
+  }, [documents, error]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   if (error) {
     toast.error("Failed to load KYC documents");
@@ -30,7 +44,7 @@ export function KYCManagement() {
   }
 
   if (!documents) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   const handleStatusChange = async (docId: string, newStatus: string) => {

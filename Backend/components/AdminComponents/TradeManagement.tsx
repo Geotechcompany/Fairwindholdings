@@ -1,11 +1,15 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { Trade } from "@/types/trade";
 import AdminTradeCreation from "./AdminTradeCreation";
 import EditTradeModal from "./EditTradeModal";
+import Loader from '../Loader';
 
 const TradeManagement: React.FC = () => {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [editingTrade, setEditingTrade] = useState<Trade | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchActiveTrades = async () => {
@@ -18,6 +22,8 @@ const TradeManagement: React.FC = () => {
         setTrades(data);
       } catch (error) {
         console.error("Error fetching active trades:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -75,6 +81,10 @@ const TradeManagement: React.FC = () => {
       console.error("Error updating trade:", error);
     }
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="bg-[#1e2329] text-white p-6">

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import {
   FaChevronUp,
@@ -6,6 +8,7 @@ import {
   FaArrowDown,
 } from "react-icons/fa";
 import { Trade } from "@/types/trade";
+import Loader from "./Loader";
 
 interface OrdersDropdownProps {
   isOpen: boolean;
@@ -96,7 +99,7 @@ const OrdersDropdown: React.FC<OrdersDropdownProps> = ({
       {isOpen && (
         <div className="overflow-x-auto">
           {isLoading ? (
-            <p className="text-center py-4">Loading...</p>
+            <Loader />
           ) : error ? (
             <p className="text-center py-4 text-red-500">{error}</p>
           ) : trades.length === 0 ? (
@@ -124,7 +127,6 @@ const OrdersDropdown: React.FC<OrdersDropdownProps> = ({
                     className="text-sm border-b border-[#2A3544]"
                   >
                     <td className="p-2">{trade.id}</td>
-                    {/* <td className="p-2">{trade.userId}</td> */}
                     <td className="p-2">{trade.instrument}</td>
                     <td className="p-2">{formatNumber(trade.units)}</td>
                     <td className="p-2">{trade.type}</td>
@@ -159,12 +161,6 @@ const OrdersDropdown: React.FC<OrdersDropdownProps> = ({
                         {trade.status}
                       </span>
                     </td>
-                    {/* <td className="p-2">
-                      {formatDate(trade.createdAt.toString())}
-                    </td>
-                    <td className="p-2">
-                      {formatDate(trade.updatedAt.toString())}
-                    </td> */}
                   </tr>
                 ))}
               </tbody>

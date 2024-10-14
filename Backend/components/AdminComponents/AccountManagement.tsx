@@ -1,6 +1,9 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import Modal from '../Modal';
+import Loader from '../Loader';
 
 interface Account {
   id: string;
@@ -16,12 +19,14 @@ const AccountManagement: React.FC = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchAccounts();
   }, []);
 
   const fetchAccounts = async () => {
+    setIsLoading(true);
     try {
       const response = await fetch("/api/admin/accounts");
       if (response.ok) {
@@ -33,6 +38,8 @@ const AccountManagement: React.FC = () => {
     } catch (error) {
       console.error("Error fetching accounts:", error);
       toast.error("An error occurred while fetching accounts");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -93,6 +100,10 @@ const AccountManagement: React.FC = () => {
       toast.error('Failed to update account');
     }
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="bg-gray-800 text-white p-4 rounded-lg shadow-lg">

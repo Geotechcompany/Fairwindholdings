@@ -1,20 +1,19 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { format } from "date-fns";
 import { useUser } from "@clerk/nextjs";
 import { Badge } from "@/components/ui/badge";
+import Loader from './Loader';
 
 const withdrawalSchema = z.object({
   amount: z.number().positive("Amount must be positive"),
-  bank: z.string().min(1, "Bank is required"),
   accountNumber: z.string().min(1, "Account number is required"),
   accountHolderName: z.string().min(1, "Account holder name is required"),
-  iban: z.string().min(1, "IBAN is required"),
-  swiftCode: z.string().min(1, "SWIFT code is required"),
-  email: z.string().email("Invalid email address"), // Add this line
+  bank: z.string().min(1, "Bank name is required"),
 });
 
 type WithdrawalFormData = z.infer<typeof withdrawalSchema>;
@@ -25,15 +24,12 @@ interface WithdrawalData {
   currency: string;
   status: string;
   createdAt: string;
-  bank: string;
-  accountNumber: string;
-  accountHolderName: string;
 }
 
 const Withdrawal: React.FC = () => {
   const { user } = useUser();
   const [withdrawals, setWithdrawals] = useState<WithdrawalData[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const {
     register,
@@ -69,15 +65,12 @@ const Withdrawal: React.FC = () => {
 
   const onSubmit = async (data: WithdrawalFormData) => {
     try {
-      const response = await fetch("/api/withdrawals", {
+      const response = await fetch("/api/withdrawals/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...data,
-          email: user?.primaryEmailAddress?.emailAddress, // Add this line
-        }),
+        body: JSON.stringify(data),
       });
 
       if (!response.ok) {
@@ -90,11 +83,9 @@ const Withdrawal: React.FC = () => {
       fetchWithdrawals();
     } catch (error) {
       console.error("Error submitting withdrawal request:", error);
-      if (error instanceof Error) {
-        toast.error(`Failed to submit withdrawal request: ${error.message}`);
-      } else {
-        toast.error("An unknown error occurred while submitting the withdrawal request");
-      }
+      const errorMessage =
+        error instanceof Error ? error.message : "An unknown error occurred";
+      toast.error(`Failed to submit withdrawal request: ${errorMessage}`);
     }
   };
 
@@ -112,21 +103,21 @@ const Withdrawal: React.FC = () => {
   };
 
   return (
-    <div className="p-6 bg-[#1e2329] text-white">
+    <div className="bg-[#1e2329] text-white p-6">
       <h1 className="text-2xl font-bold mb-6">WITHDRAWAL</h1>
 
       <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">REQUEST A NEW WITHDRAWAL</h2>
+        <h2 className="text-xl font-semibold mb-4">Request Withdrawal</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label htmlFor="amount" className="block mb-1">
-              Amount
+              Amount (AUD)
             </label>
             <input
               type="number"
               id="amount"
               {...register("amount", { valueAsNumber: true })}
-              className="w-full p-2 bg-[#2a2f35] rounded"
+              className="w-full p-2 bg-[#2c3035] rounded"
             />
             {errors.amount && (
               <p className="text-red-500 text-sm mt-1">
@@ -134,22 +125,6 @@ const Withdrawal: React.FC = () => {
               </p>
             )}
           </div>
-
-          <div>
-            <label htmlFor="bank" className="block mb-1">
-              Bank
-            </label>
-            <input
-              type="text"
-              id="bank"
-              {...register("bank")}
-              className="w-full p-2 bg-[#2a2f35] rounded"
-            />
-            {errors.bank && (
-              <p className="text-red-500 text-sm mt-1">{errors.bank.message}</p>
-            )}
-          </div>
-
           <div>
             <label htmlFor="accountNumber" className="block mb-1">
               Account Number
@@ -158,7 +133,7 @@ const Withdrawal: React.FC = () => {
               type="text"
               id="accountNumber"
               {...register("accountNumber")}
-              className="w-full p-2 bg-[#2a2f35] rounded"
+              className="w-full p-2 bg-[#2c3035] rounded"
             />
             {errors.accountNumber && (
               <p className="text-red-500 text-sm mt-1">
@@ -166,7 +141,6 @@ const Withdrawal: React.FC = () => {
               </p>
             )}
           </div>
-
           <div>
             <label htmlFor="accountHolderName" className="block mb-1">
               Account Holder Name
@@ -175,7 +149,7 @@ const Withdrawal: React.FC = () => {
               type="text"
               id="accountHolderName"
               {...register("accountHolderName")}
-              className="w-full p-2 bg-[#2a2f35] rounded"
+              className="w-full p-2 bg-[#2c3035] rounded"
             />
             {errors.accountHolderName && (
               <p className="text-red-500 text-sm mt-1">
@@ -183,63 +157,25 @@ const Withdrawal: React.FC = () => {
               </p>
             )}
           </div>
-
           <div>
-            <label htmlFor="iban" className="block mb-1">
-              IBAN
+            <label htmlFor="bank" className="block mb-1">
+              Bank Name
             </label>
             <input
               type="text"
-              id="iban"
-              {...register("iban")}
-              className="w-full p-2 bg-[#2a2f35] rounded"
+              id="bank"
+              {...register("bank")}
+              className="w-full p-2 bg-[#2c3035] rounded"
             />
-            {errors.iban && (
-              <p className="text-red-500 text-sm mt-1">{errors.iban.message}</p>
+            {errors.bank && (
+              <p className="text-red-500 text-sm mt-1">{errors.bank.message}</p>
             )}
           </div>
-
-          <div>
-            <label htmlFor="swiftCode" className="block mb-1">
-              SWIFT Code
-            </label>
-            <input
-              type="text"
-              id="swiftCode"
-              {...register("swiftCode")}
-              className="w-full p-2 bg-[#2a2f35] rounded"
-            />
-            {errors.swiftCode && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.swiftCode.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="email" className="block mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              {...register("email")}
-              defaultValue={user?.primaryEmailAddress?.emailAddress || ''}
-              readOnly
-              className="w-full p-2 bg-[#2a2f35] rounded"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
           <button
             type="submit"
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors"
+            className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition-colors"
           >
-            Request Withdrawal
+            Submit Withdrawal Request
           </button>
         </form>
       </div>
@@ -247,7 +183,7 @@ const Withdrawal: React.FC = () => {
       <div className="mt-8">
         <h2 className="text-2xl font-bold mb-4">Your Withdrawal Requests</h2>
         {isLoading ? (
-          <p>Loading withdrawals...</p>
+          <Loader />
         ) : withdrawals.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -256,9 +192,6 @@ const Withdrawal: React.FC = () => {
                   <th className="px-4 py-2 text-left">Date</th>
                   <th className="px-4 py-2 text-left">Amount</th>
                   <th className="px-4 py-2 text-left">Currency</th>
-                  <th className="px-4 py-2 text-left">Bank</th>
-                  <th className="px-4 py-2 text-left">Account Number</th>
-                  <th className="px-4 py-2 text-left">Account Holder</th>
                   <th className="px-4 py-2 text-left">Status</th>
                 </tr>
               </thead>
@@ -266,15 +199,16 @@ const Withdrawal: React.FC = () => {
                 {withdrawals.map((withdrawal) => (
                   <tr key={withdrawal.id} className="border-b border-gray-700">
                     <td className="px-4 py-2">
-                      {format(new Date(withdrawal.createdAt), "dd/MM/yyyy HH:mm")}
+                      {new Date(withdrawal.createdAt).toLocaleString()}
                     </td>
                     <td className="px-4 py-2">{withdrawal.amount}</td>
                     <td className="px-4 py-2">{withdrawal.currency}</td>
-                    <td className="px-4 py-2">{withdrawal.bank}</td>
-                    <td className="px-4 py-2">{withdrawal.accountNumber}</td>
-                    <td className="px-4 py-2">{withdrawal.accountHolderName}</td>
                     <td className="px-4 py-2">
-                      <Badge className={`${getStatusColor(withdrawal.status)} text-white`}>
+                      <Badge
+                        className={`${getStatusColor(
+                          withdrawal.status
+                        )} text-white`}
+                      >
                         {withdrawal.status}
                       </Badge>
                     </td>

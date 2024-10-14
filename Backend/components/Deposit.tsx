@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect, useCallback } from "react";
 import {
   FaClock,
@@ -13,6 +15,7 @@ import * as z from "zod";
 import { useDropzone } from "react-dropzone";
 import { useUser } from "@clerk/nextjs";
 import { Badge } from "@/components/ui/badge";
+import Loader from './Loader';
 
 const depositSchema = z.object({
   depositAddress: z.string().min(1, "Deposit address is required"),
@@ -39,23 +42,20 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUpload }) => {
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      if (acceptedFiles.length > 0) {
-        const file = acceptedFiles[0];
-        setFileName(file.name);
-        setUploadProgress(0);
+      const file = acceptedFiles[0];
+      setFileName(file.name);
+      onFileUpload(file);
 
-        // Simulate upload progress
-        const interval = setInterval(() => {
-          setUploadProgress((prevProgress) => {
-            if (prevProgress === null || prevProgress >= 100) {
-              clearInterval(interval);
-              onFileUpload(file);
-              return 100;
-            }
-            return prevProgress + 10;
-          });
-        }, 500);
-      }
+      // Simulate upload progress
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 10;
+        setUploadProgress(progress);
+        if (progress >= 100) {
+          clearInterval(interval);
+          toast.success("File uploaded successfully");
+        }
+      }, 500);
     },
     [onFileUpload]
   );
@@ -112,15 +112,6 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileUpload }) => {
   );
 };
 
-interface DepositData {
-  id: string;
-  amount: number;
-  currency: string;
-  status: string;
-  createdAt: string;
-  proofImageUrl: string;
-}
-
 const Deposit: React.FC = () => {
   const { user } = useUser();
   const [showProofUpload, setShowProofUpload] = useState(false);
@@ -129,7 +120,7 @@ const Deposit: React.FC = () => {
   const [depositRequests, setDepositRequests] = useState<DepositRequest[]>([]);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [deposits, setDeposits] = useState<DepositData[]>([]);
+  const [deposits, setDeposits] = useState<DepositRequest[]>([]);
 
   const {
     register,
@@ -347,7 +338,7 @@ const Deposit: React.FC = () => {
       <div className="mt-8">
         <h2 className="text-2xl font-bold mb-4">Your Deposit Requests</h2>
         {isLoading ? (
-          <p>Loading deposits...</p>
+          <Loader />
         ) : deposits.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full">
