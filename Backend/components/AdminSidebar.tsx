@@ -19,9 +19,9 @@ function AdminSidebar({ onNavigate, className }: AdminSidebarProps) {
     { icon: FaMoneyBillWave, label: "Deposits", view: "deposits" },
     { icon: FaMoneyBillWave, label: "Withdrawals", view: "withdrawals" },
     {icon: FaMessage, label: "Chat Management", view: "chat" },
-    { icon: FaComments, label: "Support", view: "support" },
-    { icon: FaCog, label: "System Settings", view: "settings" },
-    { icon: FaShieldAlt, label: "Security", view: "security" },
+    // { icon: FaComments, label: "Support", view: "support" },
+    // { icon: FaCog, label: "System Settings", view: "settings" },
+    // { icon: FaShieldAlt, label: "Security", view: "security" },
   ];
 
   return (
