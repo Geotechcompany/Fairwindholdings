@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { toast } from "react-hot-toast";
 import { FaPaperPlane, FaSearch } from "react-icons/fa";
 import Image from "next/image";
@@ -35,6 +35,7 @@ function ChatManagement() {
 
   useEffect(() => {
     const fetchConversations = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch("/api/admin/chat/conversations");
         if (response.ok) {
@@ -55,7 +56,7 @@ function ChatManagement() {
     };
 
     fetchConversations();
-  }, [selectedConversation]);
+  }, []);
 
   useEffect(() => {
     if (selectedConversation) {
@@ -114,9 +115,11 @@ function ChatManagement() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const filteredConversations = conversations.filter((conv) =>
-    `${conv.firstName} ${conv.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredConversations = useMemo(() => {
+    return conversations.filter((conv) =>
+      `${conv.firstName} ${conv.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [conversations, searchTerm]);
 
   if (isLoading) {
     return (
