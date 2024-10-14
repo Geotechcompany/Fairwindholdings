@@ -29,6 +29,7 @@ import {
 } from "recharts";
 import AccountManagement from "./AdminComponents/AccountManagement";
 import Accounts from "./Accounts";
+import ChatManagement from "./AdminComponents/ChatManagement";
 
 interface AdminPanelProps {
   adminData: AdminData;
@@ -91,6 +92,8 @@ function AdminPanel({ adminData }: AdminPanelProps) {
         return <WithdrawalManagement />;
       case "accounts":
         return <AccountManagement />;
+        case "chat":
+        return <ChatManagement />
       case "support":
         return <Support />;
       case "settings":
