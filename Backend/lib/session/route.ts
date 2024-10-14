@@ -1,5 +1,5 @@
-import { auth } from '@clerk/nextjs/server';
-import { prisma } from '../prisma';
+import { auth } from "@clerk/nextjs/server";
+import { prisma } from "../prisma";
 
 export async function getCurrentUser() {
   const { userId } = auth();
@@ -17,4 +17,10 @@ export async function getCurrentUser() {
   }
 
   return currentUser;
+}
+
+export async function setUserRole(userId: string, role: string) {
+  await clerkClient.users.updateUser(userId, {
+    publicMetadata: { role },
+  });
 }
