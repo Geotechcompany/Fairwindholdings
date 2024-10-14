@@ -15,12 +15,21 @@ export async function GET() {
       }
     });
 
+    console.log('Raw trade performance data:', tradePerformance);
+
     const totalTrades = tradePerformance.reduce((acc, curr) => acc + curr._count.id, 0);
-    const formattedData = tradePerformance.map(item => ({
-      status: item.status,
-      count: item._count.id,
-      percentage: (item._count.id / totalTrades) * 100
-    }));
+    
+    const statuses = ['CLOSED_WITH_PROFIT', 'CLOSED_WITH_LOSS'];
+    const formattedData = statuses.map(status => {
+      const item = tradePerformance.find(t => t.status === status);
+      return {
+        status,
+        count: item ? item._count.id : 0,
+        percentage: totalTrades > 0 ? ((item ? item._count.id : 0) / totalTrades) * 100 : 0
+      };
+    });
+
+    console.log('Formatted trade performance data:', formattedData);
 
     return NextResponse.json(formattedData);
   } catch (error) {

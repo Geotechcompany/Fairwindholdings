@@ -4,11 +4,13 @@ import React, { useState, useEffect } from "react";
 import { Trade } from "@/types/trade";
 import AdminTradeCreation from "./AdminTradeCreation";
 import EditTradeModal from "./EditTradeModal";
+import CloseTradeModal from "../CloseTradeModal";
 import Loader from '../Loader';
 
 const TradeManagement: React.FC = () => {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [editingTrade, setEditingTrade] = useState<Trade | null>(null);
+  const [closingTradeId, setClosingTradeId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -33,10 +35,14 @@ const TradeManagement: React.FC = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  const handleCloseTrade = async (tradeId: string) => {
+  const handleCloseTrade = async (tradeId: string, closeType: 'PROFIT' | 'LOSS') => {
     try {
       const response = await fetch(`/api/admin/trade/${tradeId}/close`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ closeType }),
       });
       if (!response.ok) {
         throw new Error("Failed to close trade");
@@ -44,7 +50,13 @@ const TradeManagement: React.FC = () => {
       setTrades(trades.filter((trade) => trade.id !== tradeId));
     } catch (error) {
       console.error("Error closing trade:", error);
+    } finally {
+      setClosingTradeId(null);
     }
+  };
+
+  const handleCloseTradeOptions = (tradeId: string) => {
+    setClosingTradeId(tradeId);
   };
 
   const handleEditTrade = (trade: Trade) => {
@@ -129,7 +141,7 @@ const TradeManagement: React.FC = () => {
                     </button>
                     <button
                       className="bg-red-500 text-white px-2 py-1 rounded"
-                      onClick={() => handleCloseTrade(trade.id)}
+                      onClick={() => handleCloseTradeOptions(trade.id)}
                     >
                       Close
                     </button>
@@ -145,6 +157,13 @@ const TradeManagement: React.FC = () => {
           trade={editingTrade}
           onSave={handleSaveEdit}
           onClose={() => setEditingTrade(null)}
+        />
+      )}
+      {closingTradeId && (
+        <CloseTradeModal
+          isOpen={!!closingTradeId}
+          onClose={() => setClosingTradeId(null)}
+          onConfirm={(closeType) => handleCloseTrade(closingTradeId, closeType)}
         />
       )}
     </div>

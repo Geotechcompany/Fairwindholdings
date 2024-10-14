@@ -16,8 +16,8 @@ import Accounts from "./Accounts";
 import LiveChat from "./Livechat";
 import Savings from "./Savings";
 import Deposit from "./Deposit";
-import { UserData as UserDataType, Stats } from "@/types/user";
-import { FaBars } from "react-icons/fa";
+import Loader from "./Loader"; // Import the Loader component
+import { UserData as UserDataType, Stats, UserData } from "@/types/user";
 
 export function Dashboard() {
   const [currentView, setCurrentView] = useState("main");
@@ -51,7 +51,7 @@ export function Dashboard() {
   }, [isLoaded, isSignedIn, user]);
 
   if (loading) {
-    return <div className="text-center text-white">Loading...</div>;
+    return <Loader />; // Use the Loader component for loading state
   }
 
   if (error) {
@@ -61,6 +61,7 @@ export function Dashboard() {
   if (!userData) {
     return <div className="text-center text-white">No user data available</div>;
   }
+
   const userDataForSidebar: UserData = {
     firstName: user?.firstName || userData.firstName || "",
     fullName: user?.fullName || userData.fullName || "",
@@ -89,8 +90,54 @@ export function Dashboard() {
         return <Savings />;
       case "settings":
         return (
-          <div className="w-full max-w-4xl mx-auto">
-            <UserProfile routing="hash" />
+          <div className="w-full max-w-4xl mx-auto bg-[#1e2433] rounded-lg p-4 sm:p-6 shadow-lg">
+            <UserProfile
+              routing="hash"
+              appearance={{
+                elements: {
+                  rootBox: "bg-transparent shadow-none",
+                  card: "bg-transparent shadow-none",
+                  navbar: "hidden",
+                  pageScrollBox: "bg-transparent",
+                  formButtonPrimary:
+                    "bg-green-400 hover:bg-green-500 text-black",
+                  formFieldInput:
+                    "bg-gray-800 bg-opacity-50 text-white border-gray-600",
+                  formFieldLabel: "text-gray-300",
+                  headerTitle: "text-green-400 text-xl sm:text-2xl",
+                  headerSubtitle: "text-gray-300 text-sm sm:text-base",
+                  profileSectionTitleText: "text-green-400 text-lg sm:text-xl",
+                  profileSectionContent:
+                    "bg-gray-800 bg-opacity-50 rounded-lg p-3 sm:p-4",
+                  accordionTriggerButton: "text-gray-300 hover:text-green-400",
+                  formFieldAction: "text-green-400",
+                  formFieldInputShowPasswordButton: "text-green-400",
+                  formResendCodeLink: "text-green-400 hover:text-green-300",
+                  userPreviewMainIdentifier: "text-white",
+                  userPreviewSecondaryIdentifier: "text-gray-300",
+                  userButtonPopoverActionButton:
+                    "text-gray-300 hover:text-green-400 hover:bg-gray-800",
+                  userButtonPopoverActionButtonIcon: "text-green-400",
+                  userButtonPopoverFooter: "hidden",
+                  badge: "bg-green-400 text-black",
+                  navbarMobileMenuButton: "text-green-400",
+                  headerSubtitle: "hidden",
+                  footerActionLink: "hidden",
+                  footer: "hidden",
+                },
+                layout: {
+                  socialButtonsPlacement: "bottom",
+                  socialButtonsVariant: "iconButton",
+                },
+                variables: {
+                  colorPrimary: "#4ADE80",
+                  colorBackground: "transparent",
+                  colorText: "#ffffff",
+                  colorTextSecondary: "#d1d5db",
+                  borderRadius: "0.375rem",
+                },
+              }}
+            />
           </div>
         );
       case "deposit":
