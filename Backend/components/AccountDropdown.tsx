@@ -24,7 +24,7 @@ const AccountDropdown: React.FC<{ accountDetails: AccountDetails }> = ({ account
         className="flex items-center space-x-2 py-1 px-2 rounded text-white bg-[#181F2D]"
       >
         <div className="flex flex-col items-end">
-          <span className="text-[#4CAF50] text-xs font-semibold">STANDARD ACCOUNT</span>
+          <span className="text-[#4CAF50] text-xs font-semibold">LIVE ACCOUNT</span>
           <span className="text-[#4CAF50] text-xl font-bold leading-tight">${accountDetails.balance.toFixed(2)}</span>
         </div>
         <div className="flex items-center">
@@ -38,7 +38,7 @@ const AccountDropdown: React.FC<{ accountDetails: AccountDetails }> = ({ account
       {isOpen && (
         <div className="absolute w-[700px] bg-[#1E2530] mt-1 rounded shadow-lg z-10 right-0 flex">
           <div className="w-[300px] p-4 bg-[#242D3C]">
-            <div className="text-white text-sm font-semibold mb-3">REAL ACCOUNT</div>
+            <div className="text-white text-sm font-semibold mb-3">LIVE ACCOUNT</div>
             <div className="text-gray-400 text-xs mb-3">#{accountDetails.accountNumber}</div>
             {Object.entries(accountDetails).map(([key, value]) => (
               key !== 'accountType' && key !== 'accountNumber' && (
@@ -56,7 +56,7 @@ const AccountDropdown: React.FC<{ accountDetails: AccountDetails }> = ({ account
             <div className="bg-[#242D3C] w-full p-3 rounded flex items-center">
               <FaDollarSign className="text-[#4CAF50] mr-3" size={24} />
               <div className="flex-grow">
-                <div className="text-white text-sm font-bold">STANDARD ACCOUNT</div>
+                <div className="text-white text-sm font-bold">LIVE ACCOUNT</div>
                 <div className="text-gray-400 text-xs mb-1">#{accountDetails.accountNumber}</div>
                 <div className="text-[#4CAF50] text-lg font-bold">${accountDetails.balance.toFixed(2)}</div>
               </div>

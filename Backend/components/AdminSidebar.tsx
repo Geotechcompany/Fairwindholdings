@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { FaChartLine, FaUsers, FaExchangeAlt, FaCog, FaChartBar, FaSignOutAlt, FaIdCard, FaMoneyBillWave, FaComments, FaShieldAlt, FaUserCog } from 'react-icons/fa';
+import { FaMessage } from 'react-icons/fa6';
 
 interface AdminSidebarProps {
   onNavigate: (view: string) => void;
@@ -12,15 +13,15 @@ function AdminSidebar({ onNavigate, className }: AdminSidebarProps) {
   const menuItems = [
     { icon: FaChartLine, label: "Dashboard", view: "dashboard" },
     { icon: FaUsers, label: "User Management", view: "users" },
-    { icon: FaUserCog, label: "Account Management", view: "accounts" }, // Added Account Management
+    { icon: FaUserCog, label: "Accounts", view: "accounts" }, // Added Account Management
     { icon: FaExchangeAlt, label: "Trade Management", view: "trades" },
     { icon: FaIdCard, label: "KYC Management", view: "kyc" },
     { icon: FaMoneyBillWave, label: "Deposits", view: "deposits" },
     { icon: FaMoneyBillWave, label: "Withdrawals", view: "withdrawals" },
-    { icon: FaComments, label: "Support", view: "support" },
-    { icon: FaCog, label: "System Settings", view: "settings" },
-    { icon: FaShieldAlt, label: "Security", view: "security" },
-    { icon: FaChartBar, label: "Analytics", view: "analytics" },
+    {icon: FaMessage, label: "Chat Management", view: "chat" },
+    // { icon: FaComments, label: "Support", view: "support" },
+    // { icon: FaCog, label: "System Settings", view: "settings" },
+    // { icon: FaShieldAlt, label: "Security", view: "security" },
   ];
 
   return (

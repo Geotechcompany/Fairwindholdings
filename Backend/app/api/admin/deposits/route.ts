@@ -39,3 +39,36 @@ export async function GET() {
     );
   }
 }
+
+export async function PATCH(request: Request) {
+  try {
+    const { userId } = auth();
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await currentUser();
+    if (!user || user.publicMetadata.role !== 'admin') {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id, status } = await request.json();
+
+    if (!id || !status) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    const updatedDeposit = await prisma.deposit.update({
+      where: { id },
+      data: { status },
+    });
+
+    return NextResponse.json(updatedDeposit);
+  } catch (error) {
+    console.error("Error updating deposit status:", error);
+    return NextResponse.json(
+      { error: "Error updating deposit status" },
+      { status: 500 }
+    );
+  }
+}

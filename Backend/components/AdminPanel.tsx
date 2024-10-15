@@ -28,7 +28,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import AccountManagement from "./AdminComponents/AccountManagement";
-import Accounts from "./Accounts";
+import ChatManagement from "./AdminComponents/ChatManagement";
 
 interface AdminPanelProps {
   adminData: AdminData;
@@ -73,7 +73,7 @@ function AdminPanel({ adminData }: AdminPanelProps) {
     }
   }, [isAdmin]);
 
-  if (!isLoaded) return <div>Loading...</div>;
+  if (!isLoaded) return null;
 
   if (!isAdmin) return null;
 
@@ -91,6 +91,8 @@ function AdminPanel({ adminData }: AdminPanelProps) {
         return <WithdrawalManagement />;
       case "accounts":
         return <AccountManagement />;
+      case "chat":
+        return <ChatManagement />;
       case "support":
         return <Support />;
       case "settings":
@@ -99,7 +101,6 @@ function AdminPanel({ adminData }: AdminPanelProps) {
         return <Security />;
       case "analytics":
         return <Analytics />;
-      
       default:
         return (
           <div className="flex flex-col gap-6">
@@ -137,8 +138,6 @@ function AdminPanel({ adminData }: AdminPanelProps) {
               <div className="bg-[#1e2329] p-4 rounded-lg">
                 <h3 className="text-lg font-semibold mb-2">Analytics</h3>
                 <div className="h-[calc(100vh-300px)] min-h-[400px]">
-                  {" "}
-                  {/* Adjusted height */}
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={dashboardStats.monthlyData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#2c3e50" />

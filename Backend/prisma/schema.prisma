@@ -17,6 +17,7 @@ model User {
   email       String   @unique
   clerkId     String?  @unique
   balance     Float    @default(0)
+  chatMessages ChatMessage[]
   stats       Stats?
   mainAccount Account? @relation("UserMainAccount")
   password    String
@@ -140,9 +141,27 @@ model Trade {
   openPrice   Float
   closePrice  Float?
   profitLoss  Float?
-  status      String
+  status      TradeStatus
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   user        User     @relation(fields: [userId], references: [id])
 }
+
+enum TradeStatus {
+  OPEN
+  CLOSED_WITH_PROFIT
+  CLOSED_WITH_LOSS
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  content   String
+  userId    String
+  createdAt DateTime @default(now())
+  isAdmin   Boolean  @default(false)
+  isRead    Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+
 

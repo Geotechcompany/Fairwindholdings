@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { getUserData } from "@/app/actions/getuserData";
 import { useUser, UserProfile } from "@clerk/nextjs";
-import { useSearchParams } from "next/navigation";
 import { Header } from "./Header";
 import Sidebar from "./Sidebar";
 import MobileSidebar from "./MobileSidebar";
@@ -17,12 +16,11 @@ import Accounts from "./Accounts";
 import LiveChat from "./Livechat";
 import Savings from "./Savings";
 import Deposit from "./Deposit";
-import { UserData as UserDataType, Stats } from "@/types/user";
+import Loader from "./Loader"; // Import the Loader component
+import { UserData as UserDataType, Stats, UserData } from "@/types/user";
 
 export function Dashboard() {
-  const searchParams = useSearchParams();
-  const initialView = searchParams.get("view") || "main";
-  const [currentView, setCurrentView] = useState(initialView);
+  const [currentView, setCurrentView] = useState("main");
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [userData, setUserData] = useState<(UserDataType & Stats) | null>(null);
   const [loading, setLoading] = useState(true);
@@ -52,15 +50,8 @@ export function Dashboard() {
     fetchUserData();
   }, [isLoaded, isSignedIn, user]);
 
-  useEffect(() => {
-    const view = searchParams.get("view");
-    if (view) {
-      setCurrentView(view);
-    }
-  }, [searchParams]);
-
   if (loading) {
-    return <div className="text-center text-white">Loading...</div>;
+    return <Loader />; // Use the Loader component for loading state
   }
 
   if (error) {
@@ -71,7 +62,7 @@ export function Dashboard() {
     return <div className="text-center text-white">No user data available</div>;
   }
 
-  const userDataForSidebar: UserDataType = {
+  const userDataForSidebar: UserData = {
     firstName: user?.firstName || userData.firstName || "",
     fullName: user?.fullName || userData.fullName || "",
     email: user?.primaryEmailAddress?.emailAddress || userData.email || "",
@@ -99,8 +90,54 @@ export function Dashboard() {
         return <Savings />;
       case "settings":
         return (
-          <div className="w-full max-w-4xl mx-auto">
-            <UserProfile routing="hash" />
+          <div className="w-full max-w-4xl mx-auto bg-[#1e2433] rounded-lg p-4 sm:p-6 shadow-lg">
+            <UserProfile
+              routing="hash"
+              appearance={{
+                elements: {
+                  rootBox: "bg-transparent shadow-none",
+                  card: "bg-transparent shadow-none",
+                  navbar: "hidden",
+                  pageScrollBox: "bg-transparent",
+                  formButtonPrimary:
+                    "bg-green-400 hover:bg-green-500 text-black",
+                  formFieldInput:
+                    "bg-gray-800 bg-opacity-50 text-white border-gray-600",
+                  formFieldLabel: "text-gray-300",
+                  headerTitle: "text-green-400 text-xl sm:text-2xl",
+                  headerSubtitle: "text-gray-300 text-sm sm:text-base",
+                  profileSectionTitleText: "text-green-400 text-lg sm:text-xl",
+                  profileSectionContent:
+                    "bg-gray-800 bg-opacity-50 rounded-lg p-3 sm:p-4",
+                  accordionTriggerButton: "text-gray-300 hover:text-green-400",
+                  formFieldAction: "text-green-400",
+                  formFieldInputShowPasswordButton: "text-green-400",
+                  formResendCodeLink: "text-green-400 hover:text-green-300",
+                  userPreviewMainIdentifier: "text-white",
+                  userPreviewSecondaryIdentifier: "text-gray-300",
+                  userButtonPopoverActionButton:
+                    "text-gray-300 hover:text-green-400 hover:bg-gray-800",
+                  userButtonPopoverActionButtonIcon: "text-green-400",
+                  userButtonPopoverFooter: "hidden",
+                  badge: "bg-green-400 text-black",
+                  navbarMobileMenuButton: "text-green-400",
+                  headerSubtitle: "hidden",
+                  footerActionLink: "hidden",
+                  footer: "hidden",
+                },
+                layout: {
+                  socialButtonsPlacement: "bottom",
+                  socialButtonsVariant: "iconButton",
+                },
+                variables: {
+                  colorPrimary: "#4ADE80",
+                  colorBackground: "transparent",
+                  colorText: "#ffffff",
+                  colorTextSecondary: "#d1d5db",
+                  borderRadius: "0.375rem",
+                },
+              }}
+            />
           </div>
         );
       case "deposit":
@@ -108,8 +145,8 @@ export function Dashboard() {
       default:
         return (
           <>
-            <div className="flex flex-col lg:flex-row gap-6 mb-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:w-[600px] lg:grid-cols-2">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-6">
+              <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <StatCard
                   title="Total Balance"
                   value={`$${userData.balance.toFixed(2)}`}
@@ -134,10 +171,11 @@ export function Dashboard() {
                   note="* using current exchange rate"
                 />
               </div>
-              <div className="flex-grow flex justify-end">
+              <div className="lg:col-span-2">
                 <SuccessRateChart
                   profit={userData.profit}
                   loss={userData.loss}
+                  className="h-full"
                 />
               </div>
             </div>

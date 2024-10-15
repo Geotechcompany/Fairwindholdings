@@ -50,7 +50,7 @@ export function TradingDashboard({
   const [activeWidgets, setActiveWidgets] = useState<string[]>([]);
   const [isOrdersOpen, setIsOrdersOpen] = useState(true);
   const [accountDetails, setAccountDetails] = useState<AccountDetails>({
-    accountType: "STANDARD",
+    accountType: "LIVE",
     accountNumber: "Loading...",
     balance: 0,
     credit: 0,
@@ -100,7 +100,7 @@ export function TradingDashboard({
         }
         const data = await response.json();
         setAccountDetails({
-          accountType: "STANDARD",
+          accountType: "LIVE",
           accountNumber: data.id,
           balance: data.balance,
           credit: data.credit,
@@ -307,7 +307,7 @@ export function TradingDashboard({
       <header className="bg-[#181F2D] p-2 flex items-center justify-between border-b border-gray-700">
         <div className="flex items-center space-x-2">
           <Image
-            src="/images/logo-cita-white.png"
+            src="/images/cita_white logo.png"
             alt="CITA TRADING GROUP"
             width={120}
             height={36}
@@ -357,6 +357,8 @@ export function TradingDashboard({
               width={12}
               height={12}
               className="w-12 h-12 mr-2 sm:mr-0"
+              quality={100}
+              unoptimized
             />
 
             <Link href="/">
@@ -368,6 +370,8 @@ export function TradingDashboard({
                     width={12}
                     height={12}
                     className="rounded-full w-12 h-12 hidden sm:inline"
+                    quality={100}
+                    unoptimized
                   />
                 ) : (
                   <FaUser className="text-white" size={20} />

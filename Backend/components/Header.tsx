@@ -19,8 +19,8 @@ export function Header({ onOpenMobileSidebar }: HeaderProps) {
           <FaBars size={24} />
         </button>
         <Image 
-          src="/images/logo-cita-white.png" 
-          alt="Cita-trading-group" 
+          src="/images/cita_white logo.png" 
+          alt="Fairwindlogo" 
           width={150} 
           height={40}
           className="hidden lg:block"
