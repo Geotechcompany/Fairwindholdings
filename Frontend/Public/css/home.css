@@ -16742,7 +16742,7 @@ header a.nav-link:first-letter {
   width: 100%;
 }
 .slick-dots li.slick-active button:before {
-  background-color: #2e86fe;
+  background-color: gold;
   opacity: 0.75;
 }
 .seo-carousel-section {
