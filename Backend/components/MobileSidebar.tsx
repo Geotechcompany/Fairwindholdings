@@ -31,7 +31,7 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({
       >
         <div className="flex justify-between items-center p-4 border-b border-gray-700">
           <Image
-            src="/images/logo-cita-white.png"
+            src="/images/cita_white logo.png"
             alt="Cita-trading-group"
             width={120}
             height={32}

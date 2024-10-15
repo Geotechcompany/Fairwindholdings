@@ -14,7 +14,6 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Check if the user is an admin using Clerk's public metadata
     const isAdmin = user.publicMetadata.role === "admin";
 
     if (!isAdmin) {
@@ -22,13 +21,23 @@ export async function POST(
     }
 
     const { tradeId } = params;
+    const { closeType } = await request.json();
+
+    const trade = await prisma.trade.findUnique({
+      where: { id: tradeId },
+    });
+
+    if (!trade) {
+      return NextResponse.json({ error: "Trade not found" }, { status: 404 });
+    }
 
     const closedTrade = await prisma.trade.update({
       where: { id: tradeId },
       data: {
-        status: "CLOSED",
-        closePrice: 0, // You might want to calculate this based on current market price
-        updatedAt: new Date(), // Use updatedAt instead of closedAt
+        status: closeType === 'PROFIT' ? "CLOSED_WITH_PROFIT" : "CLOSED_WITH_LOSS",
+        closePrice: trade.openPrice, // You might want to calculate this based on current market price
+        profitLoss: closeType === 'PROFIT' ? 100 : -100, // Replace with actual profit/loss calculation
+        updatedAt: new Date(),
       },
     });
 

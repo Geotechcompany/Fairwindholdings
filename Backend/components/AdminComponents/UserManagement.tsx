@@ -1,7 +1,10 @@
+"use client";
+
 import React from 'react';
 import { toast } from 'react-hot-toast';
 import useSWR from 'swr';
 import { FaEdit, FaTrash } from 'react-icons/fa';
+import Loader from '../Loader';
 
 interface User {
   id: string;
@@ -23,7 +26,7 @@ function UserManagement() {
   }
 
   if (!data) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   const users = data.users;

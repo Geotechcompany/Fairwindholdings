@@ -46,7 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     { name: "Verification", icon: FaIdCard, view: "verification" },
     { name: "Accounts", icon: FaUserCircle, view: "accounts" },
     { name: "Live Chat", icon: FaComments, view: "live-chat" },
-    { name: "Savings", icon: FaPiggyBank, view: "savings" },
+    // { name: "Savings", icon: FaPiggyBank, view: "savings" },
     { name: "Settings", icon: FaCog, view: "settings" },
   ];
 

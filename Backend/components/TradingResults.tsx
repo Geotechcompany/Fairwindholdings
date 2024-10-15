@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import Loader from "./Loader";
 
 ChartJS.register(
   CategoryScale,
@@ -147,15 +148,15 @@ const TradingResultsChart: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="h-32 flex items-center justify-center bg-gray-200 rounded-[15px]">
-        Loading trading results...
+      <div className="h-64 flex items-center justify-center bg-[#1E2433] rounded-[15px]">
+        <Loader />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="h-32 flex items-center justify-center bg-gray-200 rounded-[15px] text-red-500">
+      <div className="h-64 flex items-center justify-center bg-[#1E2433] rounded-[15px] text-red-500">
         Error: {error}
       </div>
     );

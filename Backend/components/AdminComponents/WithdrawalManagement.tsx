@@ -1,6 +1,9 @@
+"use client";
+
 import React from 'react';
 import { toast } from 'react-hot-toast';
 import useSWR from 'swr';
+import Loader from '../Loader';
 
 interface Withdrawal {
   id: string;
@@ -25,7 +28,7 @@ function WithdrawalManagement() {
   }
 
   if (!withdrawals) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   async function handleStatusChange(

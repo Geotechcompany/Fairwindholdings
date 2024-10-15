@@ -3,6 +3,7 @@
 import React from 'react';
 import useSWR from 'swr';
 import { toast } from 'react-hot-toast';
+import Loader from './Loader';
 
 interface AccountData {
   id: string;
@@ -27,7 +28,7 @@ const Accounts: React.FC = () => {
   }
 
   if (!data) {
-    return <div>Loading account data...</div>;
+    return <Loader />;
   }
 
   return (
