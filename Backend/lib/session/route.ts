@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { prisma } from "../prisma";
 
 export async function getCurrentUser() {
