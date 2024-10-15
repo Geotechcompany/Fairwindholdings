@@ -1,7 +1,7 @@
 {
     "redirects": [
       {
-        "source": "https://www.fairwindholdings.com/(.*)",
+        "source": "http://www.fairwindholdings.com/(.*)",
         "destination": "https://fairwindholdings.com/$1",
         "permanent": true
       }
