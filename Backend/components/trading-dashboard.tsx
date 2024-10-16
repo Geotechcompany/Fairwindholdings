@@ -21,7 +21,7 @@ import MarketNews from "./MarketNews";
 import AccountDropdown from "./AccountDropdown";
 import OrdersDropdown from "./OrdersDropdown";
 // Comment out the import causing the error
-// import { getOpenTrades, getPricing } from "@/lib/oandaClient/route";
+import { getOpenTrades, getPricing } from "@/lib/oandaClient/route";
 import ProfitCalculator from "./Trading/ProfitCalculatorModal";
 import ActiveOrders from "./ActiveOrders";
 import TradingHistory from "./TradingHistory";
@@ -71,18 +71,18 @@ export function TradingDashboard({
     const fetchAccountData = async () => {
       try {
         // Commented out the actual API calls
-        // const trades = await getOpenTrades();
-        // console.log("Fetched open trades:", trades);
-        // const instruments = trades.trades.map((trade: any) => trade.instrument);
-        // const pricing = await getPricing(instruments);
+        const trades = await getOpenTrades();
+        console.log("Fetched open trades:", trades);
+        const instruments = trades.trades.map((trade: any) => trade.instrument);
+        const pricing = await getPricing(instruments);
 
-        // const updatedTrades = trades.trades.map((trade: any) => ({
-        //   ...trade,
-        //   currentPrice: pricing[trade.instrument]?.price?.ask || trade.price,
-        // }));
+        const updatedTrades = trades.trades.map((trade: any) => ({
+          ...trade,
+          currentPrice: pricing[trade.instrument]?.price?.ask || trade.price,
+        }));
 
-        // console.log("Updated trades:", updatedTrades);
-        // setOpenTrades(updatedTrades);
+        console.log("Updated trades:", updatedTrades);
+        setOpenTrades(updatedTrades);
 
         // Instead, set some dummy data
         setOpenTrades([]);
