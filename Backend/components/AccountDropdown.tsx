@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaChevronDown, FaChevronUp, FaDollarSign } from 'react-icons/fa';
 
-interface AccountDetails {
+export interface AccountDetails {
   accountType: string;
   accountNumber: string;
   balance: number;
@@ -36,8 +36,19 @@ const AccountDropdown: React.FC<{ accountDetails: AccountDetails }> = ({ account
         </div>
       </button>
       {isOpen && (
-        <div className="absolute w-[700px] bg-[#1E2530] mt-1 rounded shadow-lg z-10 right-0 flex">
-          <div className="w-[300px] p-4 bg-[#242D3C]">
+        <div className="absolute w-full sm:w-[700px] bg-[#1E2530] mt-1 rounded shadow-lg z-10 right-0 flex flex-col sm:flex-row">
+          <div className="w-full sm:flex-grow p-4 bg-[#1E2530] flex items-start order-1 sm:order-2">
+            <div className="bg-[#242D3C] w-full p-3 rounded flex items-center">
+              <FaDollarSign className="text-[#4CAF50] mr-3" size={24} />
+              <div className="flex-grow">
+                <div className="text-white text-sm font-bold">LIVE ACCOUNT</div>
+                <div className="text-gray-400 text-xs mb-1">#{accountDetails.accountNumber}</div>
+                <div className="text-[#4CAF50] text-lg font-bold">${accountDetails.balance.toFixed(2)}</div>
+              </div>
+              <span className="text-[#4CAF50] text-xs absolute bottom-1 right-1 sm:static">Active</span>
+            </div>
+          </div>
+          <div className="w-full sm:w-[300px] p-4 bg-[#242D3C] order-2 sm:order-1">
             <div className="text-white text-sm font-semibold mb-3">LIVE ACCOUNT</div>
             <div className="text-gray-400 text-xs mb-3">#{accountDetails.accountNumber}</div>
             {Object.entries(accountDetails).map(([key, value]) => (
@@ -51,17 +62,6 @@ const AccountDropdown: React.FC<{ accountDetails: AccountDetails }> = ({ account
                 </div>
               )
             ))}
-          </div>
-          <div className="flex-grow p-4 bg-[#1E2530] flex items-start">
-            <div className="bg-[#242D3C] w-full p-3 rounded flex items-center">
-              <FaDollarSign className="text-[#4CAF50] mr-3" size={24} />
-              <div className="flex-grow">
-                <div className="text-white text-sm font-bold">LIVE ACCOUNT</div>
-                <div className="text-gray-400 text-xs mb-1">#{accountDetails.accountNumber}</div>
-                <div className="text-[#4CAF50] text-lg font-bold">${accountDetails.balance.toFixed(2)}</div>
-              </div>
-              <span className="text-[#4CAF50] text-xs">Active</span>
-            </div>
           </div>
         </div>
       )}

@@ -20,7 +20,8 @@ import EconomicCalendar from "./EconomicCalendar";
 import MarketNews from "./MarketNews";
 import AccountDropdown from "./AccountDropdown";
 import OrdersDropdown from "./OrdersDropdown";
-import { getOpenTrades, getPricing } from "@/lib/oandaClient/route";
+// Comment out the import causing the error
+// import { getOpenTrades, getPricing } from "@/lib/oandaClient/route";
 import ProfitCalculator from "./Trading/ProfitCalculatorModal";
 import ActiveOrders from "./ActiveOrders";
 import TradingHistory from "./TradingHistory";
@@ -65,21 +66,26 @@ export function TradingDashboard({
   const [tradingHistory, setTradingHistory] = useState([]);
   const [userTrades, setUserTrades] = useState<any[]>([]);
 
+  // Comment out or modify the useEffect that uses getOpenTrades and getPricing
   useEffect(() => {
     const fetchAccountData = async () => {
       try {
-        const trades = await getOpenTrades();
-        console.log("Fetched open trades:", trades); // Add this line
-        const instruments = trades.trades.map((trade: any) => trade.instrument);
-        const pricing = await getPricing(instruments);
+        // Commented out the actual API calls
+        // const trades = await getOpenTrades();
+        // console.log("Fetched open trades:", trades);
+        // const instruments = trades.trades.map((trade: any) => trade.instrument);
+        // const pricing = await getPricing(instruments);
 
-        const updatedTrades = trades.trades.map((trade: any) => ({
-          ...trade,
-          currentPrice: pricing[trade.instrument]?.price?.ask || trade.price,
-        }));
+        // const updatedTrades = trades.trades.map((trade: any) => ({
+        //   ...trade,
+        //   currentPrice: pricing[trade.instrument]?.price?.ask || trade.price,
+        // }));
 
-        console.log("Updated trades:", updatedTrades); // Add this line
-        setOpenTrades(updatedTrades);
+        // console.log("Updated trades:", updatedTrades);
+        // setOpenTrades(updatedTrades);
+
+        // Instead, set some dummy data
+        setOpenTrades([]);
       } catch (error) {
         console.error("Error fetching account data:", error);
       }
@@ -303,7 +309,7 @@ export function TradingDashboard({
   };
 
   return (
-    <div className="bg-[#181F2D]  text-white h-screen flex flex-col">
+    <div className="bg-[#181F2D]  text-white h-screen flex flex-col flex-1 overflow-auto">
       <header className="bg-[#181F2D] p-2 flex items-center justify-between border-b border-gray-700">
         <div className="flex items-center space-x-2">
           <Image
@@ -328,7 +334,7 @@ export function TradingDashboard({
         <div className="flex items-center justify-between w-full sm:w-auto sm:space-x-3">
           <div className="flex items-center space-x-4">
             <Link href="/dashboard?view=deposit" passHref>
-              <button className="bg-[#181F2D] hover:bg-[#4CAF50] text-[#4CAF50] hover:text-white font-semibold py-3 px-6 rounded transition-all duration-300 border border-[#4CAF50] flex items-center space-x-3 text-lg">
+              <button className="bg-[#181F2D] hover:bg-[#4CAF50] text-[#4CAF50] hover:text-white font-semibold py-3 px-3 sm:px-6 rounded transition-all duration-300 border border-[#4CAF50] flex items-center space-x-2 sm:space-x-3 text-lg">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-6 w-6"
@@ -341,7 +347,7 @@ export function TradingDashboard({
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>Deposit</span>
+                <span className="hidden sm:inline">Deposit</span>
               </button>
             </Link>
 
@@ -356,7 +362,7 @@ export function TradingDashboard({
               alt="MVP"
               width={12}
               height={12}
-              className="w-12 h-12 mr-2 sm:mr-0"
+              className="w-12 h-12 mr-2 sm:mr-0 hidden sm:inline"
               quality={100}
               unoptimized
             />
@@ -369,12 +375,12 @@ export function TradingDashboard({
                     alt="User Profile"
                     width={12}
                     height={12}
-                    className="rounded-full w-12 h-12 hidden sm:inline"
+                    className="rounded-full w-12 h-12 inline"
                     quality={100}
                     unoptimized
                   />
                 ) : (
-                  <FaUser className="text-white" size={20} />
+                  <FaUser className="text-white inline" size={20} />
                 )}
               </button>
             </Link>
@@ -414,7 +420,9 @@ export function TradingDashboard({
         <div className="flex-grow flex overflow-hidden relative">
           {/* Active Widgets */}
           {activeWidgets.length > 0 && (
-            <div className="absolute inset-y-0 left-0 z-10 bg-gray-800 overflow-hidden lg:relative lg:w-64">
+            <div className={`absolute inset-y-0 left-0 z-10 bg-gray-800 overflow-hidden lg:relative lg:w-64 ${
+              isOrdersOpen ? "h-[calc(100%-12rem)]" : "h-[calc(100%-2.5rem)]"
+            }`}>
               {renderActiveWidgets()}
             </div>
           )}
@@ -430,7 +438,7 @@ export function TradingDashboard({
 
             {/* Orders Dropdown */}
             <div
-              className={`transition-all duration-300 ${
+              className={`transition-all duration-300 mt-4 ${
                 isOrdersOpen ? "h-48" : "h-10"
               } overflow-hidden`}
             >
@@ -459,8 +467,7 @@ export function TradingDashboard({
         </div>
         <div className="flex items-center space-x-2 mb-1 sm:mb-0">
           <span>
-            Lifetime PnL: ${parseFloat(accountDetails.profit).toFixed(2)}
-          </span>
+            Lifetime PnL: ${parseFloat(accountDetails.profit).toFixed(2)}          </span>
         </div>
         <div className="flex items-center space-x-2">
           <Link href="/dashboard?view=live-chat" passHref>
