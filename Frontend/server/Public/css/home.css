@@ -13438,6 +13438,14 @@ p + .button {
   margin-top: 0.2rem;
   padding-left: 6%;
 }
+#h3{
+  position: relative;
+  animation: moveToCenter 2s ease-out forwards;
+  margin-left: 50;
+  padding-left: 50px;
+  color: #270b03;
+  text-transform: uppercase;
+}
 @media (min-width: 768px) {
   .title-section span,
   .title-section strong {
