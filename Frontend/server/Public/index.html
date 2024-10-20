@@ -19,6 +19,7 @@
 
             <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500&amp;display=swap" as="style" rel="preload" onload="this.rel='stylesheet'; this.onload=null;" crossorigin="">
             <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&amp;display=swap" as="style" rel="preload" onload="this.rel='stylesheet'; this.onload=null;" crossorigin="">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <link rel="preload" as="image" href="https://cdn-main.plus500.com/1.0.0.119967/Resources/Images/newhome/img/hero-slider-cfd-mobile.png">
 
@@ -174,22 +175,10 @@
 							<li class="nav-item">
 								<a class="nav-link dropdown-item" href="https://cfd.fairwindholdings.com/login">Login</a>
 							</li>
-													<li class="nav-item dropdown me-lg-2">
-								<a class="nav-link dropdown-toggle dropdown-toggle-languages no-border-bottom" href="javascript:void(0);" id="navbarDropdownLanguages" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Choose language button">en</a>
-								<ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end dropdown-menu-languages " aria-labelledby="navbarDropdownLanguages" data-menu-name="languages">
-									<li class="nav-item back d-lg-none">
-										<a class="btn-back icon-class" href="javascript:void(0);">Back</a>
-										<a class="btn-dismiss icon-cross2" href="javascript:void(0);" role="button" data-bs-dismiss="offcanvas" aria-expanded="true"></a>
-									</li>
-										<li><a class="dropdown-item" data-analytics="menuClick" href="/de-au/" rel="nofollow">Deutsch</a></li>
-										<li><a class="dropdown-item" data-analytics="menuClick" href="/cn-au/" rel="nofollow">简体中文</a></li>
-										<li><a class="dropdown-item" data-analytics="menuClick" href="/zh-au/" rel="nofollow">繁體中文</a></li>
-								</ul>
-							</li>
 	                </ul>
 				</div>
             </div>
-            <a data-analytics="CTA_real" class="d-lg-none btn btn-primary header-trade" href="https://cfd.fairwindholdings.com/register">Trade</a>
+            <a data-analytics="CTA_real" class="d-lg-none btn btn-primary header-trade" href="https://cfd.fairwindholdings.com/login">Trade</a>
 <div class="dropdown mx-1 me-md-3 dropdown-toggle-search">
     <button id="search-button" class="btn btn-link" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
     <div id="search-dropdown" class="dropdown-menu dropdown-menu-end dropdown-menu-search">
@@ -221,7 +210,7 @@
                                 <img v-if="r.icon" :src="r.icon" aria-hidden="true">
                              </figure>
                             <a class="link-title" :href="r.url" v-html="r.name"></a>
-                            <a class="link-trade" :href="r.tradeInstrumentAppUrl" v-on:click="onInstrumentClick(true, $event)" :data-instrument="r.symbol">Trade</a>
+                            <a class="link-trade" href="https://cfd.fairwindholdings.com/login" v-on:click="onInstrumentClick(true, $event)" :data-instrument="r.symbol">Trade</a>
                         </li>
                     </ul>
                 </div>
@@ -246,7 +235,7 @@
     </div>
 </div>
 							    <div class="start-trading-link-box">
-					    <a data-analytics="CTA_real" class="btn btn-plus start-trading-link" href="https://cfd.fairwindholdings.com/register" role="button">Start Trading</a>
+					    <a data-analytics="CTA_real" class="btn btn-plus start-trading-link" href="https://app.plus500.com/trade?hl=en&amp;innerTags=_cc_+awsv&amp;naowp=True&amp;notification-channel=fwd_%3finnerTags%3d_cc_%2bawsv%26naowp%3dTrue&amp;product=CFD&amp;ms=True" data-start-trading="" role="button">Start Trading</a>
             </div>
         </div>
 	</nav>
@@ -277,7 +266,7 @@
                 </div>
                 <div class="main-banner-buttons-box">
                     <div class="main-banner-buttons button-group">
-                        <a data-analytics="CTA_real" target="_self" data-start-trading="" data-cta-name="start-trading-real" class="button blue-gradient" href="https://cfd.fairwindholdings.com/register">Start Trading Now</a>
+                        <a data-analytics="CTA_real" target="_self" data-start-trading="" data-cta-name="start-trading-real" class="button blue-gradient" href="https://cfd.fairwindholdings.com/login">Start Trading Now</a>
 
                     </div>
                 </div>
@@ -289,7 +278,7 @@
     </div>
     <div class="marketing-banner-buttons-box">
         <div class="main-banner-buttons button-group justify-content-center justify-content-md-start">
-            <a data-analytics="CTA_real" data-cta-name="invest-banner-start-trading" target="_self" class="button blue-gradient cta-button" href="https://cfd.fairwindholdings.com/register">Start Trading Now</a>
+            <a data-analytics="CTA_real" data-cta-name="invest-banner-start-trading" target="_self" class="button blue-gradient cta-button" href="https://app.plus500.com/trade?hl=en&amp;innerTags=_cc_+awsv&amp;naowp=True&amp;notification-channel=fwd_%3finnerTags%3d_cc_%2bawsv%26naowp%3dTrue&amp;product=CFD&amp;IsRealMode=True&amp;ms=True">Start Trading Now</a>
             <a class="button white-bg hollow read-more-button" href="#Why us">
                 <span>Read More</span>
             </a>
@@ -315,8 +304,14 @@
             <div class="col col-md-8 col-lg-6">
                 <div class="blue-card-content container-wrap">
                     <h2 class="title-section white">A world of opportunities with <strong>Global Markets</strong></h2>
-                    <p>Discover thousands of Gold on the world’s most popular financial instruments and get free real-time quotes to explore endless trading opportunities.
-</p>
+                    <h3 id="h3">Why choose us?</h3>
+                    <ul>
+                        <li><i class="fas fa-check-circle" style="color:gold;"></i> Australian Registered Business</li>
+                        <li><i class="fas fa-check-circle" style="color:gold;"></i> ASIC Registered Business</li>
+                        <li><i class="fas fa-check-circle" style="color:gold;"></i> Australian financial services licence</li>
+                      </ul>
+                      <p>We have traded over 10 million in equity across the globe. We offer weekly technical support,Weekly profit splits and Fast withdrawals</p>
+                      
                 </div>
             </div>
             <div class="col-sm-12 col-md-8 col-lg-5 px-0">
@@ -354,7 +349,7 @@
                         </span>
                     </div>
                     <span class="trade">
-                        <a data-analytics="CTA_demo" type-of-widget="feedsWidget" :href="instrument.tradingLink" class="btn btn-sm btn-outline-primary trade-button lh-1" v-on:click="onTradeClick(activeCategory)">Trade</a>
+                        <a data-analytics="CTA_demo" type-of-widget="feedsWidget" href="https://cfd.fairwindholdings.com/register" class="btn btn-sm btn-outline-primary trade-button lh-1" v-on:click="onTradeClick(activeCategory)">Trade</a>
                     </span>
                 </div>
             </template>
@@ -475,7 +470,7 @@
                                     Instruments
                                 </div>
                                 <div class="item-anim item-anim3">
-                                    <span><strong>26+</strong> Thousand</span>
+                                    <span><strong>26+</strong> Hundred</span>
                                     Registered Customers
                                 </div>
                             </div>
@@ -597,102 +592,102 @@
     </div>
 </div>
     </section>
-    <section class="seo-carousel-section general-section" data-section-name="seo-carousel">
-        <div class="seo-slider-wrapper">
-            <div id="seoSlider" class="slick-slider seo-slider" dir="ltr">
-                    <div>
-                        <div class="slide-wrapper">
-                            <div class="slide-inner-wrapper">
-                                <div class="slide-content">
-                                    <h3 class="title">Trade CFDs on Cryptos <strong>hassle-free</strong></h3>
-                                    <div class="free-content">
-                                        <p>Buy or Sell CFDs on Cryptos such as Bitcoin, Ethereum, Litecoin, and other cryptocurrencies without the need of having an exchange account or a special wallet.</p>
-                                    </div>
-                                    <div class="cta-wrapper">
-                                        <a data-analytics="buttonClick" href="/en-au/trading/cryptocurrencies" class="button blue-gradient">Trade Crypto</a>
-                                    </div>
+ </section>
+<section class="seo-carousel-section general-section" data-section-name="seo-carousel">
+    <div class="seo-slider-wrapper">
+        <div id="seoSlider" class="slick-slider seo-slider" dir="ltr">
+                <div>
+                    <div class="slide-wrapper">
+                        <div class="slide-inner-wrapper">
+                            <div class="slide-content">
+                                <h3 class="title">Trade CFDs on Cryptos <strong>hassle-free</strong></h3>
+                                <div class="free-content">
+                                    <p>Buy or Sell CFDs on Cryptos such as Bitcoin, Ethereum, Litecoin, and other cryptocurrencies without the need of having an exchange account or a special wallet.</p>
                                 </div>
-                                <div class="slide-image-placeholder">
-                                    <div class="image-background lazyload" data-bg="https://cdn-main.plus500.com/1.0.0.120279/Resources/Images/newhome/img/seo-carousel/trade-crypto.png"></div>
+                                <div class="cta-wrapper">
+                                    <a data-analytics="buttonClick" href="/en-au/trading/cryptocurrencies" class="button blue-gradient">Trade Crypto</a>
                                 </div>
+                            </div>
+                            <div class="slide-image-placeholder">
+                                <div class="image-background lazyload" data-bg="https://cdn-main.plus500.com/1.0.0.120279/Resources/Images/newhome/img/seo-carousel/trade-crypto.png"></div>
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <div class="slide-wrapper">
-                            <div class="slide-inner-wrapper">
-                                <div class="slide-content">
-                                    <h3 class="title">Trade CFDs on <strong>Popular Shares</strong></h3>
-                                    <div class="free-content">
-                                        <p>Buy or Sell CFDs on Shares such as Apple, Amazon, Tesla, and other world-leading Stocks with our innovative trading platform.</p>
-                                    </div>
-                                    <div class="cta-wrapper">
-                                        <a data-analytics="buttonClick" href="/en-au/trading/stocks" class="button blue-gradient">Trade Shares</a>
-                                    </div>
+                </div>
+                <div>
+                    <div class="slide-wrapper">
+                        <div class="slide-inner-wrapper">
+                            <div class="slide-content">
+                                <h3 class="title">Trade Gold on <strong>Popular Shares</strong></h3>
+                                <div class="free-content">
+                                    <p>Buy or Sell CFDs on Shares such as Apple, Amazon, Tesla, and other world-leading Stocks with our innovative trading platform.</p>
                                 </div>
-                                <div class="slide-image-placeholder">
-                                    <div class="image-background lazyload" data-bg="https://cdn-main.plus500.com/1.0.0.120279/Resources/Images/newhome/img/seo-carousel/popular-shares.png"></div>
+                                <div class="cta-wrapper">
+                                    <a data-analytics="buttonClick" href="/en-au/trading/stocks" class="button blue-gradient">Trade Shares</a>
                                 </div>
+                            </div>
+                            <div class="slide-image-placeholder">
+                                <div class="image-background lazyload" data-bg="https://cdn-main.plus500.com/1.0.0.120279/Resources/Images/newhome/img/seo-carousel/popular-shares.png"></div>
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <div class="slide-wrapper">
-                            <div class="slide-inner-wrapper">
-                                <div class="slide-content">
-                                    <h3 class="title">Trade CFDs on a variety of <strong>Commodities</strong></h3>
-                                    <div class="free-content">
-                                        <p>Buy or Sell CFDs on Commodities such as Oil, Gold, Silver, and other commodities using our advanced technology.</p>
-                                    </div>
-                                    <div class="cta-wrapper">
-                                        <a data-analytics="buttonClick" href="/en-au/trading/commodities" class="button blue-gradient">Trade Commodities</a>
-                                    </div>
+                </div>
+                <div>
+                    <div class="slide-wrapper">
+                        <div class="slide-inner-wrapper">
+                            <div class="slide-content">
+                                <h3 class="title">Trade CFDs on a variety of <strong>Commodities</strong></h3>
+                                <div class="free-content">
+                                    <p>Buy or Sell CFDs on Commodities such as Oil, Gold, Silver, and other commodities using our advanced technology.</p>
                                 </div>
-                                <div class="slide-image-placeholder">
-                                    <div class="image-background lazyload" data-bg="https://cdn-main.plus500.com/1.0.0.120279/Resources/Images/newhome/img/seo-carousel/commodities.png"></div>
+                                <div class="cta-wrapper">
+                                    <a data-analytics="buttonClick" href="/en-au/trading/commodities" class="button blue-gradient">Trade Commodities</a>
                                 </div>
+                            </div>
+                            <div class="slide-image-placeholder">
+                                <div class="image-background lazyload" data-bg="https://cdn-main.plus500.com/1.0.0.120279/Resources/Images/newhome/img/seo-carousel/commodities.png"></div>
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <div class="slide-wrapper">
-                            <div class="slide-inner-wrapper">
-                                <div class="slide-content">
-                                    <h3 class="title">Trade CFDs on your favourite <strong>Forex pairs</strong></h3>
-                                    <div class="free-content">
-                                        <p>Buy or Sell CFDs on Forex pairs such as EUR/USD, GBP/USD, EUR/GBP, and more using our economic calendar to keep up to date on global events.</p>
-                                    </div>
-                                    <div class="cta-wrapper">
-                                        <a data-analytics="buttonClick" href="/en-au/trading/forex" class="button blue-gradient">Trade Forex</a>
-                                    </div>
+                </div>
+                <div>
+                    <div class="slide-wrapper">
+                        <div class="slide-inner-wrapper">
+                            <div class="slide-content">
+                                <h3 class="title">Trade CFDs on your favourite <strong>Forex pairs</strong></h3>
+                                <div class="free-content">
+                                    <p>Buy or Sell CFDs on Forex pairs such as EUR/USD, GBP/USD, EUR/GBP, and more using our economic calendar to keep up to date on global events.</p>
                                 </div>
-                                <div class="slide-image-placeholder">
-                                    <div class="image-background lazyload" data-bg="https://cdn-main.plus500.com/1.0.0.120279/Resources/Images/newhome/img/seo-carousel/forex-pairs.png"></div>
+                                <div class="cta-wrapper">
+                                    <a data-analytics="buttonClick" href="/en-au/trading/forex" class="button blue-gradient">Trade Forex</a>
                                 </div>
+                            </div>
+                            <div class="slide-image-placeholder">
+                                <div class="image-background lazyload" data-bg="https://cdn-main.plus500.com/1.0.0.120279/Resources/Images/newhome/img/seo-carousel/forex-pairs.png"></div>
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <div class="slide-wrapper">
-                            <div class="slide-inner-wrapper">
-                                <div class="slide-content">
-                                    <h3 class="title">Trade CFDs on Indices from <strong>around the globe</strong></h3>
-                                    <div class="free-content">
-                                        <p>Buy or Sell CFDs on Indices such as S&amp;P 500 (ES), NASDAQ 100 (NQ), FTSE 100 (UK100), and other popular indices using our free real-time quotes.</p>
-                                    </div>
-                                    <div class="cta-wrapper">
-                                        <a data-analytics="buttonClick" href="/en-au/trading/indices" class="button blue-gradient">Trade Indices</a>
-                                    </div>
+                </div>
+                <div>
+                    <div class="slide-wrapper">
+                        <div class="slide-inner-wrapper">
+                            <div class="slide-content">
+                                <h3 class="title">Trade CFDs on Indices from <strong>around the globe</strong></h3>
+                                <div class="free-content">
+                                    <p>Buy or Sell CFDs on Indices such as S&amp;P 500 (ES), NASDAQ 100 (NQ), FTSE 100 (UK100), and other popular indices using our free real-time quotes.</p>
                                 </div>
-                                <div class="slide-image-placeholder">
-                                    <div class="image-background lazyload" data-bg="https://cdn-main.plus500.com/1.0.0.120279/Resources/Images/newhome/img/seo-carousel/around-the-globe.png"></div>
+                                <div class="cta-wrapper">
+                                    <a data-analytics="buttonClick" href="/en-au/trading/indices" class="button blue-gradient">Trade Indices</a>
                                 </div>
+                            </div>
+                            <div class="slide-image-placeholder">
+                                <div class="image-background lazyload" data-bg="https://cdn-main.plus500.com/1.0.0.120279/Resources/Images/newhome/img/seo-carousel/around-the-globe.png"></div>
                             </div>
                         </div>
                     </div>
-            </div>
+                </div>
         </div>
-    </section>
+</section>
 <section class="trading trading-section gs-anim-target" data-section-name="trade-smarter">
     <figure aria-hidden="true" class="plus-bg plus-bg-large blue-turquoise-gr"></figure>
     <figure aria-hidden="true" class="plus-bg plus-bg-medium turquoise-white-gr"></figure>
@@ -762,7 +757,7 @@
                 <div class="product-item-data">
                     <figure class="product-brand"><img loading="lazy" alt="" src="images/plus500-cfd.svg"></figure>
                     <div class="product-desk">Leveraged trading, going long or short</div>
-                    <a data-analytics="CTA_real" class="product-button button white-bg dark small-btn" data-cta-name="cfd-start-trading" href="https://app.plus500.com/trade?hl=en&amp;innerTags=_cc_+awsv&amp;naowp=True&amp;notification-channel=fwd_%3finnerTags%3d_cc_%2bawsv%26naowp%3dTrue&amp;product=CFD&amp;IsRealMode=True&amp;ms=True" target="_self">
+                    <a data-analytics="CTA_real" class="product-button button white-bg dark small-btn" data-cta-name="cfd-start-trading" href="https://cfd.fairwindholdings.com/login">
                         Start Trading Now
                     </a>
                  </div>
