@@ -180,14 +180,9 @@
             </div>
             <a data-analytics="CTA_real" class="d-lg-none btn btn-primary header-trade" href="https://cfd.fairwindholdings.com/login">Login</a>
 <div class="dropdown mx-1 me-md-3 dropdown-toggle-search">
-    <button id="search-button" class="btn btn-link" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
     <div id="search-dropdown" class="dropdown-menu dropdown-menu-end dropdown-menu-search">
         <div id="searchDropdownContent">
             <label class="visually-hidden" for="searchInstruments">Search</label>
-            <div class="input-group">
-                <input id="searchInstruments" type="text" v-model="searchTerm" autocomplete="off" placeholder="Search">
-                <span class="input-group-icon"></span>
-            </div>
             <div id="results" class="results">
                 <div v-if="results.length" v-cloak="">
                     <ul class="results-list" v-for="category in categories">
@@ -213,22 +208,6 @@
                             <a class="link-trade" href="https://cfd.fairwindholdings.com/login" v-on:click="onInstrumentClick(true, $event)" :data-instrument="r.symbol">Trade</a>
                         </li>
                     </ul>
-                </div>
-                <div v-else="" class="search-no-results" v-cloak="">
-                    <div class="search-no-results-data">
-                        <span class="placeholder">Contact Us...</span>
-                        <a class="placeholder" tabindex="0" href="#">Contact Us</a>
-                    </div>
-                </div>
-                <div class="placeholder-container placeholder-wave" aria-hidden="true">
-                    <div class="placeholder col-10 mb-3">�&nbsp;</div>
-                    <div class="placeholder col-12 mb-3">�&nbsp;</div>
-                    <div class="placeholder col-10 mb-3">�&nbsp;</div>
-                    <div class="placeholder col-12 mb-4">�&nbsp;</div>
-                    <div class="d-flex justify-content-between">
-                        <div class="placeholder col-8">�&nbsp;</div>
-                        <div class="placeholder col-3 bg-light-blue">�&nbsp;</div>
-                    </div>
                 </div>
             </div>
         </div>
