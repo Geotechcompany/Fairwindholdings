@@ -20637,4 +20637,60 @@ header a.nav-link:first-letter {
     padding-top: 0;
   }
 }
+
+.testimonials-section {
+  padding: 4rem 0;
+  background-color: #f8f9fa;
+}
+
+.testimonials-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.testimonials-container::-webkit-scrollbar {
+  display: none;
+}
+
+.testimonials-wrapper {
+  display: flex;
+  gap: 2rem;
+  padding: 1rem 0;
+}
+
+.testimonial-item {
+  flex: 0 0 300px;
+}
+
+.testimonial-content {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.testimonial-content p {
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.testimonial-author {
+  text-align: right;
+}
+
+.testimonial-author strong {
+  display: block;
+  color: #007bff;
+}
+
+.testimonial-author span {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
 /*# sourceMappingURL=home.css.map */

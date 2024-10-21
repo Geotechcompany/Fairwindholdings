@@ -405,7 +405,51 @@
             </div>
         </div>
     </div> 
-
+    <section class="testimonials-section general-section gs-anim-target" data-section-name="testimonials">
+        <div class="container-xxl">
+            <h2 class="title-section text-center"><strong>What Our Clients Say</strong></h2>
+            <div class="testimonials-container">
+                <div class="testimonials-wrapper">
+                    <div class="testimonial-item">
+                        <div class="testimonial-content">
+                            <p>"Fairwind Holdings has transformed my trading experience. Their platform is intuitive and their customer support is top-notch."</p>
+                            <div class="testimonial-author">
+                                <strong>John D.</strong>
+                                <span>Experienced Trader</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-item">
+                        <div class="testimonial-content">
+                            <p>"I'm impressed with the range of markets available. Fairwind Holdings has opened up new opportunities for my investment portfolio."</p>
+                            <div class="testimonial-author">
+                                <strong>Sarah M.</strong>
+                                <span>Investment Analyst</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-item">
+                        <div class="testimonial-content">
+                            <p>"As a beginner, I found Fairwind Holdings' educational resources incredibly helpful. Their platform made it easy for me to start trading with confidence."</p>
+                            <div class="testimonial-author">
+                                <strong>Alex T.</strong>
+                                <span>New Trader</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-item">
+                        <div class="testimonial-content">
+                            <p>"The customer service at Fairwind Holdings is exceptional. They're always ready to assist and provide valuable insights for my trading decisions."</p>
+                            <div class="testimonial-author">
+                                <strong>Emily R.</strong>
+                                <span>Active Investor</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </section><section class="insights general-section gs-anim-target gs-insights-target" data-section-name="insights"> 
     <figure aria-hidden="true" class="plus-bg plus-bg-small"></figure>
     <figure aria-hidden="true" class="plus-bg plus-bg-large"></figure>
@@ -969,8 +1013,8 @@ This website is operated by <a href="#Why us">Fairwind Holdings.</a>        </di
                 plusAnimation(plusesTarget);
      
                // Icons Animation  
-                let iconsTarget = document.querySelectorAll(".items-icon-group")
-                iconAnimation(iconsTarget);
+               let iconsTarget = document.querySelectorAll(".items-icon-group, .testimonials-wrapper");
+               iconAnimation(iconsTarget);
         
                // Table Widget Animation
                 gsap.timeline({
